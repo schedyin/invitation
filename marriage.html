@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You are Invited!</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
+    body { 
+      font-family: 'IBM Plex Sans', sans-serif; 
+      display: flex; justify-content: center; align-items: center; 
+      height: 100vh; margin: 0; background-color: #fdfbf7; text-align: center;
+    }
+    .invitation { border: 2px solid #d4af37; padding: 40px; border-radius: 10px; background: white; }
+    h1 { color: #d4af37; margin-bottom: 5px; }
+    h2 { font-size: 2.5rem; color: #333; margin: 10px 0; }
+    .loading { color: #888; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="invitation">
+    <h1 id="greeting" class="loading">Loading details...</h1>
+    <h2 id="coupleNamesDisplay"></h2>
+    <p id="message" style="display: none;">Joyfully invite you to their wedding celebration.</p>
+    <p id="venueDetails" style="display: none; color: #666; margin-top: 20px;">
+        <strong>Venue:</strong> Grand Function Hall, Challapalli
+    </p>
+  </div>
+
+  <script>
+    const supabaseUrl = 'YOUR_SUPABASE_URL';
+    const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function loadInvitation() {
+      // Get the ID from the URL (e.g., ?id=harsha-priya)
+      const urlParams = new URLSearchParams(window.location.search);
+      const inviteId = urlParams.get('id');
+
+      if (!inviteId) {
+        document.getElementById('greeting').textContent = "Invalid Invitation Link";
+        return;
+      }
+
+      // Fetch the data from Supabase
+      const { data, error } = await supabase
+        .from('invitations')
+        .select('couple_names')
+        .eq('id', inviteId)
+        .single();
+
+      if (error || !data) {
+        document.getElementById('greeting').textContent = "Invitation not found.";
+        return;
+      }
+
+      // Update the HTML with the fetched data
+      document.getElementById('greeting').textContent = "Together with their families";
+      document.getElementById('greeting').classList.remove('loading');
+      document.getElementById('coupleNamesDisplay').textContent = data.couple_names;
+      document.getElementById('message').style.display = 'block';
+      document.getElementById('venueDetails').style.display = 'block';
+    }
+
+    // Run the function as soon as the page loads
+    window.onload = loadInvitation;
+  </script>
+</body>
+</html>
