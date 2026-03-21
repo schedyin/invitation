@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Create Invitation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
+    body { font-family: 'IBM Plex Sans', sans-serif; padding: 2rem; background: #f4f4f9; }
+    .card { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; font-family: inherit; }
+    button { background: #0070f3; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: 600; }
+    #resultBox { margin-top: 20px; display: none; background: #e8f0fe; padding: 10px; border-radius: 4px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Generate Invitation</h2>
+    <input type="text" id="coupleNames" placeholder="e.g., Harsha & Priya" required>
+    <button onclick="createInvitation()">Create Link</button>
+
+    <div id="resultBox">
+      <p>Share this link:</p>
+      <a id="shareLink" href="#" target="_blank"></a>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Supabase
+    const supabaseUrl = 'YOUR_SUPABASE_URL';
+    const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function createInvitation() {
+      const names = document.getElementById('coupleNames').value;
+      if (!names) return alert('Please enter names');
+
+      // Create a URL-friendly ID (e.g., "Harsha & Priya" -> "harsha-priya")
+      const id = names.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+      // Insert into Supabase
+      const { data, error } = await supabase
+        .from('invitations')
+        .insert([{ id: id, couple_names: names }]);
+
+      if (error) {
+        if(error.code === '23505') alert('This custom link already exists!');
+        else alert('Error saving to database: ' + error.message);
+        return;
+      }
+
+      // Generate the link based on the current domain
+      const baseUrl = window.location.origin;
+      const finalLink = `${baseUrl}/marriage.html?id=${id}`;
+      
+      const resultBox = document.getElementById('resultBox');
+      const shareLink = document.getElementById('shareLink');
+      shareLink.href = finalLink;
+      shareLink.textContent = finalLink;
+      resultBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
