@@ -11,65 +11,107 @@
       display: flex; justify-content: center; align-items: center; 
       height: 100vh; margin: 0; background-color: #fdfbf7; text-align: center;
     }
-    .invitation { border: 2px solid #d4af37; padding: 40px; border-radius: 10px; background: white; }
-    h1 { color: #d4af37; margin-bottom: 5px; }
-    h2 { font-size: 2.5rem; color: #333; margin: 10px 0; }
-    .loading { color: #888; }
+    .invitation { border: 2px solid #d4af37; padding: 40px; border-radius: 10px; background: white; max-width: 400px; width: 90%; position: relative; }
+    h1 { color: #d4af37; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+    h2 { font-size: 2.5rem; color: #333; margin: 20px 0; }
+    
+    /* Language Toggle Switch Styles */
+    .toggle-container { margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; font-weight: 600; color: #666;}
+    .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #d4af37; }
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    .telugu-text { display: none; } /* Hidden by default */
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
   <div class="invitation">
-    <h1 id="greeting" class="loading">Loading details...</h1>
-    <h2 id="coupleNamesDisplay"></h2>
-    <p id="message" style="display: none;">Joyfully invite you to their wedding celebration.</p>
-    <p id="venueDetails" style="display: none; color: #666; margin-top: 20px;">
+    
+    <div class="toggle-container" id="toggleDiv" style="display:none;">
+      <span>EN</span>
+      <label class="switch">
+        <input type="checkbox" id="langToggle" onchange="toggleLanguage()">
+        <span class="slider"></span>
+      </label>
+      <span>తెలుగు</span>
+    </div>
+
+    <div id="englishContent">
+      <h1 id="greetingEn">Loading...</h1>
+      <h2 id="namesEn"></h2>
+      <p id="msgEn">Joyfully invite you to their wedding celebration.</p>
+      <p id="venueEn" style="color: #666; margin-top: 20px;">
         <strong>Venue:</strong> Grand Function Hall, Challapalli
-    </p>
+      </p>
+    </div>
+
+    <div id="teluguContent" class="telugu-text">
+      <h1 id="greetingTe">వారి వివాహ మహోత్సవానికి</h1>
+      <h2 id="namesTe"></h2>
+      <p id="msgTe">మిమ్మల్ని ప్రేమతో ఆహ్వానిస్తున్నారు.</p>
+      <p id="venueTe" style="color: #666; margin-top: 20px;">
+        <strong>వేదిక:</strong> గ్రాండ్ ఫంక్షన్ హాల్, చల్లపల్లి
+      </p>
+    </div>
+
   </div>
 
-
-
   <script>
-    // Initialize Supabase
     const supabaseUrl = 'https://jihtqbzrqymdkypicajz.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
-
-    
-    // FIX 1: Renamed to 'supabaseClient' to avoid the syntax error
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     async function loadInvitation() {
-      // Get the ID from the URL (e.g., ?id=harsha-vardhani)
       const urlParams = new URLSearchParams(window.location.search);
       const inviteId = urlParams.get('id');
 
       if (!inviteId) {
-        document.getElementById('greeting').textContent = "Invalid Invitation Link";
+        document.getElementById('greetingEn').textContent = "Invalid Link";
         return;
       }
 
-      // FIX 2: Use 'supabaseClient' here to fetch the data
       const { data, error } = await supabaseClient
         .from('invitations')
-        .select('couple_names')
+        .select('*')
         .eq('id', inviteId)
         .single();
 
       if (error || !data) {
-        document.getElementById('greeting').textContent = "Invitation not found.";
+        document.getElementById('greetingEn').textContent = "Invitation not found.";
         return;
       }
 
-      // Update the HTML with the fetched data
-      document.getElementById('greeting').textContent = "Together with their families";
-      document.getElementById('greeting').classList.remove('loading');
-      document.getElementById('coupleNamesDisplay').textContent = data.couple_names;
-      document.getElementById('message').style.display = 'block';
-      document.getElementById('venueDetails').style.display = 'block';
+      // Populate English
+      document.getElementById('greetingEn').textContent = "Together with their families";
+      document.getElementById('namesEn').textContent = `${data.groom_en} & ${data.bride_en}`;
+      
+      // Populate Telugu
+      document.getElementById('namesTe').textContent = `${data.groom_te} & ${data.bride_te}`;
+
+      // Show the toggle
+      document.getElementById('toggleDiv').style.display = 'flex';
     }
 
-    // Run the function as soon as the page loads
+    function toggleLanguage() {
+      const isTelugu = document.getElementById('langToggle').checked;
+      const enContent = document.getElementById('englishContent');
+      const teContent = document.getElementById('teluguContent');
+
+      if (isTelugu) {
+        enContent.style.display = 'none';
+        teContent.style.display = 'block';
+      } else {
+        enContent.style.display = 'block';
+        teContent.style.display = 'none';
+      }
+    }
+
     window.onload = loadInvitation;
   </script>
+</body>
+</html>
