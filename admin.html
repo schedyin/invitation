@@ -3,115 +3,625 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Create Bilingual Invitation</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
-    body { font-family: 'IBM Plex Sans', sans-serif; padding: 2rem; background: #f4f4f9; }
-    .card { background: white; padding: 2rem; border-radius: 8px; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: auto; }
-    .input-group { margin-bottom: 15px; }
-    label { font-weight: 600; font-size: 0.9rem; color: #333; }
-    input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; font-family: inherit; border: 1px solid #ccc; border-radius: 4px; }
-    button { width: 100%; padding: 12px; background: #0070f3; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: 600; font-size: 1rem; margin-top: 10px; }
-    button:hover { background: #005bb5; }
-    #resultBox { margin-top: 20px; display: none; background: #e8f0fe; padding: 15px; border-radius: 4px; text-align: center; }
-  </style>
+  <title>Admin — Create Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Noto+Serif+Telugu:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --ink: #0C0A15;
+      --ink2: #161122;
+      --maroon: #8B0000;
+      --maroon2: #6B0000;
+      --gold: #C9A84C;
+      --gold2: #E2C068;
+      --gold3: #F5E0A0;
+      --ivory: #F7F0E0;
+      --ivory2: #EDE3C8;
+      --ivory3: #D4C5A0;
+      --saffron: #E8720C;
+      --gborder: rgba(201,168,76,0.35);
+      --gborder2: rgba(201,168,76,0.12);
+      --success: #2E7D32;
+      --error-col: #C62828;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--ink);
+      color: var(--ivory);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04; pointer-events: none; z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse, rgba(139,0,0,0.18) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ── HEADER ── */
+    .admin-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--gborder2);
+    }
+    .admin-header-top {
+      display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .admin-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem; letter-spacing: 0.5em;
+      color: var(--gold); text-transform: uppercase; opacity: 0.8;
+    }
+    .admin-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 600; color: var(--gold2);
+      line-height: 1.2; margin-bottom: 0.4rem;
+    }
+    .admin-sub {
+      font-size: 0.8rem; color: var(--ivory3); opacity: 0.7;
+    }
+
+    /* ── SECTIONS ── */
+    .form-section {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--gborder2);
+      border-radius: 8px;
+      padding: 2rem 1.8rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-section::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.42rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem; opacity: 0.9;
+    }
+    .section-badge-dot { width: 6px; height: 6px; background: var(--saffron); border-radius: 50%; }
+    .section-title {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      color: var(--gold2); margin-bottom: 1.5rem;
+    }
+
+    /* ── GRID ── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .field-row.solo { grid-template-columns: 1fr; }
+    @media (max-width: 500px) { .field-row { grid-template-columns: 1fr; } }
+
+    /* ── FIELD ── */
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label {
+      font-size: 0.72rem; font-weight: 500;
+      color: var(--ivory3); letter-spacing: 0.03em;
+    }
+    .field label .lang-badge {
+      display: inline-block;
+      font-size: 0.58rem; font-weight: 600;
+      padding: 1px 6px; border-radius: 3px;
+      margin-left: 4px; vertical-align: middle;
+    }
+    .lang-en { background: rgba(26,115,232,0.2); color: #64b5f6; }
+    .lang-te { background: rgba(232,114,12,0.18); color: var(--saffron); }
+    .lang-ph { background: rgba(37,211,102,0.18); color: #66bb6a; }
+
+    .field input {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--gborder2);
+      border-radius: 5px;
+      padding: 0.7rem 0.9rem;
+      color: var(--ivory);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.9rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+    }
+    .field input::placeholder { color: rgba(212,197,160,0.35); font-size: 0.82rem; }
+    .field input.translating { opacity: 0.6; }
+    .field input[type="tel"] { font-family: 'IBM Plex Sans', monospace; letter-spacing: 0.05em; }
+
+    .auto-badge {
+      font-size: 0.6rem; color: rgba(232,114,12,0.65);
+      margin-top: 2px; display: flex; align-items: center; gap: 4px;
+    }
+    .auto-badge::before { content: '✦'; font-size: 0.5rem; }
+
+    /* ── DIVIDER ── */
+    .field-divider {
+      height: 1px;
+      background: var(--gborder2);
+      margin: 1.5rem 0;
+    }
+
+    /* ── SUBMIT ── */
+    .submit-wrap { margin-top: 2rem; }
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--maroon), #A52020);
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      color: var(--gold2);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 24px rgba(139,0,0,0.4);
+      position: relative;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,224,160,0.5), transparent);
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(139,0,0,0.5); }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-submit .btn-inner { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+    .btn-spinner { width: 16px; height: 16px; border: 2px solid rgba(226,192,104,0.3); border-top-color: var(--gold2); border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-submit.loading .btn-spinner { display: block; }
+
+    /* ── RESULT BOX ── */
+    #resultBox {
+      display: none; margin-top: 1.5rem;
+      background: rgba(46,125,50,0.12);
+      border: 1px solid rgba(102,187,106,0.3);
+      border-radius: 6px; padding: 1.5rem;
+      position: relative;
+    }
+    #resultBox::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg,transparent,rgba(102,187,106,0.4),transparent); }
+    #resultBox.show { display: block; }
+    .result-label { font-size: 0.72rem; color: #81c784; letter-spacing: 0.05em; margin-bottom: 0.6rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .result-label::before { content: '✓'; font-size: 0.85rem; }
+    .result-link-wrap { display: flex; align-items: center; gap: 0.6rem; background: rgba(0,0,0,0.3); border-radius: 4px; padding: 0.6rem 0.8rem; border: 1px solid rgba(102,187,106,0.2); }
+    .result-link { font-size: 0.78rem; color: #81c784; word-break: break-all; flex: 1; text-decoration: none; }
+    .copy-btn {
+      flex-shrink: 0; padding: 0.35rem 0.7rem;
+      background: rgba(46,125,50,0.2); border: 1px solid rgba(102,187,106,0.3);
+      border-radius: 3px; color: #81c784; font-size: 0.65rem; font-weight: 600;
+      cursor: pointer; font-family: 'IBM Plex Sans', sans-serif;
+      transition: background 0.2s; letter-spacing: 0.05em;
+    }
+    .copy-btn:hover { background: rgba(46,125,50,0.35); }
+    .result-open-btn {
+      display: block; margin-top: 0.8rem; text-align: center;
+      padding: 0.6rem; background: rgba(46,125,50,0.2);
+      border: 1px solid rgba(102,187,106,0.3); border-radius: 4px;
+      color: #81c784; text-decoration: none; font-size: 0.78rem; font-weight: 600;
+      transition: background 0.2s;
+    }
+    .result-open-btn:hover { background: rgba(46,125,50,0.35); }
+
+    /* ── ERROR BOX ── */
+    .error-box {
+      display: none; margin-top: 1rem;
+      background: rgba(198,40,40,0.1); border: 1px solid rgba(198,40,40,0.3);
+      border-radius: 5px; padding: 0.8rem 1rem;
+      font-size: 0.78rem; color: #ef9a9a;
+    }
+    .error-box.show { display: block; }
+
+    /* ── EXISTING INVITATIONS ── */
+    .existing-section {
+      margin-top: 3rem;
+      border-top: 1px solid var(--gborder2);
+      padding-top: 2rem;
+    }
+    .existing-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.2rem; opacity: 0.8;
+    }
+    .inv-list { display: grid; gap: 0.8rem; }
+    .inv-item {
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 1rem;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--gborder2);
+      border-left: 3px solid var(--gold); border-radius: 4px;
+      padding: 0.9rem 1rem;
+    }
+    .inv-names { font-size: 0.9rem; font-weight: 500; color: var(--gold2); }
+    .inv-id { font-size: 0.65rem; color: var(--ivory3); opacity: 0.6; margin-top: 2px; }
+    .inv-actions { display: flex; gap: 0.5rem; }
+    .inv-btn {
+      padding: 0.35rem 0.7rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+      font-family: 'IBM Plex Sans', sans-serif; letter-spacing: 0.03em; border: none;
+      transition: background 0.15s;
+    }
+    .inv-btn-view { background: rgba(201,168,76,0.15); color: var(--gold2); border: 1px solid var(--gborder2); }
+    .inv-btn-view:hover { background: rgba(201,168,76,0.25); }
+    .inv-btn-del { background: rgba(198,40,40,0.12); color: #ef9a9a; border: 1px solid rgba(198,40,40,0.2); }
+    .inv-btn-del:hover { background: rgba(198,40,40,0.22); }
+
+    .inv-empty { font-size: 0.8rem; color: var(--ivory3); opacity: 0.5; text-align: center; padding: 1rem; }
+    .inv-loading { font-size: 0.75rem; color: var(--ivory3); opacity: 0.5; text-align: center; padding: 0.8rem; }
+  </style>
 </head>
 <body>
+<div class="page-wrap">
 
-  <div class="card">
-    <h2>Create Invitation</h2>
-    
-    <div class="input-group">
-      <label>Groom's Name (English)</label>
-      <input type="text" id="groomEn" placeholder="e.g., Harsha" onblur="autoTranslate('groomEn', 'groomTe')">
+  <!-- HEADER -->
+  <div class="admin-header">
+    <div class="admin-header-top">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 4 C13.5 7 12.5 9.5 13.5 12 C14.2 13.8 15.2 14.5 16 14.5 C16.8 14.5 17.8 13.8 18.5 12 C19.5 9.5 18.5 7 16 4Z" fill="#E2C068" opacity="0.95"/><path d="M7.5 19.5 Q7.5 24.5 16 25.8 Q24.5 24.5 24.5 19.5 L22 17.5 Q16 16 10 17.5Z" fill="#C9A84C" opacity="0.85"/></svg>
+      <div class="admin-eyebrow">Wedding Invitation System</div>
     </div>
-    <div class="input-group">
-      <label>Groom's Name (Telugu) - Auto-filled, edit if needed</label>
-      <input type="text" id="groomTe" placeholder="తెలుగులో...">
+    <h1 class="admin-title">Create Bilingual Invitation</h1>
+    <p class="admin-sub">Fill all details to generate a personalised Telugu wedding invitation link</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- ────────────────────────────────────────────
+       SECTION 1: GROOM DETAILS
+  ──────────────────────────────────────────── -->
+  <div class="form-section">
+    <div class="section-badge"><span class="section-badge-dot"></span>Section 01</div>
+    <div class="section-title">🤵 Groom's Details</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Groom's Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="groomEn" placeholder="e.g. Ganesh" oninput="scheduleTranslate('groomEn','groomTe')">
+      </div>
+      <div class="field">
+        <label>Groom's Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="groomTe" placeholder="గణేష్">
+        <span class="auto-badge">Auto-transliterated · edit if needed</span>
+      </div>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    <div class="field-divider"></div>
 
-    <div class="input-group">
-      <label>Bride's Name (English)</label>
-      <input type="text" id="brideEn" placeholder="e.g., Priya" onblur="autoTranslate('brideEn', 'brideTe')">
+    <div class="field-row">
+      <div class="field">
+        <label>Groom's Father Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="groomFatherEn" placeholder="e.g. Raj Srinadh Rao" oninput="scheduleTranslate('groomFatherEn','groomFatherTe')">
+      </div>
+      <div class="field">
+        <label>Groom's Father Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="groomFatherTe" placeholder="రాజ్ శ్రీనాధ రావు">
+        <span class="auto-badge">Auto-transliterated</span>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Bride's Name (Telugu) - Auto-filled, edit if needed</label>
-      <input type="text" id="brideTe" placeholder="తెలుగులో...">
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Groom's Father Phone <span class="lang-badge lang-ph">📞</span></label>
+        <input type="tel" id="groomFatherPhone" placeholder="e.g. 9900001111">
+      </div>
     </div>
 
-    <button onclick="createInvitation()">Generate Magic Link</button>
+    <div class="field-divider"></div>
 
-    <div id="resultBox">
-      <p style="margin: 0 0 10px 0;"><strong>Share this link:</strong></p>
-      <a id="shareLink" href="#" target="_blank" style="word-break: break-all;"></a>
+    <div class="field-row">
+      <div class="field">
+        <label>Groom's Mother Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="groomMotherEn" placeholder="e.g. Anusha" oninput="scheduleTranslate('groomMotherEn','groomMotherTe')">
+      </div>
+      <div class="field">
+        <label>Groom's Mother Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="groomMotherTe" placeholder="అనుష">
+        <span class="auto-badge">Auto-transliterated</span>
+      </div>
+    </div>
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Groom's Mother Phone <span class="lang-badge lang-ph">📞</span></label>
+        <input type="tel" id="groomMotherPhone" placeholder="e.g. 9900002222">
+      </div>
     </div>
   </div>
 
-  <script>
-    // Your specific Supabase credentials
-    const supabaseUrl = 'https://jihtqbzrqymdkypicajz.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  <!-- ────────────────────────────────────────────
+       SECTION 2: BRIDE DETAILS
+  ──────────────────────────────────────────── -->
+  <div class="form-section">
+    <div class="section-badge"><span class="section-badge-dot"></span>Section 02</div>
+    <div class="section-title">👰 Bride's Details</div>
 
-    // Google Input Tools API for auto-transliteration
-    async function autoTranslate(sourceId, targetId) {
-      const sourceText = document.getElementById(sourceId).value;
-      if (!sourceText) return;
+    <div class="field-row">
+      <div class="field">
+        <label>Bride's Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="brideEn" placeholder="e.g. Nonali" oninput="scheduleTranslate('brideEn','brideTe')">
+      </div>
+      <div class="field">
+        <label>Bride's Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="brideTe" placeholder="నోనాలి">
+        <span class="auto-badge">Auto-transliterated · edit if needed</span>
+      </div>
+    </div>
 
-      try {
-        const response = await fetch(`https://inputtools.google.com/request?text=${sourceText}&itc=te-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`);
-        const data = await response.json();
-        
-        if (data[0] === 'SUCCESS') {
-          // Extract the top Telugu word suggestion
-          const teluguWord = data[1][0][1][0]; 
-          document.getElementById(targetId).value = teluguWord;
-        }
-      } catch (error) {
-        console.error("Translation error:", error);
+    <div class="field-divider"></div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Bride's Father Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="brideFatherEn" placeholder="e.g. Ramesh Sudhakar Reddy" oninput="scheduleTranslate('brideFatherEn','brideFatherTe')">
+      </div>
+      <div class="field">
+        <label>Bride's Father Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="brideFatherTe" placeholder="రమేష్ సుధాకర్ రెడ్డి">
+        <span class="auto-badge">Auto-transliterated</span>
+      </div>
+    </div>
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Bride's Father Phone <span class="lang-badge lang-ph">📞</span></label>
+        <input type="tel" id="brideFatherPhone" placeholder="e.g. 9900003333">
+      </div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Bride's Mother Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="brideMotherEn" placeholder="e.g. Sudha" oninput="scheduleTranslate('brideMotherEn','brideMotherTe')">
+      </div>
+      <div class="field">
+        <label>Bride's Mother Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="brideMotherTe" placeholder="సుధ">
+        <span class="auto-badge">Auto-transliterated</span>
+      </div>
+    </div>
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Bride's Mother Phone <span class="lang-badge lang-ph">📞</span></label>
+        <input type="tel" id="brideMotherPhone" placeholder="e.g. 9900004444">
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────
+       SECTION 3: VENUE
+  ──────────────────────────────────────────── -->
+  <div class="form-section">
+    <div class="section-badge"><span class="section-badge-dot"></span>Section 03</div>
+    <div class="section-title">🏛️ Venue Details</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Venue Name <span class="lang-badge lang-en">EN</span></label>
+        <input type="text" id="venueEn" placeholder="e.g. Grand Function Hall" oninput="scheduleTranslate('venueEn','venueTe')">
+      </div>
+      <div class="field">
+        <label>Venue Name <span class="lang-badge lang-te">తె</span></label>
+        <input type="text" id="venueTe" placeholder="గ్రాండ్ ఫంక్షన్ హాల్">
+        <span class="auto-badge">Auto-transliterated</span>
+      </div>
+    </div>
+
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Venue Address <span class="lang-badge lang-te">తె</span> (supports line breaks with &lt;br&gt;)</label>
+        <input type="text" id="venueAddrTe" placeholder="హోతి (కె), మండలం జహీరాబాద్,&lt;br&gt;జిల్లా సంగారెడ్డి.">
+      </div>
+    </div>
+
+    <div class="field-row solo" style="margin-top:0.5rem;">
+      <div class="field">
+        <label>Google Maps Link</label>
+        <input type="url" id="mapUrl" placeholder="https://maps.google.com/...">
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-wrap">
+    <button class="btn-submit" id="submitBtn" onclick="createInvitation()">
+      <span class="btn-inner">
+        <span class="btn-spinner" id="btnSpinner"></span>
+        <span id="btnText">✦ Generate Magic Link</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultBox">
+    <div class="result-label">Invitation Created Successfully</div>
+    <div class="result-link-wrap">
+      <a id="shareLink" href="#" target="_blank" class="result-link"></a>
+      <button class="copy-btn" onclick="copyLink()">COPY</button>
+    </div>
+    <a id="openLink" href="#" target="_blank" class="result-open-btn">Open Invitation →</a>
+  </div>
+
+  <!-- EXISTING INVITATIONS -->
+  <div class="existing-section">
+    <div class="existing-title">✦ &nbsp; Existing Invitations</div>
+    <div class="inv-list" id="invList">
+      <div class="inv-loading">Loading…</div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  const SUPABASE_URL = 'https://jihtqbzrqymdkypicajz.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ── AUTO-TRANSLITERATE ──
+  const timers = {};
+  function scheduleTranslate(srcId, tgtId) {
+    clearTimeout(timers[srcId]);
+    timers[srcId] = setTimeout(() => autoTranslate(srcId, tgtId), 700);
+  }
+
+  async function autoTranslate(srcId, tgtId) {
+    const text = document.getElementById(srcId).value.trim();
+    if (!text) return;
+    const tgt = document.getElementById(tgtId);
+    tgt.classList.add('translating');
+    try {
+      const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=te-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`);
+      const data = await res.json();
+      if (data[0] === 'SUCCESS' && data[1]?.[0]?.[1]?.[0]) {
+        tgt.value = data[1][0][1][0];
       }
+    } catch(e) { /* silent */ }
+    tgt.classList.remove('translating');
+  }
+
+  // ── HELPERS ──
+  function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+  function showError(msg) {
+    const b = document.getElementById('errorBox');
+    b.textContent = '⚠ ' + msg; b.classList.add('show');
+    b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function hideError() { document.getElementById('errorBox').classList.remove('show'); }
+
+  function setLoading(on) {
+    const btn = document.getElementById('submitBtn');
+    const sp  = document.getElementById('btnSpinner');
+    const tx  = document.getElementById('btnText');
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+    sp.style.display = on ? 'block' : 'none';
+    tx.textContent = on ? 'Creating…' : '✦ Generate Magic Link';
+  }
+
+  // ── CREATE INVITATION ──
+  async function createInvitation() {
+    hideError();
+    document.getElementById('resultBox').classList.remove('show');
+
+    const groomEn       = val('groomEn');
+    const brideEn       = val('brideEn');
+    const groomTe       = val('groomTe');
+    const brideTe       = val('brideTe');
+
+    if (!groomEn || !brideEn || !groomTe || !brideTe) {
+      showError('Please fill in at least the Groom and Bride names in both languages.');
+      return;
     }
 
-    async function createInvitation() {
-      const groomEn = document.getElementById('groomEn').value.trim();
-      const brideEn = document.getElementById('brideEn').value.trim();
-      const groomTe = document.getElementById('groomTe').value.trim();
-      const brideTe = document.getElementById('brideTe').value.trim();
+    const id = `${groomEn.toLowerCase()}-${brideEn.toLowerCase()}`.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-      if (!groomEn || !brideEn || !groomTe || !brideTe) {
-        return alert('Please fill in all names in both languages.');
-      }
+    setLoading(true);
 
-      // Create a URL-friendly ID (e.g., "harsha-priya")
-      const id = `${groomEn.toLowerCase()}-${brideEn.toLowerCase()}`.replace(/[^a-z0-9]+/g, '-');
+    const payload = {
+      id,
+      groom_en: groomEn, bride_en: brideEn,
+      groom_te: groomTe, bride_te: brideTe,
+      groom_father_en: val('groomFatherEn'), groom_father_te: val('groomFatherTe'),
+      groom_father_phone: val('groomFatherPhone'),
+      groom_mother_en: val('groomMotherEn'), groom_mother_te: val('groomMotherTe'),
+      groom_mother_phone: val('groomMotherPhone'),
+      bride_father_en: val('brideFatherEn'), bride_father_te: val('brideFatherTe'),
+      bride_father_phone: val('brideFatherPhone'),
+      bride_mother_en: val('brideMotherEn'), bride_mother_te: val('brideMotherTe'),
+      bride_mother_phone: val('brideMotherPhone'),
+      venue_en: val('venueEn'), venue_te: val('venueTe'),
+      venue_addr_te: val('venueAddrTe'),
+      map_url: val('mapUrl') || 'https://maps.google.com',
+    };
 
-      const { data, error } = await supabaseClient
-        .from('invitations')
-        .insert([{ 
-          id: id, 
-          groom_en: groomEn, 
-          bride_en: brideEn, 
-          groom_te: groomTe, 
-          bride_te: brideTe 
-        }]);
+    const { error } = await sb.from('invitations').insert([payload]);
 
-      if (error) {
-        if(error.code === '23505') alert('This custom link already exists! Try adding a last initial.');
-        else alert('Database Error: ' + error.message);
-        return;
-      }
+    setLoading(false);
 
-      const baseUrl = window.location.origin;
-      const finalLink = `${baseUrl}/marriage.html?id=${id}`;
-      
-      const shareLink = document.getElementById('shareLink');
-      shareLink.href = finalLink;
-      shareLink.textContent = finalLink;
-      document.getElementById('resultBox').style.display = 'block';
+    if (error) {
+      if (error.code === '23505') showError('A link for "' + id + '" already exists. Try adding a last initial to make it unique.');
+      else showError('Database error: ' + error.message);
+      return;
     }
-  </script>
+
+    const link = `${window.location.origin}/marriage.html?id=${id}`;
+    document.getElementById('shareLink').textContent = link;
+    document.getElementById('shareLink').href = link;
+    document.getElementById('openLink').href = link;
+    document.getElementById('resultBox').classList.add('show');
+    document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    loadExisting();
+  }
+
+  // ── COPY LINK ──
+  async function copyLink() {
+    const link = document.getElementById('shareLink').textContent;
+    try {
+      await navigator.clipboard.writeText(link);
+      const btn = document.querySelector('.copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ COPIED';
+      setTimeout(() => btn.textContent = orig, 2000);
+    } catch(e) { /* fallback */ }
+  }
+
+  // ── LOAD EXISTING ──
+  async function loadExisting() {
+    const list = document.getElementById('invList');
+    list.innerHTML = '<div class="inv-loading">Loading…</div>';
+    const { data, error } = await sb.from('invitations').select('id,groom_en,bride_en,created_at').order('created_at', { ascending: false }).limit(20);
+    if (error || !data?.length) {
+      list.innerHTML = '<div class="inv-empty">No invitations yet.</div>';
+      return;
+    }
+    list.innerHTML = data.map(inv => `
+      <div class="inv-item">
+        <div>
+          <div class="inv-names">${inv.groom_en} &amp; ${inv.bride_en}</div>
+          <div class="inv-id">${inv.id}</div>
+        </div>
+        <div class="inv-actions">
+          <a href="marriage.html?id=${inv.id}" target="_blank" class="inv-btn inv-btn-view">View</a>
+          <button class="inv-btn inv-btn-del" onclick="deleteInv('${inv.id}', this)">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── DELETE ──
+  async function deleteInv(id, btn) {
+    if (!confirm(`Delete invitation for "${id}"? This cannot be undone.`)) return;
+    btn.disabled = true; btn.textContent = '…';
+    const { error } = await sb.from('invitations').delete().eq('id', id);
+    if (error) { alert('Delete failed: ' + error.message); btn.disabled = false; btn.textContent = 'Delete'; return; }
+    loadExisting();
+  }
+
+  window.onload = loadExisting;
+</script>
 </body>
 </html>
