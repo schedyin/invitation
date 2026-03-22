@@ -9,316 +9,209 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --ink: #09080F;
-            --ink2: #13101E;
-            --saffron: #E8720C;
-            --saffron2: #F5A623;
-            --saffron3: #FDD08E;
-            --ivory: #F7F0E0;
-            --ivory2: #EDE3C8;
-            --ivory3: #D4C5A0;
-            --maroon: #8B0000;
-            --maroon2: #A52020;
-            --maroon3: #6B0000;
-            --gold: #C9A84C;
-            --gold2: #E2C068;
-            --gold3: #F5E0A0;
-            --gborder: rgba(201,168,76,0.4);
-            --gborder2: rgba(201,168,76,0.15);
-            --border: rgba(232,114,12,0.22);
-            --border2: rgba(201,168,76,0.1);
-            --dim: rgba(201,168,76,0.18);
-            --number-font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --ink:#09080F;--ink2:#13101E;
+            --saffron:#E8720C;--saffron2:#F5A623;--saffron3:#FDD08E;
+            --ivory:#F7F0E0;--ivory2:#EDE3C8;--ivory3:#D4C5A0;
+            --maroon:#8B0000;--maroon2:#A52020;--maroon3:#6B0000;
+            --gold:#C9A84C;--gold2:#E2C068;--gold3:#F5E0A0;
+            --gborder:rgba(201,168,76,0.4);--gborder2:rgba(201,168,76,0.15);
+            --border:rgba(232,114,12,0.22);--border2:rgba(201,168,76,0.1);
+            --number-font:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
         }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        body{font-family:'Noto Serif Telugu',Georgia,serif;background:var(--ink);color:var(--ivory);overflow-x:hidden;}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.035;pointer-events:none;z-index:9999;}
 
-        body {
-            font-family: 'Noto Serif Telugu', Georgia, serif;
-            background: var(--ink);
-            color: var(--ivory);
-            overflow-x: hidden;
-        }
+        /* LOADING */
+        #loadingScreen{position:fixed;inset:0;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity 0.8s ease;}
+        #loadingScreen.fade-out{opacity:0;pointer-events:none;}
+        .loading-lotus{width:60px;height:60px;animation:spinLotus 3s linear infinite;margin-bottom:1.5rem;}
+        .loading-text{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.5em;color:rgba(232,114,12,0.6);text-transform:uppercase;animation:pulse 1.5s ease-in-out infinite;}
+        @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+        @keyframes spinLotus{to{transform:rotate(360deg)}}
 
-        /* Noise */
-        body::before {
-            content:'';
-            position:fixed; inset:0;
-            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            opacity:0.035; pointer-events:none; z-index:9999;
-        }
+        /* ERROR */
+        #errorScreen{display:none;position:fixed;inset:0;background:var(--ink);flex-direction:column;align-items:center;justify-content:center;z-index:999;text-align:center;padding:2rem;}
+        #errorScreen.show{display:flex;}
+        .error-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold2);margin-bottom:0.5rem;margin-top:1rem;}
+        .error-msg{font-size:0.85rem;color:var(--ivory3);line-height:2;}
 
-        /* ── LOADING SCREEN ── */
-        #loadingScreen {
-            position:fixed; inset:0; background:var(--ink);
-            display:flex; flex-direction:column; align-items:center; justify-content:center;
-            z-index:1000; transition:opacity 0.8s ease;
-        }
-        #loadingScreen.fade-out { opacity:0; pointer-events:none; }
-        .loading-lotus {
-            width:60px; height:60px;
-            animation:spinLotus 3s linear infinite;
-            margin-bottom:1.5rem;
-        }
-        .loading-text {
-            font-family:'Cinzel',serif;
-            font-size:0.5rem; letter-spacing:0.5em;
-            color:rgba(232,114,12,0.6); text-transform:uppercase;
-            animation:pulse 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-        @keyframes spinLotus { to{transform:rotate(360deg)} }
+        /* HERO */
+        .hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:3rem 1.4rem 5rem;background:radial-gradient(ellipse 80% 90% at 50% 60%,#1E0F28 0%,var(--ink) 70%);}
+        .hero::after{content:'';position:absolute;width:1px;height:60%;background:linear-gradient(to bottom,transparent,rgba(232,114,12,0.35),transparent);top:20%;left:50%;box-shadow:0 0 60px 30px rgba(232,114,12,0.07);animation:beamPulse 4s ease-in-out infinite;}
+        @keyframes beamPulse{0%,100%{opacity:.6}50%{opacity:1}}
+        .lotus-bg{position:absolute;width:min(520px,130vw);height:min(520px,130vw);top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.07;animation:spinLotus 90s linear infinite;}
+        .corner{position:absolute;width:120px;height:120px;opacity:0.7;z-index:5;}
+        .corner img{width:100%;height:100%;display:block;object-fit:contain;}
+        .corner--tr{top:0;right:0;}.corner--tl{top:0;left:0;transform:scaleX(-1);}
+        .corner--bl{bottom:0;left:0;transform:scale(-1);}.corner--br{bottom:0;right:0;transform:scaleY(-1);}
+        .hero-inner{position:relative;z-index:2;text-align:center;animation:heroReveal 1.8s cubic-bezier(.22,1,.36,1) both;}
+        @keyframes heroReveal{from{opacity:0;transform:translateY(40px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .hero-deva{font-family:'Noto Serif Telugu',serif;font-size:2.2rem;font-weight:700;color:var(--saffron);line-height:1.2;margin-bottom:0.25rem;animation:glowP 3s ease-in-out infinite;}
+        @keyframes glowP{0%,100%{filter:drop-shadow(0 0 18px rgba(232,114,12,0.55))}50%{filter:drop-shadow(0 0 38px rgba(232,114,12,0.95))}}
+        .hero-sub{font-family:'Noto Serif Telugu',serif;font-size:1.1rem;letter-spacing:0.2em;color:var(--saffron3);text-transform:uppercase;margin-bottom:0.8rem;opacity:0.9;}
+        .rule{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin:1.5rem 0 1.4rem;}
+        .rule-line{flex:1;max-width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--saffron));}
+        .rule-line.r{background:linear-gradient(90deg,var(--saffron),transparent);}
+        .rule-motif{color:var(--saffron);font-size:1.1rem;}
+        .hero-names{font-family:'Playfair Display',Georgia,serif;font-weight:400;line-height:0.95;color:var(--ivory);margin-bottom:1rem;}
+        .name-main{font-size:clamp(3.2rem,13vw,5rem);display:block;letter-spacing:-0.02em;}
+        .name-amp{font-size:clamp(1rem,4vw,1.4rem);font-style:italic;color:var(--saffron2);display:block;letter-spacing:0.3em;margin:0.4rem 0;font-weight:400;}
+        .name-bride{font-size:clamp(3.2rem,13vw,5rem);display:block;letter-spacing:-0.02em;font-style:italic;color:var(--ivory2);}
+        .scroll-cue{position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2;}
+        .scroll-cue-label{font-family:'Cinzel',serif;font-size:0.44rem;letter-spacing:0.4em;color:rgba(232,114,12,0.4);text-transform:uppercase;}
+        .scroll-cue-track{width:20px;height:34px;border:1px solid rgba(232,114,12,0.3);border-radius:10px;position:relative;overflow:hidden;}
+        .scroll-cue-thumb{position:absolute;width:4px;height:8px;background:var(--saffron);border-radius:2px;left:50%;transform:translateX(-50%);top:5px;animation:thumbSc 2s cubic-bezier(.4,0,.6,1) infinite;}
+        @keyframes thumbSc{0%{top:5px;opacity:1}70%{top:18px;opacity:.3}100%{top:5px;opacity:0}}
 
-        /* ── ERROR SCREEN ── */
-        #errorScreen {
-            display:none; position:fixed; inset:0; background:var(--ink);
-            flex-direction:column; align-items:center; justify-content:center;
-            z-index:999; text-align:center; padding:2rem;
-        }
-        #errorScreen.show { display:flex; }
-        .error-icon { font-size:3rem; margin-bottom:1rem; opacity:0.5; }
-        .error-title { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--gold2); margin-bottom:0.5rem; }
-        .error-msg { font-size:0.85rem; color:var(--ivory3); line-height:2; }
+        /* COMMON */
+        section{padding:4rem 1.4rem;}
+        .s-eyebrow{font-family:'Cinzel',serif;font-size:0.49rem;letter-spacing:0.45em;color:var(--gold2);text-transform:uppercase;text-align:center;margin-bottom:0.45rem;opacity:0.8;}
+        .s-title{font-family:'Noto Serif Telugu',serif;font-size:clamp(1.5rem,7vw,2.2rem);font-weight:700;line-height:1.2;text-align:center;color:var(--gold2);margin-bottom:0.3rem;}
+        .hr-motif{display:flex;align-items:center;justify-content:center;gap:0.7rem;margin:0.9rem 0 2.6rem;}
+        .hr-motif::before,.hr-motif::after{content:'';flex:1;max-width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5));}
+        .hr-motif::after{background:linear-gradient(90deg,rgba(201,168,76,0.5),transparent);}
+        .hr-motif-sym{display:flex;align-items:center;justify-content:center;width:24px;height:24px;}
+        .hr-motif-sym svg{width:100%;height:100%;fill:var(--gold2);}
 
-        /* ── HERO ── */
-        .hero {
-            min-height:100svh;
-            display:flex; flex-direction:column;
-            align-items:center; justify-content:center;
-            position:relative; overflow:hidden;
-            padding:3rem 1.4rem 5rem;
-            background:radial-gradient(ellipse 80% 90% at 50% 60%, #1E0F28 0%, var(--ink) 70%);
-        }
-        .hero::after {
-            content:'';
-            position:absolute; width:1px; height:60%;
-            background:linear-gradient(to bottom,transparent,rgba(232,114,12,0.35),transparent);
-            top:20%; left:50%;
-            box-shadow:0 0 60px 30px rgba(232,114,12,0.07);
-            animation:beamPulse 4s ease-in-out infinite;
-        }
-        @keyframes beamPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+        /* BLESSINGS */
+        .blessings-strip{background:var(--maroon);padding:1.2rem 1.4rem;text-align:center;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);}
+        .blessings-strip p{font-size:0.82rem;color:var(--gold3);letter-spacing:0.15em;line-height:2;}
 
-        .lotus-bg {
-            position:absolute;
-            width:min(520px,130vw); height:min(520px,130vw);
-            top:50%; left:50%;
-            transform:translate(-50%,-50%);
-            opacity:0.07;
-            animation:spinLotus 90s linear infinite;
-        }
+        /* MUHURTHAM */
+        .s-muh{background:var(--maroon3);border-bottom:1px solid var(--gborder2);position:relative;padding-top:5rem;}
+        .hanging-light{position:absolute;top:-2px;width:clamp(80px,20vw,140px);z-index:5;pointer-events:none;filter:drop-shadow(0 0 10px rgba(253,208,142,0.3));}
+        .hanging-light--left{left:0;transform:scaleX(-1);}.hanging-light--right{right:0;}
+        .muh-card{max-width:420px;margin:0 auto;background:rgba(0,0,0,0.2);border:1px solid var(--gborder);border-radius:6px;padding:2.5rem 1.5rem;position:relative;text-align:center;z-index:2;}
+        .muh-card::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+        .muh-panchang{font-size:0.85rem;color:var(--gold3);line-height:2.4;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--gborder2);}
+        .muh-time-row{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem;}
+        .muh-time-box{background:var(--maroon);border:1px solid var(--gold);border-radius:4px;padding:0.8rem 0.4rem;flex:1;max-width:160px;}
+        .muh-time-te{font-size:0.7rem;color:var(--gold3);display:block;margin-bottom:0.25rem;}
+        .muh-time-val{font-family:var(--number-font);font-size:18px;font-weight:500;color:var(--gold2);}
 
-        .corner { position:absolute; width:120px; height:120px; opacity:0.7; z-index:5; }
-        .corner img { width:100%; height:100%; display:block; object-fit:contain; }
-        .corner--tr { top:0; right:0; }
-        .corner--tl { top:0; left:0; transform:scaleX(-1); }
-        .corner--bl { bottom:0; left:0; transform:scale(-1); }
-        .corner--br { bottom:0; right:0; transform:scaleY(-1); }
+        /* COUNTDOWN */
+        .s-countdown{background:var(--ink2);border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);position:relative;overflow:hidden;padding-top:3rem;padding-bottom:4rem;}
+        .s-countdown::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(201,168,76,0.06),transparent);}
+        .cd-label{font-size:0.85rem;color:var(--gold3);text-align:center;margin-bottom:2.5rem;line-height:2;position:relative;z-index:2;}
+        .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;max-width:400px;margin:0 auto;position:relative;z-index:2;}
+        .cd-cell{text-align:center;background:rgba(255,255,255,0.03);border:1px solid var(--gborder);border-radius:4px;padding:1.2rem 0.3rem 1rem;position:relative;}
+        .cd-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+        .cd-n{font-family:var(--number-font);font-size:1.8rem;font-weight:600;color:var(--gold2);line-height:1;display:block;}
+        .cd-l{font-size:0.55rem;color:var(--gold3);display:block;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.1em;}
 
-        .hero-inner {
-            position:relative; z-index:2; text-align:center;
-            animation:heroReveal 1.8s cubic-bezier(.22,1,.36,1) both;
-        }
-        @keyframes heroReveal {
-            from{opacity:0;transform:translateY(40px) scale(0.97)}
-            to{opacity:1;transform:translateY(0) scale(1)}
-        }
+        /* COUPLE */
+        .s-couple{background:var(--ink);border-bottom:1px solid var(--gborder2);}
+        .couple-wrap{max-width:440px;margin:0 auto;display:grid;gap:1.5rem;}
+        .couple-card{background:rgba(139,0,0,0.1);border:1px solid var(--gborder);border-radius:6px;overflow:hidden;position:relative;}
+        .couple-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+        .couple-top{background:linear-gradient(135deg,rgba(139,0,0,0.4),rgba(139,0,0,0.15));padding:1.2rem 1.4rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--gborder2);}
+        .couple-icon{flex-shrink:0;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center;}
+        .couple-icon svg{width:100%;height:100%;}
+        .couple-role{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.28em;color:var(--gold);text-transform:uppercase;margin-bottom:0.2rem;}
+        .couple-name-te{font-family:'Noto Serif Telugu',serif;font-size:1.5rem;font-weight:700;color:var(--gold2);line-height:1.2;}
+        .couple-name-prefix{font-family:'Noto Serif Telugu',serif;font-size:0.7rem;color:var(--ivory3);}
+        .couple-body{padding:1.2rem 1.4rem;}
+        .couple-parents{font-family:'Noto Serif Telugu',serif;font-size:0.82rem;color:var(--ivory2);line-height:2.1;}
+        .couple-parents strong{color:var(--gold3);font-weight:600;}
+        .parent-row{display:flex;gap:0.5rem;align-items:flex-start;margin-bottom:0.3rem;}
+        .parent-icon{margin-top:0.25rem;opacity:0.75;flex-shrink:0;width:1rem;height:1rem;display:flex;align-items:center;justify-content:center;}
+        .parent-icon svg{width:100%;height:100%;}
 
-        .hero-deva {
-            font-family:'Noto Serif Telugu',serif;
-            font-size:2.2rem; font-weight:700;
-            color:var(--saffron); line-height:1.2;
-            margin-bottom:0.25rem;
-            animation:glowP 3s ease-in-out infinite;
-        }
-        @keyframes glowP {
-            0%,100%{filter:drop-shadow(0 0 18px rgba(232,114,12,0.55))}
-            50%{filter:drop-shadow(0 0 38px rgba(232,114,12,0.95))}
-        }
+        /* EVENTS */
+        .s-ev{padding:5rem 1.4rem 5.5rem;background:var(--ink2);position:relative;overflow:hidden;}
+        .s-ev::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(139,0,0,0.18) 0%,transparent 70%);pointer-events:none;}
+        .s-ev::after{content:'';position:absolute;inset:16px;border:1px solid var(--border2);border-radius:2px;pointer-events:none;}
+        .sec-head{text-align:center;position:relative;z-index:1;margin-bottom:3rem;}
+        .ornament{display:flex;align-items:center;justify-content:center;gap:0.8rem;}
+        .ornament-line{flex:1;max-width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+        .ornament-line.r{background:linear-gradient(90deg,var(--gold),transparent);}
+        .ev-wrap{max-width:460px;margin:0 auto;display:grid;gap:1.6rem;position:relative;z-index:1;}
+        .ev-card{border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border);background:rgba(7,6,13,0.7);backdrop-filter:blur(4px);}
+        .ev-card.main{border-color:var(--gold2);box-shadow:0 0 0 1px rgba(226,192,104,0.06),0 8px 40px rgba(0,0,0,0.5),0 0 60px rgba(139,0,0,0.12);}
+        .ev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold2) 40%,var(--gold3) 50%,var(--gold2) 60%,transparent 100%);}
+        .ev-banner{background:linear-gradient(135deg,rgba(107,0,0,0.65) 0%,rgba(107,0,0,0.25) 60%,transparent 100%);padding:1.3rem 1.5rem 1.2rem;display:flex;align-items:center;gap:1.1rem;border-bottom:1px solid var(--border2);position:relative;}
+        .ev-banner-num{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--gold);opacity:0.08;line-height:1;pointer-events:none;user-select:none;}
+        .ev-icon{width:2.8rem;height:2.8rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,0.08);border:1px solid var(--border);border-radius:3px;padding:6px;}
+        .ev-icon svg{width:100%;height:100%;}
+        .ev-name-te{font-family:'Noto Serif Telugu',serif;font-size:1.1rem;font-weight:700;color:var(--gold2);line-height:1.3;}
+        .ev-body{padding:1.5rem 1.5rem 1.4rem;}
+        .ev-info-grid{display:grid;gap:0;}
+        .ev-info-row{display:grid;grid-template-columns:2.2rem 1fr;gap:0.5rem;align-items:start;padding:0.85rem 0;border-bottom:1px solid var(--border2);}
+        .ev-info-row:last-child{border-bottom:none;}
+        .ev-info-icon{width:1.7rem;height:1.7rem;margin-top:2px;display:flex;align-items:center;justify-content:center;opacity:0.7;}
+        .ev-info-icon svg{width:100%;height:100%;}
+        .ev-info-label{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:0.28rem;opacity:0.85;}
+        .ev-info-te{font-family:'Noto Serif Telugu',serif;font-size:0.88rem;color:var(--ivory2);line-height:1.6;}
 
-        .hero-sub {
-            font-family:'Noto Serif Telugu',serif;
-            font-size:1.1rem; letter-spacing:0.2em;
-            color:var(--saffron3); text-transform:uppercase;
-            margin-bottom:0.8rem; opacity:0.9;
-        }
+        /* VENUE */
+        .s-venue{padding:4rem 1.4rem;background:var(--maroon3);border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);position:relative;overflow:hidden;}
+        .s-venue::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.1) 0%,transparent 65%);pointer-events:none;}
+        .venue-card{max-width:440px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+        .venue-icon-wrap{display:flex;justify-content:center;margin-bottom:1rem;filter:drop-shadow(0 0 14px rgba(201,168,76,0.45));}
+        .venue-icon-wrap svg{width:5rem;height:5rem;}
+        .venue-name-te{font-family:'Noto Serif Telugu',serif;font-size:1.15rem;font-weight:700;color:var(--gold2);margin-bottom:0.5rem;line-height:1.5;}
+        .venue-addr-te{font-family:'Noto Serif Telugu',serif;font-size:0.88rem;color:var(--gold3);line-height:2.1;margin-bottom:1.8rem;}
+        .venue-map-btn{display:inline-flex;align-items:center;gap:0;border-radius:6px;text-decoration:none;font-family:'Noto Serif Telugu',serif;font-size:1rem;font-weight:700;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 24px rgba(0,0,0,0.45),0 0 0 1.5px rgba(245,224,160,0.35);overflow:hidden;}
+        .venue-map-btn:active{transform:scale(0.97);}
+        .venue-map-btn .gmap-pill{display:flex;align-items:center;justify-content:center;background:#1a1a2e;padding:0.78rem 0 0.78rem 1.5rem;flex-shrink:0;}
+        .venue-map-btn .gmap-pill svg{width:1.3rem;height:1.3rem;display:block;}
+        .venue-map-btn .btn-label{background:#1a1a2e;color:var(--gold3);padding:0.78rem 1.5rem 0.78rem 0.7rem;font-weight:700;letter-spacing:0.02em;}
 
-        .rule { display:flex; align-items:center; justify-content:center; gap:0.8rem; margin:1.5rem 0 1.4rem; }
-        .rule-line { flex:1; max-width:70px; height:1px; background:linear-gradient(90deg,transparent,var(--saffron)); }
-        .rule-line.r { background:linear-gradient(90deg,var(--saffron),transparent); }
-        .rule-motif { color:var(--saffron); font-size:1.1rem; }
+        /* INVITE */
+        .s-invite{background:var(--ink);border-bottom:1px solid var(--border2);}
+        .invite-card{max-width:440px;margin:0 auto;background:rgba(139,0,0,0.08);border:1px solid var(--border);border-radius:6px;padding:2.5rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+        .invite-card::before{content:'';position:absolute;top:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+        .invite-te{font-family:'Noto Serif Telugu',serif;font-size:0.88rem;color:var(--ivory2);line-height:2.4;margin-bottom:1.5rem;}
+        .invite-te em{color:var(--gold2);font-style:normal;font-weight:600;}
+        .deco-border{width:100%;max-width:300px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.5rem 0;}
+        .deco-border::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4));}
+        .deco-border::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.4),transparent);}
+        .invite-host{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border2);}
+        .invite-host-label{font-family:'Noto Serif Telugu',serif;font-size:0.72rem;color:var(--gold3);margin-bottom:0.6rem;letter-spacing:0.05em;}
+        .invite-host-names{font-family:'Noto Serif Telugu',serif;font-size:1.1rem;font-weight:700;color:var(--gold2);line-height:2;}
+        .mangalam{font-family:'Noto Serif Telugu',serif;font-size:1rem;color:var(--saffron);margin-top:1.2rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.55rem;}
 
-        .hero-names {
-            font-family:'Playfair Display',Georgia,serif;
-            font-weight:400; line-height:0.95;
-            color:var(--ivory); margin-bottom:1rem;
-        }
-        .name-main { font-size:clamp(3.2rem,13vw,5rem); display:block; letter-spacing:-0.02em; }
-        .name-amp { font-size:clamp(1rem,4vw,1.4rem); font-style:italic; color:var(--saffron2); display:block; letter-spacing:0.3em; margin:0.4rem 0; font-weight:400; }
-        .name-bride { font-size:clamp(3.2rem,13vw,5rem); display:block; letter-spacing:-0.02em; font-style:italic; color:var(--ivory2); }
+        /* CONTACTS */
+        .s-contact{background:#161221;padding-bottom:6rem;}
+        .fam-grid{display:grid;gap:1rem;max-width:440px;margin:0 auto;}
+        .fam-section-label{font-family:'Noto Serif Telugu',serif;font-size:0.8rem;color:var(--gold2);text-align:center;margin:1.5rem 0 0.5rem;padding:0.5rem;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);letter-spacing:0.05em;}
+        .fam-card{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:1rem;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:4px;padding:1rem;border-left:3px solid var(--gold);}
+        .fam-ava{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(139,0,0,0.22);border:1px solid var(--border);}
+        .fam-ava svg{width:28px;height:28px;}
+        .fam-role{font-family:'Noto Serif Telugu',serif;font-size:0.6rem;color:var(--gold);margin-bottom:0.15rem;}
+        .fam-name{font-family:'Noto Serif Telugu',serif;font-size:0.95rem;font-weight:600;color:var(--ivory);}
+        .fam-links{display:flex;gap:0.5rem;}
+        .fam-link{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(139,0,0,0.15);border:1px solid var(--border);text-decoration:none;transition:background 0.2s;}
+        .fam-link:active{background:rgba(139,0,0,0.38);}
+        .fam-link svg{width:18px;height:18px;}
 
-        .scroll-cue { position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; z-index:2; }
-        .scroll-cue-label { font-family:'Cinzel',serif; font-size:0.44rem; letter-spacing:0.4em; color:rgba(232,114,12,0.4); text-transform:uppercase; }
-        .scroll-cue-track { width:20px; height:34px; border:1px solid rgba(232,114,12,0.3); border-radius:10px; position:relative; overflow:hidden; }
-        .scroll-cue-thumb { position:absolute; width:4px; height:8px; background:var(--saffron); border-radius:2px; left:50%; transform:translateX(-50%); top:5px; animation:thumbSc 2s cubic-bezier(.4,0,.6,1) infinite; }
-        @keyframes thumbSc { 0%{top:5px;opacity:1} 70%{top:18px;opacity:.3} 100%{top:5px;opacity:0} }
+        /* FOOTER */
+        footer{background:var(--maroon);border-top:2px solid var(--gold);padding:4rem 1.5rem 3rem;text-align:center;position:relative;overflow:hidden;}
+        footer::before{content:'';position:absolute;top:2px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
+        .ft-ganesha{display:flex;justify-content:center;margin-bottom:1rem;filter:drop-shadow(0 0 16px rgba(201,168,76,0.5));}
+        .ft-ganesha svg{width:3.8rem;height:3.8rem;}
+        .ft-blessing{font-family:'Noto Serif Telugu',serif;font-size:0.75rem;color:var(--gold3);letter-spacing:0.2em;margin-bottom:1.2rem;opacity:0.9;}
+        .ft-names{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:var(--gold2);margin-bottom:0.4rem;}
+        .ft-names span{font-style:italic;color:#fff;margin:0 0.3rem;}
+        .ft-date{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.35em;color:var(--gold3);text-transform:uppercase;margin-bottom:1.8rem;opacity:0.6;}
+        .ft-hr{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);margin-bottom:1.5rem;}
+        .ft-mangalam{font-family:'Noto Serif Telugu',serif;font-size:1.1rem;color:var(--gold2);margin-bottom:0.6rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.55rem;}
+        .ft-sub{font-family:'Noto Serif Telugu',serif;font-size:0.72rem;color:rgba(201,168,76,0.45);}
 
-        /* ── SECTIONS COMMON ── */
-        section { padding:4rem 1.4rem; }
-        .s-eyebrow { font-family:'Cinzel',serif; font-size:0.49rem; letter-spacing:0.45em; color:var(--gold2); text-transform:uppercase; text-align:center; margin-bottom:0.45rem; opacity:0.8; }
-        .s-title { font-family:'Noto Serif Telugu',serif; font-size:clamp(1.5rem,7vw,2.2rem); font-weight:700; line-height:1.2; text-align:center; color:var(--gold2); margin-bottom:0.3rem; }
-        .hr-motif { display:flex; align-items:center; justify-content:center; gap:0.7rem; margin:0.9rem 0 2.6rem; }
-        .hr-motif::before,.hr-motif::after { content:''; flex:1; max-width:60px; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5)); }
-        .hr-motif::after { background:linear-gradient(90deg,rgba(201,168,76,0.5),transparent); }
-        .hr-motif-sym { display:flex; align-items:center; justify-content:center; width:24px; height:24px; }
-        .hr-motif-sym svg { width:100%; height:100%; fill:var(--gold2); }
+        /* SCROLL REVEAL */
+        .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
+        .rv.vis{opacity:1;transform:none;}
+        .rv-d1{transition-delay:.1s;}.rv-d2{transition-delay:.2s;}.rv-d3{transition-delay:.3s;}
 
-        /* ── BLESSINGS ── */
-        .blessings-strip { background:var(--maroon); padding:1.2rem 1.4rem; text-align:center; border-top:2px solid var(--gold); border-bottom:2px solid var(--gold); }
-        .blessings-strip p { font-size:0.82rem; color:var(--gold3); letter-spacing:0.15em; line-height:2; }
-
-        /* ── MUHURTHAM ── */
-        .s-muh { background:var(--maroon3); border-bottom:1px solid var(--gborder2); position:relative; padding-top:5rem; }
-        .hanging-light { position:absolute; top:-2px; width:clamp(80px,20vw,140px); z-index:5; pointer-events:none; filter:drop-shadow(0 0 10px rgba(253,208,142,0.3)); }
-        .hanging-light--left { left:0; transform:scaleX(-1); }
-        .hanging-light--right { right:0; }
-        .muh-card { max-width:420px; margin:0 auto; background:rgba(0,0,0,0.2); border:1px solid var(--gborder); border-radius:6px; padding:2.5rem 1.5rem; position:relative; text-align:center; z-index:2; }
-        .muh-card::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-        .muh-panchang { font-size:0.85rem; color:var(--gold3); line-height:2.4; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gborder2); }
-        .muh-time-row { display:flex; align-items:center; justify-content:center; gap:1rem; margin-top:1rem; }
-        .muh-time-box { background:var(--maroon); border:1px solid var(--gold); border-radius:4px; padding:0.8rem 0.4rem; flex:1; max-width:160px; }
-        .muh-time-te { font-size:0.7rem; color:var(--gold3); display:block; margin-bottom:0.25rem; }
-        .muh-time-val { font-family:var(--number-font); font-size:18px; font-weight:500; color:var(--gold2); }
-
-        /* ── COUNTDOWN ── */
-        .s-countdown { background:var(--ink2); border-top:2px solid var(--gold); border-bottom:2px solid var(--gold); position:relative; overflow:hidden; padding-top:3rem; padding-bottom:4rem; }
-        .s-countdown::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(201,168,76,0.06),transparent); }
-        .cd-label { font-size:0.85rem; color:var(--gold3); text-align:center; margin-bottom:2.5rem; line-height:2; position:relative; z-index:2; }
-        .cd-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; max-width:400px; margin:0 auto; position:relative; z-index:2; }
-        .cd-cell { text-align:center; background:rgba(255,255,255,0.03); border:1px solid var(--gborder); border-radius:4px; padding:1.2rem 0.3rem 1rem; position:relative; }
-        .cd-cell::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-        .cd-n { font-family:var(--number-font); font-size:1.8rem; font-weight:600; color:var(--gold2); line-height:1; display:block; }
-        .cd-l { font-size:0.55rem; color:var(--gold3); display:block; margin-top:0.4rem; text-transform:uppercase; letter-spacing:0.1em; }
-
-        /* ── COUPLE ── */
-        .s-couple { background:var(--ink); border-bottom:1px solid var(--gborder2); }
-        .couple-wrap { max-width:440px; margin:0 auto; display:grid; gap:1.5rem; }
-        .couple-card { background:rgba(139,0,0,0.1); border:1px solid var(--gborder); border-radius:6px; overflow:hidden; position:relative; }
-        .couple-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-        .couple-top { background:linear-gradient(135deg,rgba(139,0,0,0.4),rgba(139,0,0,0.15)); padding:1.2rem 1.4rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid var(--gborder2); }
-        .couple-icon { flex-shrink:0; width:2.4rem; height:2.4rem; display:flex; align-items:center; justify-content:center; }
-        .couple-icon svg { width:100%; height:100%; }
-        .couple-role { font-family:'Cinzel',serif; font-size:0.42rem; letter-spacing:0.28em; color:var(--gold); text-transform:uppercase; margin-bottom:0.2rem; }
-        .couple-name-te { font-family:'Noto Serif Telugu',serif; font-size:1.5rem; font-weight:700; color:var(--gold2); line-height:1.2; }
-        .couple-name-prefix { font-family:'Noto Serif Telugu',serif; font-size:0.7rem; color:var(--ivory3); }
-        .couple-body { padding:1.2rem 1.4rem; }
-        .couple-parents { font-family:'Noto Serif Telugu',serif; font-size:0.82rem; color:var(--ivory2); line-height:2.1; }
-        .couple-parents strong { color:var(--gold3); font-weight:600; }
-        .couple-parents .parent-row { display:flex; gap:0.5rem; align-items:flex-start; margin-bottom:0.3rem; }
-        .parent-icon { margin-top:0.25rem; opacity:0.75; flex-shrink:0; width:1rem; height:1rem; display:flex; align-items:center; justify-content:center; }
-        .parent-icon svg { width:100%; height:100%; }
-
-        /* ── EVENTS ── */
-        .s-ev { padding:5rem 1.4rem 5.5rem; background:var(--ink2); position:relative; overflow:hidden; }
-        .s-ev::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:500px; height:500px; background:radial-gradient(ellipse,rgba(139,0,0,0.18) 0%,transparent 70%); pointer-events:none; }
-        .s-ev::after { content:''; position:absolute; inset:16px; border:1px solid var(--border2); border-radius:2px; pointer-events:none; }
-        .sec-head { text-align:center; position:relative; z-index:1; margin-bottom:3rem; }
-        .ornament { display:flex; align-items:center; justify-content:center; gap:0.8rem; }
-        .ornament-line { flex:1; max-width:70px; height:1px; background:linear-gradient(90deg,transparent,var(--gold)); }
-        .ornament-line.r { background:linear-gradient(90deg,var(--gold),transparent); }
-        .ev-wrap { max-width:460px; margin:0 auto; display:grid; gap:1.6rem; position:relative; z-index:1; }
-        .ev-card { border-radius:4px; overflow:hidden; position:relative; border:1px solid var(--border); background:rgba(7,6,13,0.7); backdrop-filter:blur(4px); }
-        .ev-card.main { border-color:var(--gold2); box-shadow:0 0 0 1px rgba(226,192,104,0.06),0 8px 40px rgba(0,0,0,0.5),0 0 60px rgba(139,0,0,0.12); }
-        .ev-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent 0%,var(--gold2) 40%,var(--gold3) 50%,var(--gold2) 60%,transparent 100%); }
-        .ev-banner { background:linear-gradient(135deg,rgba(107,0,0,0.65) 0%,rgba(107,0,0,0.25) 60%,transparent 100%); padding:1.3rem 1.5rem 1.2rem; display:flex; align-items:center; gap:1.1rem; border-bottom:1px solid var(--border2); position:relative; }
-        .ev-banner-num { position:absolute; right:1.2rem; top:50%; transform:translateY(-50%); font-family:'Cormorant Garamond',serif; font-size:3.5rem; font-weight:300; color:var(--gold); opacity:0.08; line-height:1; pointer-events:none; user-select:none; }
-        .ev-icon { width:2.8rem; height:2.8rem; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(201,168,76,0.08); border:1px solid var(--border); border-radius:3px; padding:6px; }
-        .ev-icon svg { width:100%; height:100%; }
-        .ev-name-te { font-family:'Noto Serif Telugu',serif; font-size:1.1rem; font-weight:700; color:var(--gold2); line-height:1.3; }
-        .ev-body { padding:1.5rem 1.5rem 1.4rem; }
-        .ev-info-grid { display:grid; gap:0; }
-        .ev-info-row { display:grid; grid-template-columns:2.2rem 1fr; gap:0.5rem; align-items:start; padding:0.85rem 0; border-bottom:1px solid var(--border2); }
-        .ev-info-row:last-child { border-bottom:none; }
-        .ev-info-icon { width:1.7rem; height:1.7rem; margin-top:2px; display:flex; align-items:center; justify-content:center; opacity:0.7; }
-        .ev-info-icon svg { width:100%; height:100%; }
-        .ev-info-label { font-family:'Cinzel',serif; font-size:0.42rem; letter-spacing:0.3em; color:var(--gold); text-transform:uppercase; margin-bottom:0.28rem; opacity:0.85; }
-        .ev-info-te { font-family:'Noto Serif Telugu',serif; font-size:0.88rem; color:var(--ivory2); line-height:1.6; }
-
-        /* ── VENUE ── */
-        .s-venue { padding:4rem 1.4rem; background:var(--maroon3); border-top:2px solid var(--gold); border-bottom:2px solid var(--gold); position:relative; overflow:hidden; }
-        .s-venue::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.1) 0%,transparent 65%); pointer-events:none; }
-        .venue-card { max-width:440px; margin:0 auto; text-align:center; position:relative; z-index:1; }
-        .venue-icon-wrap { display:flex; justify-content:center; margin-bottom:1rem; filter:drop-shadow(0 0 14px rgba(201,168,76,0.45)); }
-        .venue-icon-wrap svg { width:5rem; height:5rem; }
-        .venue-name-te { font-family:'Noto Serif Telugu',serif; font-size:1.15rem; font-weight:700; color:var(--gold2); margin-bottom:0.5rem; line-height:1.5; }
-        .venue-addr-te { font-family:'Noto Serif Telugu',serif; font-size:0.88rem; color:var(--gold3); line-height:2.1; margin-bottom:1.8rem; }
-        .venue-map-btn { display:inline-flex; align-items:center; gap:0; border-radius:6px; text-decoration:none; font-family:'Noto Serif Telugu',serif; font-size:1rem; font-weight:700; transition:transform 0.2s,box-shadow 0.2s; box-shadow:0 4px 24px rgba(0,0,0,0.45),0 0 0 1.5px rgba(245,224,160,0.35); overflow:hidden; }
-        .venue-map-btn:active { transform:scale(0.97); }
-        .venue-map-btn .gmap-pill { display:flex; align-items:center; justify-content:center; background:#1a1a2e; padding:0.78rem 0 0.78rem 1.5rem; flex-shrink:0; }
-        .venue-map-btn .gmap-pill svg { width:1.3rem; height:1.3rem; display:block; }
-        .venue-map-btn .btn-label { background:#1a1a2e; color:var(--gold3); padding:0.78rem 1.5rem 0.78rem 0.7rem; font-weight:700; letter-spacing:0.02em; }
-
-        /* ── INVITATION ── */
-        .s-invite { background:var(--ink); border-bottom:1px solid var(--border2); }
-        .invite-card { max-width:440px; margin:0 auto; background:rgba(139,0,0,0.08); border:1px solid var(--border); border-radius:6px; padding:2.5rem 1.5rem; text-align:center; position:relative; overflow:hidden; }
-        .invite-card::before { content:''; position:absolute; top:-1px; left:10%; right:10%; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-        .invite-te { font-family:'Noto Serif Telugu',serif; font-size:0.88rem; color:var(--ivory2); line-height:2.4; margin-bottom:1.5rem; }
-        .invite-te em { color:var(--gold2); font-style:normal; font-weight:600; }
-        .deco-border { width:100%; max-width:300px; margin:0 auto; display:flex; align-items:center; justify-content:center; gap:0.6rem; padding:0.5rem 0; }
-        .deco-border::before { content:''; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4)); }
-        .deco-border::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(201,168,76,0.4),transparent); }
-        .deco-sym { display:flex; align-items:center; gap:0.5rem; }
-        .deco-sym svg { width:0.72rem; height:0.72rem; }
-        .invite-host { margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border2); }
-        .invite-host-label { font-family:'Noto Serif Telugu',serif; font-size:0.72rem; color:var(--gold3); margin-bottom:0.6rem; letter-spacing:0.05em; }
-        .invite-host-names { font-family:'Noto Serif Telugu',serif; font-size:1.1rem; font-weight:700; color:var(--gold2); line-height:2; }
-        .mangalam { font-family:'Noto Serif Telugu',serif; font-size:1rem; color:var(--saffron); margin-top:1.2rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:0.55rem; }
-        .mangalam svg { width:1.3rem; height:1.3rem; }
-
-        /* ── CONTACTS ── */
-        .s-contact { background:#161221; padding-bottom:6rem; }
-        .fam-grid { display:grid; gap:1rem; max-width:440px; margin:0 auto; }
-        .fam-section-label { font-family:'Noto Serif Telugu',serif; font-size:0.8rem; color:var(--gold2); text-align:center; margin:1.5rem 0 0.5rem; padding:0.5rem; border-top:1px solid var(--border2); border-bottom:1px solid var(--border2); letter-spacing:0.05em; }
-        .fam-card { display:grid; grid-template-columns:48px 1fr auto; align-items:center; gap:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border2); border-radius:4px; padding:1rem; border-left:3px solid var(--gold); }
-        .fam-ava { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(139,0,0,0.22); border:1px solid var(--border); }
-        .fam-ava svg { width:28px; height:28px; }
-        .fam-role { font-family:'Noto Serif Telugu',serif; font-size:0.6rem; color:var(--gold); margin-bottom:0.15rem; }
-        .fam-name { font-family:'Noto Serif Telugu',serif; font-size:0.95rem; font-weight:600; color:var(--ivory); }
-        .fam-links { display:flex; gap:0.5rem; }
-        .fam-link { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(139,0,0,0.15); border:1px solid var(--border); text-decoration:none; transition:background 0.2s; }
-        .fam-link:active { background:rgba(139,0,0,0.38); }
-        .fam-link svg { width:18px; height:18px; }
-
-        /* ── FOOTER ── */
-        footer { background:var(--maroon); border-top:2px solid var(--gold); padding:4rem 1.5rem 3rem; text-align:center; position:relative; overflow:hidden; }
-        footer::before { content:''; position:absolute; top:2px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent); }
-        .ft-ganesha { display:flex; justify-content:center; margin-bottom:1rem; filter:drop-shadow(0 0 16px rgba(201,168,76,0.5)); }
-        .ft-ganesha svg { width:3.8rem; height:3.8rem; }
-        .ft-blessing { font-family:'Noto Serif Telugu',serif; font-size:0.75rem; color:var(--gold3); letter-spacing:0.2em; margin-bottom:1.2rem; opacity:0.9; }
-        .ft-names { font-family:'Playfair Display',serif; font-size:2rem; font-weight:400; color:var(--gold2); margin-bottom:0.4rem; }
-        .ft-names span { font-style:italic; color:#fff; margin:0 0.3rem; }
-        .ft-date { font-family:'Cinzel',serif; font-size:0.55rem; letter-spacing:0.35em; color:var(--gold3); text-transform:uppercase; margin-bottom:1.8rem; opacity:0.6; }
-        .ft-hr { height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent); margin-bottom:1.5rem; }
-        .ft-mangalam { font-family:'Noto Serif Telugu',serif; font-size:1.1rem; color:var(--gold2); margin-bottom:0.6rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:0.55rem; }
-        .ft-mangalam svg { width:1.4rem; height:1.4rem; }
-        .ft-sub { font-family:'Noto Serif Telugu',serif; font-size:0.72rem; color:rgba(201,168,76,0.45); }
-
-        /* ── SCROLL REVEAL ── */
-        .rv { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
-        .rv.vis { opacity:1; transform:none; }
-        .rv-d1 { transition-delay:.1s; }
-        .rv-d2 { transition-delay:.2s; }
-        .rv-d3 { transition-delay:.3s; }
-
-        /* hide main content until loaded */
-        #mainContent { display:none; }
-        #mainContent.loaded { display:block; }
+        #mainContent{display:none;}
+        #mainContent.loaded{display:block;}
     </style>
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
 <div id="loadingScreen">
-    <svg class="loading-lotus" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="loading-lotus" viewBox="0 0 500 500" fill="none">
         <g stroke="#E8720C" stroke-width="1.5">
             <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(0 250 250)"/>
             <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(45 250 250)"/>
@@ -330,19 +223,17 @@
     <div class="loading-text">Loading Invitation</div>
 </div>
 
-<!-- ERROR SCREEN -->
 <div id="errorScreen">
-    <div class="error-icon">🙏</div>
+    <div style="font-size:3rem;opacity:0.5;">🙏</div>
     <div class="error-title">Invitation Not Found</div>
     <p class="error-msg">This link may be invalid or the invitation may have been removed.<br>Please check the link and try again.</p>
 </div>
 
-<!-- MAIN INVITATION CONTENT -->
 <div id="mainContent">
 
     <!-- HERO -->
     <section class="hero" id="top">
-        <svg class="lotus-bg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="lotus-bg" viewBox="0 0 500 500" fill="none">
             <g stroke="#E8720C" stroke-width="0.6">
                 <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(0 250 250)"/>
                 <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(22.5 250 250)"/>
@@ -352,19 +243,9 @@
                 <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(112.5 250 250)"/>
                 <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(135 250 250)"/>
                 <ellipse cx="250" cy="250" rx="220" ry="40" transform="rotate(157.5 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(11.25 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(33.75 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(56.25 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(78.75 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(101.25 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(123.75 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(146.25 250 250)"/>
-                <ellipse cx="250" cy="250" rx="140" ry="28" transform="rotate(168.75 250 250)"/>
                 <circle cx="250" cy="250" r="80"/><circle cx="250" cy="250" r="50"/><circle cx="250" cy="250" r="20"/>
-                <line x1="250" y1="30" x2="250" y2="470"/>
-                <line x1="30" y1="250" x2="470" y2="250"/>
-                <line x1="106" y1="106" x2="394" y2="394"/>
-                <line x1="394" y1="106" x2="106" y2="394"/>
+                <line x1="250" y1="30" x2="250" y2="470"/><line x1="30" y1="250" x2="470" y2="250"/>
+                <line x1="106" y1="106" x2="394" y2="394"/><line x1="394" y1="106" x2="106" y2="394"/>
             </g>
         </svg>
         <div class="corner corner--tl"><img src="https://media-public.canva.com/wnqyg/MAEl7cwnqyg/2/s.png" alt="" onerror="this.style.display='none'"></div>
@@ -372,7 +253,7 @@
         <div class="corner corner--bl"><img src="https://media-public.canva.com/wnqyg/MAEl7cwnqyg/2/s.png" alt="" onerror="this.style.display='none'"></div>
         <div class="corner corner--br"><img src="https://media-public.canva.com/wnqyg/MAEl7cwnqyg/2/s.png" alt="" onerror="this.style.display='none'"></div>
         <div class="hero-inner">
-            <p class="hero-sub">వెలుగుల వారి</p>
+            <p class="hero-sub" id="heroSurname">వెలుగుల వారి</p>
             <div class="hero-deva">పెండ్లిపిలుపు</div>
             <div class="rule">
                 <div class="rule-line"></div>
@@ -391,10 +272,7 @@
         </div>
     </section>
 
-    <!-- BLESSINGS -->
-    <div class="blessings-strip">
-        <p>శ్రీరస్తు &nbsp;·&nbsp; శుభమస్తు &nbsp;·&nbsp; అవిఘ్నమస్తు</p>
-    </div>
+    <div class="blessings-strip"><p>శ్రీరస్తు &nbsp;·&nbsp; శుభమస్తు &nbsp;·&nbsp; అవిఘ్నమస్తు</p></div>
 
     <!-- MUHURTHAM -->
     <section class="s-muh">
@@ -404,7 +282,7 @@
         <h2 class="s-title rv rv-d1">వివాహ సుముహూర్తం</h2>
         <div class="hr-motif rv rv-d2"><span class="hr-motif-sym"><svg viewBox="0 0 24 24"><path d="M12 2C12 2 9 6 9 8.5C9 10.4 10.3 12 12 12C13.7 12 15 10.4 15 8.5C15 6 12 2 12 2Z" fill="#F5A623"/><path d="M21 15C21 18.3 17 21 12 21C7 21 3 18.3 3 15C3 13.5 5 12 8 11.5C9 13.5 10.5 14.5 12 14.5C13.5 14.5 15 13.5 16 11.5C19 12 21 13.5 21 15Z"/></svg></span></div>
         <div class="muh-card rv">
-            <p class="muh-panchang">
+            <p class="muh-panchang" id="muhPanchang">
                 స్వస్తి శ్రీ చాంద్రమాన సంవత్సర<br>
                 శ్రావణ శుద్ధ ద్వాదశి మరియు త్రయోదశి స్థిరవారము<br>
                 ఉత్తరాషాడ నక్షత్రయుక్త కర్కాటక లగ్న పుష్పారాంశమందు
@@ -412,11 +290,11 @@
             <div class="muh-time-row">
                 <div class="muh-time-box">
                     <span class="muh-time-te">తేదీ</span>
-                    <span class="muh-time-val">10 · 08 · 2026</span>
+                    <span class="muh-time-val" id="muhDate">—</span>
                 </div>
                 <div class="muh-time-box">
-                    <span class="muh-time-te">ఉదయం</span>
-                    <span class="muh-time-val">11:00 గం.</span>
+                    <span class="muh-time-te">సుముహూర్తం</span>
+                    <span class="muh-time-val" id="muhTime">—</span>
                 </div>
             </div>
         </div>
@@ -424,7 +302,7 @@
 
     <!-- COUNTDOWN -->
     <section class="s-countdown">
-        <p class="cd-label rv">తేదీ 10.08.2026 ఆదివారం ఉదయం 11 గం. లకు</p>
+        <p class="cd-label rv" id="cdLabel">వివాహ సుముహూర్తానికి</p>
         <div class="cd-grid rv rv-d1">
             <div class="cd-cell"><span class="cd-n" id="d">00</span><span class="cd-l">రోజులు</span></div>
             <div class="cd-cell"><span class="cd-n" id="h">00</span><span class="cd-l">గంటలు</span></div>
@@ -433,18 +311,15 @@
         </div>
     </section>
 
-    <!-- COUPLE DETAILS -->
+    <!-- COUPLE -->
     <section class="s-couple">
         <p class="s-eyebrow rv">వధూవరులు</p>
         <h2 class="s-title rv rv-d1">వధూవరుల వివరాలు</h2>
         <div class="hr-motif rv rv-d2"><span class="hr-motif-sym"><svg viewBox="0 0 28 28" fill="none"><path d="M14 22 C14 22 10 18 10 13 C10 10 12 8 14 8 C16 8 18 10 18 13 C18 18 14 22 14 22Z" fill="#E2C068" opacity="0.9"/><path d="M14 20 C14 20 7 17 6 12 C5.5 9.5 7 7.5 9 8 C11 8.5 12.5 11 13 14 C13.5 17 14 20 14 20Z" fill="#C9A84C" opacity="0.75"/><path d="M14 20 C14 20 21 17 22 12 C22.5 9.5 21 7.5 19 8 C17 8.5 15.5 11 15 14 C14.5 17 14 20 14 20Z" fill="#C9A84C" opacity="0.75"/><circle cx="14" cy="13.5" r="1" fill="#F5E0A0" opacity="0.95"/></svg></span></div>
         <div class="couple-wrap">
-            <!-- GROOM CARD -->
             <div class="couple-card rv">
                 <div class="couple-top">
-                    <div class="couple-icon">
-                        <svg viewBox="0 0 40 44" fill="none"><path d="M11 14 Q11 5 20 5 Q29 5 29 14" fill="#8B0000" opacity="0.85"/><circle cx="20" cy="16" r="5.5" fill="#E2C068" opacity="0.92"/><rect x="18" y="21.5" width="4" height="3.5" rx="1" fill="#E2C068" opacity="0.8"/><path d="M8 38 L8 27 Q8 25 20 25 Q32 25 32 27 L32 38Z" fill="#8B0000" opacity="0.82"/><path d="M8 27 Q8 25 20 25 Q32 25 32 27" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.7"/></svg>
-                    </div>
+                    <div class="couple-icon"><svg viewBox="0 0 40 44" fill="none"><path d="M11 14 Q11 5 20 5 Q29 5 29 14" fill="#8B0000" opacity="0.85"/><circle cx="20" cy="16" r="5.5" fill="#E2C068" opacity="0.92"/><rect x="18" y="21.5" width="4" height="3.5" rx="1" fill="#E2C068" opacity="0.8"/><path d="M8 38 L8 27 Q8 25 20 25 Q32 25 32 27 L32 38Z" fill="#8B0000" opacity="0.82"/><path d="M8 27 Q8 25 20 25 Q32 25 32 27" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.7"/></svg></div>
                     <div>
                         <div class="couple-role">Groom · వరుడు</div>
                         <div class="couple-name-prefix">చి॥</div>
@@ -452,24 +327,12 @@
                     </div>
                 </div>
                 <div class="couple-body">
-                    <div class="couple-parents">
-                        <div class="parent-row">
-                            <span class="parent-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="2.5" fill="#E2C068" opacity="0.8"/><path d="M3.5 13.5 C3.5 10.5 5.5 8.5 8 8.5 C10.5 8.5 12.5 10.5 12.5 13.5" stroke="#E2C068" stroke-width="1.3"/></svg></span>
-                            <span id="groomMotherLine">శ్రీమతి <strong id="groomMother">—</strong> గారి ఆత్మీయ కుమారుడు</span>
-                        </div>
-                        <div class="parent-row">
-                            <span class="parent-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="2.5" fill="#E2C068" opacity="0.8"/><path d="M3.5 13.5 C3.5 10.5 5.5 8.5 8 8.5 C10.5 8.5 12.5 10.5 12.5 13.5" stroke="#E2C068" stroke-width="1.3"/></svg></span>
-                            <span>శ్రీ <strong id="groomFather">—</strong> గారి ఆత్మీయ కుమారుడు</span>
-                        </div>
-                    </div>
+                    <div class="couple-parents" id="groomParents"></div>
                 </div>
             </div>
-            <!-- BRIDE CARD -->
             <div class="couple-card rv rv-d1">
                 <div class="couple-top">
-                    <div class="couple-icon">
-                        <svg viewBox="0 0 40 44" fill="none"><path d="M8 16 Q9 5 20 5 Q31 5 32 16 Q28 11 20 11 Q12 11 8 16Z" fill="#8B0000" opacity="0.8"/><circle cx="20" cy="16" r="5.5" fill="#E2C068" opacity="0.92"/><circle cx="20" cy="10" r="1.1" fill="#A52020" opacity="0.95"/><rect x="18" y="21.5" width="4" height="3" rx="1" fill="#E2C068" opacity="0.8"/><path d="M10 43 L10 28 Q10 25 20 25 Q30 25 30 28 L30 43Z" fill="#8B0000" opacity="0.82"/></svg>
-                    </div>
+                    <div class="couple-icon"><svg viewBox="0 0 40 44" fill="none"><path d="M8 16 Q9 5 20 5 Q31 5 32 16 Q28 11 20 11 Q12 11 8 16Z" fill="#8B0000" opacity="0.8"/><circle cx="20" cy="16" r="5.5" fill="#E2C068" opacity="0.92"/><circle cx="20" cy="10" r="1.1" fill="#A52020" opacity="0.95"/><rect x="18" y="21.5" width="4" height="3" rx="1" fill="#E2C068" opacity="0.8"/><path d="M10 43 L10 28 Q10 25 20 25 Q30 25 30 28 L30 43Z" fill="#8B0000" opacity="0.82"/></svg></div>
                     <div>
                         <div class="couple-role">Bride · వధువు</div>
                         <div class="couple-name-prefix">చి॥లా॥సౌ॥</div>
@@ -477,16 +340,7 @@
                     </div>
                 </div>
                 <div class="couple-body">
-                    <div class="couple-parents">
-                        <div class="parent-row">
-                            <span class="parent-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="2.5" fill="#E2C068" opacity="0.8"/><path d="M3.5 13.5 C3.5 10.5 5.5 8.5 8 8.5 C10.5 8.5 12.5 10.5 12.5 13.5" stroke="#E2C068" stroke-width="1.3"/></svg></span>
-                            <span>శ్రీమతి <strong id="brideMother">—</strong> గారి ఆత్మీయ కుమార్తె</span>
-                        </div>
-                        <div class="parent-row">
-                            <span class="parent-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="2.5" fill="#E2C068" opacity="0.8"/><path d="M3.5 13.5 C3.5 10.5 5.5 8.5 8 8.5 C10.5 8.5 12.5 10.5 12.5 13.5" stroke="#E2C068" stroke-width="1.3"/></svg></span>
-                            <span>శ్రీ <strong id="brideFather">—</strong> గారి ఆత్మీయ కుమార్తె</span>
-                        </div>
-                    </div>
+                    <div class="couple-parents" id="brideParents"></div>
                 </div>
             </div>
         </div>
@@ -504,6 +358,7 @@
             </div>
         </div>
         <div class="ev-wrap">
+            <!-- CEREMONY -->
             <div class="ev-card main rv rv-d1">
                 <div class="ev-banner">
                     <div class="ev-banner-num">01</div>
@@ -514,16 +369,21 @@
                     <div class="ev-info-grid">
                         <div class="ev-info-row">
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="14" rx="2" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="2" y1="8" x2="18" y2="8" stroke="#E2C068" stroke-width="1" opacity="0.6"/><line x1="6" y1="2" x2="6" y2="6" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                            <div><div class="ev-info-label">తేదీ</div><div class="ev-info-te">10 ఆగస్టు 2026 — ఆదివారం</div></div>
+                            <div><div class="ev-info-label">తేదీ</div><div class="ev-info-te" id="ceremonyDateDisplay">—</div></div>
                         </div>
                         <div class="ev-info-row">
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="10" y1="10" x2="10" y2="5.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="10" x2="13.5" y2="11.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="10" r="1" fill="#E2C068"/></svg></div>
-                            <div><div class="ev-info-label">సుముహూర్తం</div><div class="ev-info-te">ఉదయం 11:00 గంటలకు</div></div>
+                            <div><div class="ev-info-label">సుముహూర్తం</div><div class="ev-info-te" id="ceremonyTimeDisplay">—</div></div>
+                        </div>
+                        <div class="ev-info-row" id="ceremonyVenueRow">
+                            <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7C5 10.5 10 18 10 18C10 18 15 10.5 15 7C15 4.24 12.76 2 10 2ZM10 8.5C9.17 8.5 8.5 7.83 8.5 7C8.5 6.17 9.17 5.5 10 5.5C10.83 5.5 11.5 6.17 11.5 7C11.5 7.83 10.83 8.5 10 8.5Z" fill="#E2C068" opacity="0.8"/></svg></div>
+                            <div><div class="ev-info-label">వేదిక</div><div class="ev-info-te" id="ceremonyVenueLine">—</div></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="ev-card rv rv-d2">
+            <!-- RECEPTION -->
+            <div class="ev-card rv rv-d2" id="receptionCard">
                 <div class="ev-banner">
                     <div class="ev-banner-num">02</div>
                     <div class="ev-icon"><svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="17" r="11" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity="0.8"/><circle cx="16" cy="17" r="1.4" fill="#8B0000" opacity="0.85"/><circle cx="16" cy="13.5" r="1" fill="#E2C068" opacity="0.8"/><circle cx="19" cy="15" r="1" fill="#E2C068" opacity="0.8"/><circle cx="19" cy="19" r="1" fill="#E2C068" opacity="0.8"/><circle cx="16" cy="20.5" r="1" fill="#E2C068" opacity="0.8"/><circle cx="13" cy="19" r="1" fill="#E2C068" opacity="0.8"/><circle cx="13" cy="15" r="1" fill="#E2C068" opacity="0.8"/></svg></div>
@@ -533,11 +393,15 @@
                     <div class="ev-info-grid">
                         <div class="ev-info-row">
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="14" rx="2" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="2" y1="8" x2="18" y2="8" stroke="#E2C068" stroke-width="1" opacity="0.6"/><line x1="6" y1="2" x2="6" y2="6" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                            <div><div class="ev-info-label">తేదీ</div><div class="ev-info-te">10 ఆగస్టు 2026 — ఆదివారం</div></div>
+                            <div><div class="ev-info-label">తేదీ</div><div class="ev-info-te" id="receptionDateDisplay">—</div></div>
                         </div>
                         <div class="ev-info-row">
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="10" y1="10" x2="10" y2="5.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="10" x2="14" y2="10" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="10" r="1" fill="#E2C068"/></svg></div>
-                            <div><div class="ev-info-label">సమయం</div><div class="ev-info-te">మధ్యాహ్నం 12:00 గంటల నుండి</div></div>
+                            <div><div class="ev-info-label">సమయం</div><div class="ev-info-te" id="receptionTimeDisplay">—</div></div>
+                        </div>
+                        <div class="ev-info-row" id="receptionNoteRow" style="display:none;">
+                            <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7C5 10.5 10 18 10 18C10 18 15 10.5 15 7C15 4.24 12.76 2 10 2Z" fill="#E2C068" opacity="0.6"/></svg></div>
+                            <div><div class="ev-info-label">వేదిక / గమనిక</div><div class="ev-info-te" id="receptionNoteDisplay">—</div></div>
                         </div>
                     </div>
                 </div>
@@ -551,47 +415,29 @@
         <h2 class="s-title rv rv-d1">కళ్యాణ వేదిక</h2>
         <div class="hr-motif rv rv-d2"><span class="hr-motif-sym"><svg viewBox="0 0 32 32" fill="none"><polygon points="16,2 18.5,8 13.5,8" fill="#E2C068" opacity="0.95"/><rect x="12" y="8" width="8" height="3" rx="0.5" fill="#C9A84C" opacity="0.9"/><rect x="10" y="11" width="12" height="3" rx="0.5" fill="#C9A84C" opacity="0.8"/><rect x="7" y="14" width="18" height="3" rx="0.5" fill="#C9A84C" opacity="0.75"/><rect x="8" y="17" width="2" height="9" rx="0.5" fill="#E2C068" opacity="0.7"/><rect x="13" y="17" width="2" height="9" rx="0.5" fill="#E2C068" opacity="0.7"/><rect x="17" y="17" width="2" height="9" rx="0.5" fill="#E2C068" opacity="0.7"/><rect x="22" y="17" width="2" height="9" rx="0.5" fill="#E2C068" opacity="0.7"/><path d="M14 26 L14 21 Q16 19 18 21 L18 26Z" fill="#6B0000" opacity="0.8"/><rect x="5" y="26" width="22" height="2.5" rx="0.5" fill="#C9A84C" opacity="0.6"/></svg></span></div>
         <div class="venue-card rv">
-            <div class="venue-icon-wrap">
-                <svg viewBox="0 0 80 68" fill="none"><rect x="33" y="11" width="14" height="5" rx="1.5" fill="#C9A84C" opacity="1"/><rect x="27" y="16" width="26" height="5" rx="1.5" fill="#C9A84C" opacity="0.9"/><rect x="18" y="21" width="44" height="6" rx="1.5" fill="#C9A84C" opacity="0.8"/><rect x="10" y="27" width="60" height="30" rx="1" fill="#8B0000" opacity="0.55"/><rect x="10" y="27" width="60" height="3" rx="1" fill="#C9A84C" opacity="0.55"/><rect x="11" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="24" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="51" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="64" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><path d="M32 57 L32 44 Q40 36 48 44 L48 57Z" fill="#4A0000" opacity="0.95"/><rect x="6" y="57" width="68" height="4" rx="1" fill="#A08030" opacity="0.7"/><rect x="2" y="61" width="76" height="4" rx="1" fill="#A08030" opacity="0.45"/></svg>
-            </div>
-            <div class="venue-name-te" id="venueName">శ్రీమతి &amp; శ్రీ మెకలి అనుషమ్మ - ఈరన్న గ్రా॥</div>
-            <p class="venue-addr-te" id="venueAddr">
-                హోతి (కె), మండలం జహీరాబాద్,<br>జిల్లా సంగారెడ్డి.
-            </p>
-            <a href="https://maps.google.com" target="_blank" class="venue-map-btn" id="mapBtn">
-                <span class="gmap-pill">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232597 333333" shape-rendering="geometricPrecision" fill-rule="evenodd" clip-rule="evenodd">
-                        <path d="M151444 5419C140355 1916 128560 0 116311 0 80573 0 48591 16155 27269 41534l54942 46222 69232-82338z" fill="#1a73e8"/>
-                        <path d="M27244 41534C10257 61747 0 87832 0 116286c0 21876 4360 39594 11517 55472l70669-84002-54942-46222z" fill="#ea4335"/>
-                        <path d="M116311 71828c24573 0 44483 19910 44483 44483 0 10938-3957 20969-10509 28706 0 0 35133-41786 69232-82313-14089-27093-38510-47936-68048-57286L82186 87756c8166-9753 20415-15928 34125-15928z" fill="#4285f4"/>
-                        <path d="M116311 160769c-24573 0-44483-19910-44483-44483 0-10863 3906-20818 10358-28555l-70669 84027c12072 26791 32159 48289 52851 75381l85891-102122c-8141 9628-20339 15752-33948 15752z" fill="#fbbc04"/>
-                        <path d="M148571 275014c38787-60663 84026-88210 84026-158728 0-19331-4738-37552-13080-53581L64393 247140c6578 8620 13206 17793 19683 27900 23590 36444 17037 58294 32260 58294 15172 0 8644-21876 32235-58320z" fill="#34a853"/>
-                    </svg>
-                </span>
+            <div class="venue-icon-wrap"><svg viewBox="0 0 80 68" fill="none"><rect x="33" y="11" width="14" height="5" rx="1.5" fill="#C9A84C"/><rect x="27" y="16" width="26" height="5" rx="1.5" fill="#C9A84C" opacity="0.9"/><rect x="18" y="21" width="44" height="6" rx="1.5" fill="#C9A84C" opacity="0.8"/><rect x="10" y="27" width="60" height="30" rx="1" fill="#8B0000" opacity="0.55"/><rect x="10" y="27" width="60" height="3" rx="1" fill="#C9A84C" opacity="0.55"/><rect x="11" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="24" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="51" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><rect x="64" y="27" width="5" height="30" rx="2" fill="#E2C068" opacity="0.8"/><path d="M32 57 L32 44 Q40 36 48 44 L48 57Z" fill="#4A0000" opacity="0.95"/><rect x="6" y="57" width="68" height="4" rx="1" fill="#A08030" opacity="0.7"/></svg></div>
+            <div class="venue-name-te" id="venueName">—</div>
+            <p class="venue-addr-te" id="venueAddr"></p>
+            <a href="#" target="_blank" class="venue-map-btn" id="mapBtn">
+                <span class="gmap-pill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232597 333333" shape-rendering="geometricPrecision" fill-rule="evenodd" clip-rule="evenodd"><path d="M151444 5419C140355 1916 128560 0 116311 0 80573 0 48591 16155 27269 41534l54942 46222 69232-82338z" fill="#1a73e8"/><path d="M27244 41534C10257 61747 0 87832 0 116286c0 21876 4360 39594 11517 55472l70669-84002-54942-46222z" fill="#ea4335"/><path d="M116311 71828c24573 0 44483 19910 44483 44483 0 10938-3957 20969-10509 28706 0 0 35133-41786 69232-82313-14089-27093-38510-47936-68048-57286L82186 87756c8166-9753 20415-15928 34125-15928z" fill="#4285f4"/><path d="M116311 160769c-24573 0-44483-19910-44483-44483 0-10863 3906-20818 10358-28555l-70669 84027c12072 26791 32159 48289 52851 75381l85891-102122c-8141 9628-20339 15752-33948 15752z" fill="#fbbc04"/><path d="M148571 275014c38787-60663 84026-88210 84026-158728 0-19331-4738-37552-13080-53581L64393 247140c6578 8620 13206 17793 19683 27900 23590 36444 17037 58294 32260 58294 15172 0 8644-21876 32235-58320z" fill="#34a853"/></svg></span>
                 <span class="btn-label">దిశలు చూపించు</span>
             </a>
         </div>
     </section>
 
-    <!-- INVITATION -->
+    <!-- INVITE -->
     <section class="s-invite">
         <p class="s-eyebrow rv">ఆహ్వానం</p>
         <h2 class="s-title rv rv-d1">ఆహ్వించువారు</h2>
         <div class="hr-motif rv rv-d2"><span class="hr-motif-sym"><svg viewBox="0 0 32 32" fill="none"><path d="M16 4 C13.5 7 12.5 9.5 13.5 12 C14.2 13.8 15.2 14.5 16 14.5 C16.8 14.5 17.8 13.8 18.5 12 C19.5 9.5 18.5 7 16 4Z" fill="#E2C068" opacity="0.95"/><path d="M7.5 19.5 Q7.5 24.5 16 25.8 Q24.5 24.5 24.5 19.5 L22 17.5 Q16 16 10 17.5Z" fill="#C9A84C" opacity="0.85"/></svg></span></div>
         <div class="invite-card rv">
-            <p class="invite-te">
-                నిశ్చయించిన వివాహ మహోత్సవమునకు తామెల్లరు <em>సకుటుంబ బంధుమిత్ర సపరివారముగా</em> విచ్చేసి,
-                నూతన వధూవరులను ఆశీర్వదించి మన్మానందింప జేయవలసిందిగా ప్రార్థన.
-            </p>
-            <div class="deco-border"><span class="deco-sym"><svg viewBox="0 0 12 12" fill="none"><ellipse cx="6" cy="3" rx="1.4" ry="2.5" fill="#E2C068" opacity="0.85"/><ellipse cx="6" cy="9" rx="1.4" ry="2.5" fill="#E2C068" opacity="0.85"/><ellipse cx="3" cy="6" rx="2.5" ry="1.4" fill="#E2C068" opacity="0.85"/><ellipse cx="9" cy="6" rx="2.5" ry="1.4" fill="#E2C068" opacity="0.85"/><circle cx="6" cy="6" r="1.5" fill="#F5E0A0" opacity="0.95"/></svg></span></div>
+            <p class="invite-te">నిశ్చయించిన వివాహ మహోత్సవమునకు తామెల్లరు <em>సకుటుంబ బంధుమిత్ర సపరివారముగా</em> విచ్చేసి, నూతన వధూవరులను ఆశీర్వదించి మన్మానందింప జేయవలసిందిగా ప్రార్థన.</p>
+            <div class="deco-border"><span style="display:flex;align-items:center;gap:0.5rem;"><svg viewBox="0 0 12 12" fill="none" style="width:0.72rem;height:0.72rem;"><ellipse cx="6" cy="3" rx="1.4" ry="2.5" fill="#E2C068" opacity="0.85"/><ellipse cx="6" cy="9" rx="1.4" ry="2.5" fill="#E2C068" opacity="0.85"/><ellipse cx="3" cy="6" rx="2.5" ry="1.4" fill="#E2C068" opacity="0.85"/><ellipse cx="9" cy="6" rx="2.5" ry="1.4" fill="#E2C068" opacity="0.85"/><circle cx="6" cy="6" r="1.5" fill="#F5E0A0" opacity="0.95"/></svg></span></div>
             <div class="invite-host">
                 <p class="invite-host-label">మీ ఆగమనాభిలాషులు</p>
                 <div class="invite-host-names" id="hostNames">—</div>
             </div>
-            <div class="mangalam">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C11.2 3 10.5 3.6 10.5 4.5 L10.5 11"/><path d="M12 3 C12.8 3 13.5 3.6 13.5 4.5 L13.5 11"/><path d="M9 5.5 C8.2 5.5 7.5 6.2 7.5 7 L7.5 12 C7.5 14 9 15.5 10.5 16.2"/><path d="M15 5.5 C15.8 5.5 16.5 6.2 16.5 7 L16.5 12 C16.5 14 15 15.5 13.5 16.2"/><path d="M7 17.5 Q12 21 17 17.5"/></svg>
-                మంగళం మహత్
-            </div>
+            <div class="mangalam">🪷 మంగళం మహత్</div>
         </div>
     </section>
 
@@ -600,148 +446,176 @@
         <p class="s-eyebrow rv">కుటుంబాలు</p>
         <h2 class="s-title rv rv-d1">సందేహాలకు సంప్రదించండి</h2>
         <div class="hr-motif rv rv-d2"><span class="hr-motif-sym"><svg viewBox="0 0 32 32" fill="none"><path d="M9 5C7.9 5 7 5.9 7 7L7 10.5C7 19.5 12.5 25 21.5 25L25 25C26.1 25 27 24.1 27 23L27 19.5C27 18.6 26.3 17.9 25.4 17.8L21.2 17C20.3 16.9 19.5 17.5 19.2 18.3L18.5 20.3C16 19.2 12.8 16 11.7 13.5L13.7 12.8C14.5 12.5 15.1 11.7 15 10.8L14.2 6.6C14.1 5.7 13.4 5 12.5 5Z" fill="#E2C068" opacity="0.92"/></svg></span></div>
-        <div class="fam-grid" id="contactsGrid">
-            <!-- Populated dynamically -->
-        </div>
+        <div class="fam-grid" id="contactsGrid"></div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <div class="ft-ganesha">
-            <svg viewBox="0 0 80 72" fill="none"><path d="M40 64 C40 64 10 46 10 28 C10 19 17 13 24 13 C29 13 34 16 37 20 C38.2 21.8 39.2 23.5 40 25 C40.8 23.5 41.8 21.8 43 20 C46 16 51 13 56 13 C63 13 70 19 70 28 C70 46 40 64 40 64Z" fill="#E2C068" opacity="0.18"/><path d="M40 64 C40 64 10 46 10 28 C10 19 17 13 24 13 C29 13 34 16 37 20 C38.2 21.8 39.2 23.5 40 25 C40.8 23.5 41.8 21.8 43 20 C46 16 51 13 56 13 C63 13 70 19 70 28 C70 46 40 64 40 64Z" stroke="#E2C068" stroke-width="2" fill="none" opacity="0.7"/><path d="M40 52 C40 52 22 40 22 30 C22 25 26 21 30.5 21 C33.5 21 36.5 23 38.5 26 L40 28.5 L41.5 26 C43.5 23 46.5 21 49.5 21 C54 21 58 25 58 30 C58 40 40 52 40 52Z" fill="#F5E0A0" opacity="0.75"/></svg>
-        </div>
+        <div class="ft-ganesha"><svg viewBox="0 0 80 72" fill="none"><path d="M40 64 C40 64 10 46 10 28 C10 19 17 13 24 13 C29 13 34 16 37 20 C38.2 21.8 39.2 23.5 40 25 C40.8 23.5 41.8 21.8 43 20 C46 16 51 13 56 13 C63 13 70 19 70 28 C70 46 40 64 40 64Z" fill="#E2C068" opacity="0.18"/><path d="M40 64 C40 64 10 46 10 28 C10 19 17 13 24 13 C29 13 34 16 37 20 C38.2 21.8 39.2 23.5 40 25 C40.8 23.5 41.8 21.8 43 20 C46 16 51 13 56 13 C63 13 70 19 70 28 C70 46 40 64 40 64Z" stroke="#E2C068" stroke-width="2" fill="none" opacity="0.7"/><path d="M40 52 C40 52 22 40 22 30 C22 25 26 21 30.5 21 C33.5 21 36.5 23 38.5 26 L40 28.5 L41.5 26 C43.5 23 46.5 21 49.5 21 C54 21 58 25 58 30 C58 40 40 52 40 52Z" fill="#F5E0A0" opacity="0.75"/></svg></div>
         <p class="ft-blessing">శ్రీరస్తు &nbsp;·&nbsp; శుభమస్తు &nbsp;·&nbsp; అవిఘ్నమస్తు</p>
         <div class="ft-names" id="footerNames">— <span>&amp;</span> —</div>
-        <div class="ft-date">10 · 08 · 2026 &nbsp;·&nbsp; జహీరాబాద్, సంగారెడ్డి జిల్లా</div>
+        <div class="ft-date" id="footerDate">—</div>
         <div class="ft-hr"></div>
-        <p class="ft-mangalam">
-            <svg viewBox="0 0 32 32" fill="none"><path d="M16 4 C13.5 7 12.5 9.5 13.5 12 C14.2 13.8 15.2 14.5 16 14.5 C16.8 14.5 17.8 13.8 18.5 12 C19.5 9.5 18.5 7 16 4Z" fill="#E2C068" opacity="0.95"/><path d="M7.5 19.5 Q7.5 24.5 16 25.8 Q24.5 24.5 24.5 19.5 L22 17.5 Q16 16 10 17.5Z" fill="#C9A84C" opacity="0.85"/></svg>
-            మంగళం మహత్
-        </p>
+        <p class="ft-mangalam">🪷 మంగళం మహత్</p>
         <span class="ft-sub">సప్తపది — ఏడు అడుగులు, శాశ్వతమైన బంధం</span>
     </footer>
 
 </div><!-- /mainContent -->
 
 <script>
-    const SUPABASE_URL  = 'https://jihtqbzrqymdkypicajz.supabase.co';
-    const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
+    const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-    function set(id, val) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-    }
-    function setHTML(id, val) {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = val;
-    }
+    function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+    function setHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v;}
 
-    function contactCard(role, name, phone) {
-        const ph = phone.replace(/\D/g,'');
-        const waNum = ph.startsWith('0') ? '91' + ph.slice(1) : (ph.length === 10 ? '91' + ph : ph);
-        return `
-        <div class="fam-card rv">
-            <div class="fam-ava"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2C068" stroke-width="1.8"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg></div>
+    function phoneIcon(){return`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E2C068" stroke-width="2"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>`;}
+    function waIcon(){return`<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.35 17.07L2 22L7.07 20.68C8.53 21.5 10.21 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#25D366"/><path d="M8.8 8.5C9.1 7.8 9.9 7.5 10.6 7.8L11.4 9.4C11.65 9.9 11.5 10.5 11.05 10.8L10.4 11.2C10.75 12.3 11.7 13.25 12.8 13.6L13.2 12.95C13.5 12.5 14.1 12.35 14.6 12.6L16.2 13.4C16.9 13.7 17.1 14.6 16.6 15.1C15.2 16.5 13 16.3 11.4 15.2C9.8 14.1 8.5 12.2 8.5 10.4C8.45 9.7 8.55 9 8.8 8.5Z" fill="white"/></svg>`;}
+    function personIcon(){return`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E2C068" stroke-width="1.8"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg>`;}
+
+    function contactCard(role,name,phone){
+        const ph=(phone||'').replace(/\D/g,'');
+        const waNum=ph.length===10?'91'+ph:ph;
+        return`<div class="fam-card rv">
+            <div class="fam-ava">${personIcon()}</div>
             <div><div class="fam-role">${role}</div><div class="fam-name">${name}</div></div>
             <div class="fam-links">
-                <a href="tel:+${waNum}" class="fam-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E2C068" stroke-width="2"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg></a>
-                <a href="https://wa.me/${waNum}" class="fam-link"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.35 17.07L2 22L7.07 20.68C8.53 21.5 10.21 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#25D366"/><path d="M8.8 8.5C9.1 7.8 9.9 7.5 10.6 7.8L11.4 9.4C11.65 9.9 11.5 10.5 11.05 10.8L10.4 11.2C10.75 12.3 11.7 13.25 12.8 13.6L13.2 12.95C13.5 12.5 14.1 12.35 14.6 12.6L16.2 13.4C16.9 13.7 17.1 14.6 16.6 15.1C15.2 16.5 13 16.3 11.4 15.2C9.8 14.1 8.5 12.2 8.5 10.4C8.45 9.7 8.55 9 8.8 8.5Z" fill="white"/></svg></a>
+                <a href="tel:+${waNum}" class="fam-link">${phoneIcon()}</a>
+                <a href="https://wa.me/${waNum}" class="fam-link">${waIcon()}</a>
             </div>
         </div>`;
     }
 
-    async function loadInvitation() {
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
+    function parentRow(prefix,name,suffix){
+        return`<div class="parent-row">
+            <span class="parent-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="2.5" fill="#E2C068" opacity="0.8"/><path d="M3.5 13.5 C3.5 10.5 5.5 8.5 8 8.5 C10.5 8.5 12.5 10.5 12.5 13.5" stroke="#E2C068" stroke-width="1.3"/></svg></span>
+            <span>${prefix}<strong>${name}</strong> ${suffix}</span>
+        </div>`;
+    }
 
-        if (!id) { showError(); return; }
+    let countdownTarget=null;
 
-        const { data, error } = await sb.from('invitations').select('*').eq('id', id).single();
+    async function loadInvitation(){
+        const params=new URLSearchParams(window.location.search);
+        const id=params.get('id');
+        if(!id){showError();return;}
+        const{data,error}=await sb.from('invitations').select('*').eq('id',id).single();
+        if(error||!data){showError();return;}
 
-        if (error || !data) { showError(); return; }
-
-        // Title
-        document.title = `${data.groom_en} & ${data.bride_en} — శుభ వివాహం`;
+        document.title=`${data.groom_en} & ${data.bride_en} — శుభ వివాహం`;
 
         // Hero
-        set('heroGroomEn', data.groom_en);
-        set('heroBrideEn', data.bride_en);
+        const surnameTe=data.surname_te||'వెలుగుల';
+        set('heroSurname',surnameTe+' వారి');
+        set('heroGroomEn',data.groom_en);
+        set('heroBrideEn',data.bride_en);
 
-        // Couple details
-        set('groomNameTe', data.groom_te);
-        set('brideNameTe', data.bride_te);
-        set('groomMother',  data.groom_mother_te  || data.groom_mother_en  || '—');
-        set('groomFather',  data.groom_father_te  || data.groom_father_en  || '—');
-        set('brideMother',  data.bride_mother_te  || data.bride_mother_en  || '—');
-        set('brideFather',  data.bride_father_te  || data.bride_father_en  || '—');
+        // Couple names
+        set('groomNameTe',data.groom_te);
+        set('brideNameTe',data.bride_te);
 
-        // Venue
-        if (data.venue_te)    set('venueName', data.venue_te);
-        if (data.venue_addr_te) setHTML('venueAddr', data.venue_addr_te);
-        if (data.map_url) {
-            const btn = document.getElementById('mapBtn');
-            if (btn) btn.href = data.map_url;
+        // Parents
+        let groomP='';
+        if(data.groom_mother_te||data.groom_mother_en) groomP+=parentRow('శ్రీమతి ',data.groom_mother_te||data.groom_mother_en,'గారి ఆత్మీయ కుమారుడు');
+        if(data.groom_father_te||data.groom_father_en) groomP+=parentRow('శ్రీ ',data.groom_father_te||data.groom_father_en,'గారి ఆత్మీయ కుమారుడు');
+        setHTML('groomParents',groomP);
+
+        let brideP='';
+        if(data.bride_mother_te||data.bride_mother_en) brideP+=parentRow('శ్రీమతి ',data.bride_mother_te||data.bride_mother_en,'గారి ఆత్మీయ కుమార్తె');
+        if(data.bride_father_te||data.bride_father_en) brideP+=parentRow('శ్రీ ',data.bride_father_te||data.bride_father_en,'గారి ఆత్మీయ కుమార్తె');
+        setHTML('brideParents',brideP);
+
+        // Muhurtham
+        if(data.panchang_te) setHTML('muhPanchang',data.panchang_te);
+        set('muhDate', data.wedding_date_display||'—');
+        set('muhTime', data.muhurtham_time_display||'—');
+
+        // Countdown target
+        if(data.wedding_date&&data.muhurtham_time){
+            countdownTarget=new Date(`${data.wedding_date}T${data.muhurtham_time}:00+05:30`).getTime();
+            const label=`తేదీ ${data.wedding_date_te||data.wedding_date_display||''} ${data.wedding_day_te||''} ${data.muhurtham_time_display||''}కు`;
+            set('cdLabel',label.trim());
         }
 
-        // Host names in invite section
-        const groomParents = `${data.groom_mother_te || data.groom_mother_en || ''} &amp; ${data.groom_father_te || data.groom_father_en || ''}`;
-        const brideParents = `${data.bride_mother_te || data.bride_mother_en || ''} &amp; ${data.bride_father_te || data.bride_father_en || ''}`;
-        setHTML('hostNames', `${groomParents}<br>${brideParents}`);
+        // Events — Ceremony
+        set('ceremonyDateDisplay',(data.wedding_date_te||'—')+' — '+(data.wedding_day_te||''));
+        set('ceremonyTimeDisplay',data.muhurtham_time_display||'—');
+        set('ceremonyVenueLine',data.venue_te||'—');
+
+        // Events — Reception
+        if(data.reception_date_te||data.reception_date_display){
+            set('receptionDateDisplay',(data.reception_date_te||data.reception_date_display||'—')+' — '+(data.reception_day_te||''));
+            set('receptionTimeDisplay',data.reception_time_display||'—');
+            if(data.reception_venue_te||data.reception_note_te){
+                const noteEl=document.getElementById('receptionNoteRow');
+                if(noteEl){noteEl.style.display='grid';set('receptionNoteDisplay',(data.reception_venue_te||'')+' '+( data.reception_note_te||''));}
+            }
+        } else {
+            const rc=document.getElementById('receptionCard');
+            if(rc)rc.style.display='none';
+        }
+
+        // Venue
+        set('venueName',data.venue_te||'—');
+        setHTML('venueAddr',data.venue_addr_te||'');
+        const mapBtn=document.getElementById('mapBtn');
+        if(mapBtn)mapBtn.href=data.map_url||'https://maps.google.com';
+
+        // Host names
+        const gp=`${data.groom_mother_te||data.groom_mother_en||''} &amp; ${data.groom_father_te||data.groom_father_en||''}`;
+        const bp=`${data.bride_mother_te||data.bride_mother_en||''} &amp; ${data.bride_father_te||data.bride_father_en||''}`;
+        setHTML('hostNames',gp+'<br>'+bp);
 
         // Contacts
-        const grid = document.getElementById('contactsGrid');
-        let contactsHTML = '';
-        contactsHTML += `<div class="fam-section-label rv">వరుని వైపు కుటుంబం</div>`;
-        if (data.groom_father_te && data.groom_father_phone)
-            contactsHTML += contactCard('వరుని తండ్రి', data.groom_father_te || data.groom_father_en, data.groom_father_phone);
-        if (data.groom_mother_te && data.groom_mother_phone)
-            contactsHTML += contactCard('వరుని తల్లి', data.groom_mother_te || data.groom_mother_en, data.groom_mother_phone);
-        contactsHTML += `<div class="fam-section-label rv">వధువు వైపు కుటుంబం</div>`;
-        if (data.bride_father_te && data.bride_father_phone)
-            contactsHTML += contactCard('వధువు తండ్రి', data.bride_father_te || data.bride_father_en, data.bride_father_phone);
-        if (data.bride_mother_te && data.bride_mother_phone)
-            contactsHTML += contactCard('వధువు తల్లి', data.bride_mother_te || data.bride_mother_en, data.bride_mother_phone);
-        grid.innerHTML = contactsHTML;
+        const grid=document.getElementById('contactsGrid');
+        let html='';
+        html+='<div class="fam-section-label rv">వరుని వైపు కుటుంబం</div>';
+        if(data.groom_father_te&&data.groom_father_phone) html+=contactCard('వరుని తండ్రి',data.groom_father_te||data.groom_father_en,data.groom_father_phone);
+        if(data.groom_mother_te&&data.groom_mother_phone) html+=contactCard('వరుని తల్లి',data.groom_mother_te||data.groom_mother_en,data.groom_mother_phone);
+        try{const ge=JSON.parse(data.groom_extra_contacts||'[]');ge.forEach(c=>{if(c.name&&c.phone)html+=contactCard(c.role||'',c.name,c.phone);});}catch(e){}
+        html+='<div class="fam-section-label rv">వధువు వైపు కుటుంబం</div>';
+        if(data.bride_father_te&&data.bride_father_phone) html+=contactCard('వధువు తండ్రి',data.bride_father_te||data.bride_father_en,data.bride_father_phone);
+        if(data.bride_mother_te&&data.bride_mother_phone) html+=contactCard('వధువు తల్లి',data.bride_mother_te||data.bride_mother_en,data.bride_mother_phone);
+        try{const be=JSON.parse(data.bride_extra_contacts||'[]');be.forEach(c=>{if(c.name&&c.phone)html+=contactCard(c.role||'',c.name,c.phone);});}catch(e){}
+        grid.innerHTML=html;
 
         // Footer
-        setHTML('footerNames', `${data.groom_en} <span>&amp;</span> ${data.bride_en}`);
+        setHTML('footerNames',`${data.groom_en} <span>&amp;</span> ${data.bride_en}`);
+        set('footerDate',(data.wedding_date_display||'')+(data.wedding_day_te?' · '+data.wedding_day_te:'')+(data.venue_te?' · '+data.venue_te:''));
 
         // Show content
         document.getElementById('mainContent').classList.add('loaded');
-        const ls = document.getElementById('loadingScreen');
+        const ls=document.getElementById('loadingScreen');
         ls.classList.add('fade-out');
-        setTimeout(() => ls.style.display = 'none', 800);
+        setTimeout(()=>ls.style.display='none',800);
 
-        // Observe newly injected .rv elements
-        const io = new IntersectionObserver(entries => {
-            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.rv').forEach(el => io.observe(el));
+        // Reveal
+        const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:0.1});
+        document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+        // Start countdown now that we have the target
+        tick();
+        setInterval(tick,1000);
     }
 
-    function showError() {
-        document.getElementById('loadingScreen').style.display = 'none';
+    function showError(){
+        document.getElementById('loadingScreen').style.display='none';
         document.getElementById('errorScreen').classList.add('show');
     }
 
-    // Countdown
-    (function(){
-        const T = new Date('2026-08-10T11:00:00+05:30').getTime();
-        const p = n => String(n).padStart(2,'0');
-        function tick(){
-            const diff = T - Date.now();
-            if (diff <= 0) { ['d','h','m','s'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent='00'; }); return; }
-            const d=document.getElementById('d'), h=document.getElementById('h'), m=document.getElementById('m'), s=document.getElementById('s');
-            if(d) d.textContent=p(Math.floor(diff/86400000));
-            if(h) h.textContent=p(Math.floor((diff%86400000)/3600000));
-            if(m) m.textContent=p(Math.floor((diff%3600000)/60000));
-            if(s) s.textContent=p(Math.floor((diff%60000)/1000));
-        }
-        tick(); setInterval(tick,1000);
-    })();
+    function tick(){
+        if(!countdownTarget)return;
+        const diff=countdownTarget-Date.now();
+        const p=n=>String(Math.max(0,n)).padStart(2,'0');
+        if(diff<=0){['d','h','m','s'].forEach(id=>set(id,'00'));return;}
+        set('d',p(Math.floor(diff/86400000)));
+        set('h',p(Math.floor((diff%86400000)/3600000)));
+        set('m',p(Math.floor((diff%3600000)/60000)));
+        set('s',p(Math.floor((diff%60000)/1000)));
+    }
 
-    window.onload = loadInvitation;
+    window.onload=loadInvitation;
 </script>
 </body>
 </html>
