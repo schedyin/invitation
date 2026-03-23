@@ -53,7 +53,55 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            padding: 2.5rem 0 3.5rem; /* Decreased top and bottom padding */
+            padding: 6rem 0 3.5rem; /* Increased top padding to accommodate big hangings */
+        }
+
+        .top-decor-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 5;
+            pointer-events: none; /* So they don't block clicks */
+        }
+
+        .top-decor-full {
+            width: 100%; /* Spans the entire width */
+            height: auto;
+            display: block;
+            position: relative;
+            z-index: 2; /* Keeps border above the hanging strings */
+        }
+
+        .hanging {
+            position: absolute;
+            z-index: 1; /* Hangs behind the top border */
+            transform-origin: top center;
+            animation: hangSwing 4s ease-in-out infinite alternate;
+        }
+
+        .hanging-outer {
+            top: -2px;
+            width: 8%; /* Even smaller size */
+            max-width: 32px;
+        }
+
+        .hanging-inner {
+            top: -12px; /* Adjusted to match the new smaller size */
+            width: 6.5%; /* Even smaller size */
+            max-width: 26px;
+            animation-duration: 5s;
+            animation-direction: alternate-reverse;
+        }
+
+        .hanging.left { left: 2%; }
+        .hanging.left-in { left: 24%; }
+        .hanging.right-in { right: 24%; }
+        .hanging.right { right: 2%; }
+
+        @keyframes hangSwing {
+            from { transform: rotate(-3deg); }
+            to { transform: rotate(3deg); }
         }
 
         .hero-center-img {
@@ -147,6 +195,17 @@
 
     <!-- ========== HERO SECTION ========== -->
     <section class="hero" id="top">
+        <div class="top-decor-container">
+            <!-- 4 Hangings -->
+            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Left Outer" class="hanging hanging-outer left">
+            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Left Inner" class="hanging hanging-inner left-in">
+            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Right Inner" class="hanging hanging-inner right-in">
+            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Right Outer" class="hanging hanging-outer right">
+            
+            <!-- Top floral border -->
+            <img src="https://www.schedy.in/flowers.png" alt="Top Decor" class="top-decor-full">
+        </div>
+        
         <div class="hero-inner">
             <p class="hero-sub">వెలుగుల వారి</p>
             <img src="https://www.schedy.in/image.svg" alt="Center Graphic" class="hero-center-img">
