@@ -82,22 +82,22 @@
 
         .hanging-outer {
             top: -2px;
-            width: 8%; /* Even smaller size */
-            max-width: 32px;
+            width: 6%; /* Even smaller size */
+            max-width: 24px;
         }
 
         .hanging-inner {
-            top: -12px; /* Adjusted to match the new smaller size */
-            width: 6.5%; /* Even smaller size */
-            max-width: 26px;
+            top: -12px; 
+            width: 5%; /* Even smaller size */
+            max-width: 20px;
             animation-duration: 5s;
             animation-direction: alternate-reverse;
         }
 
-        .hanging.left { left: 2%; }
-        .hanging.left-in { left: 24%; }
-        .hanging.right-in { right: 24%; }
-        .hanging.right { right: 2%; }
+        .hanging.left { left: 3%; }
+        .hanging.left-in { left: 15%; } /* Decreased gap */
+        .hanging.right-in { right: 15%; } /* Decreased gap */
+        .hanging.right { right: 3%; }
 
         @keyframes hangSwing {
             from { transform: rotate(-3deg); }
