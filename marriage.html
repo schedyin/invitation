@@ -99,6 +99,9 @@
         .cd-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
         .cd-n{font-family:var(--number-font);font-size:1.8rem;font-weight:600;color:var(--gold2);line-height:1;display:block;}
         .cd-l{font-size:0.55rem;color:var(--gold3);display:block;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.1em;}
+        /* Completed state */
+        .cd-complete{text-align:center;position:relative;z-index:2;display:none;}
+        .cd-complete-text{font-family:'Noto Serif Telugu',serif;font-size:1.2rem;color:var(--gold2);animation:glowP 3s ease-in-out infinite;}
 
         /* COUPLE */
         .s-couple{background:var(--ink);border-bottom:1px solid var(--gborder2);}
@@ -143,6 +146,9 @@
         .ev-info-icon svg{width:100%;height:100%;}
         .ev-info-label{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:0.28rem;opacity:0.85;}
         .ev-info-te{font-family:'Noto Serif Telugu',serif;font-size:0.88rem;color:var(--ivory2);line-height:1.6;}
+        /* same venue pill */
+        .same-venue-pill{display:inline-flex;align-items:center;gap:0.35rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:0.25rem 0.75rem;font-family:'Noto Serif Telugu',serif;font-size:0.78rem;color:var(--gold3);}
+        .same-venue-pill::before{content:'📍';font-size:0.75rem;}
 
         /* VENUE */
         .s-venue{padding:4rem 1.4rem;background:var(--maroon3);border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);position:relative;overflow:hidden;}
@@ -303,11 +309,14 @@
     <!-- COUNTDOWN -->
     <section class="s-countdown">
         <p class="cd-label rv" id="cdLabel">వివాహ సుముహూర్తానికి</p>
-        <div class="cd-grid rv rv-d1">
+        <div class="cd-grid rv rv-d1" id="cdGrid">
             <div class="cd-cell"><span class="cd-n" id="d">00</span><span class="cd-l">రోజులు</span></div>
             <div class="cd-cell"><span class="cd-n" id="h">00</span><span class="cd-l">గంటలు</span></div>
             <div class="cd-cell"><span class="cd-n" id="m">00</span><span class="cd-l">నిమిషాలు</span></div>
             <div class="cd-cell"><span class="cd-n" id="s">00</span><span class="cd-l">సెకన్లు</span></div>
+        </div>
+        <div class="cd-complete rv rv-d1" id="cdComplete">
+            <div class="cd-complete-text">🪷 శుభ వివాహ శుభాకాంక్షలు! 🪷</div>
         </div>
     </section>
 
@@ -375,7 +384,7 @@
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="10" y1="10" x2="10" y2="5.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="10" x2="13.5" y2="11.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="10" r="1" fill="#E2C068"/></svg></div>
                             <div><div class="ev-info-label">సుముహూర్తం</div><div class="ev-info-te" id="ceremonyTimeDisplay">—</div></div>
                         </div>
-                        <div class="ev-info-row" id="ceremonyVenueRow">
+                        <div class="ev-info-row">
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7C5 10.5 10 18 10 18C10 18 15 10.5 15 7C15 4.24 12.76 2 10 2ZM10 8.5C9.17 8.5 8.5 7.83 8.5 7C8.5 6.17 9.17 5.5 10 5.5C10.83 5.5 11.5 6.17 11.5 7C11.5 7.83 10.83 8.5 10 8.5Z" fill="#E2C068" opacity="0.8"/></svg></div>
                             <div><div class="ev-info-label">వేదిక</div><div class="ev-info-te" id="ceremonyVenueLine">—</div></div>
                         </div>
@@ -399,9 +408,9 @@
                             <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E2C068" stroke-width="1.2" fill="none"/><line x1="10" y1="10" x2="10" y2="5.5" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="10" x2="14" y2="10" stroke="#E2C068" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="10" r="1" fill="#E2C068"/></svg></div>
                             <div><div class="ev-info-label">సమయం</div><div class="ev-info-te" id="receptionTimeDisplay">—</div></div>
                         </div>
-                        <div class="ev-info-row" id="receptionNoteRow" style="display:none;">
-                            <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7C5 10.5 10 18 10 18C10 18 15 10.5 15 7C15 4.24 12.76 2 10 2Z" fill="#E2C068" opacity="0.6"/></svg></div>
-                            <div><div class="ev-info-label">వేదిక / గమనిక</div><div class="ev-info-te" id="receptionNoteDisplay">—</div></div>
+                        <div class="ev-info-row" id="receptionVenueRow">
+                            <div class="ev-info-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7C5 10.5 10 18 10 18C10 18 15 10.5 15 7C15 4.24 12.76 2 10 2ZM10 8.5C9.17 8.5 8.5 7.83 8.5 7C8.5 6.17 9.17 5.5 10 5.5C10.83 5.5 11.5 6.17 11.5 7C11.5 7.83 10.83 8.5 10 8.5Z" fill="#E2C068" opacity="0.8"/></svg></div>
+                            <div><div class="ev-info-label">వేదిక</div><div class="ev-info-te" id="receptionVenueDisplay">—</div></div>
                         </div>
                     </div>
                 </div>
@@ -495,6 +504,7 @@
     }
 
     let countdownTarget=null;
+    let cdInterval=null;
 
     async function loadInvitation(){
         const params=new URLSearchParams(window.location.search);
@@ -506,8 +516,8 @@
         document.title=`${data.groom_en} & ${data.bride_en} — శుభ వివాహం`;
 
         // Hero
-        const surnameTe=data.surname_te||'వెలుగుల';
-        set('heroSurname',surnameTe+' వారి');
+        const surnameTe=data.surname_te||'';
+        set('heroSurname',(surnameTe?surnameTe+' వారి':''));
         set('heroGroomEn',data.groom_en);
         set('heroBrideEn',data.bride_en);
 
@@ -531,25 +541,40 @@
         set('muhDate', data.wedding_date_display||'—');
         set('muhTime', data.muhurtham_time_display||'—');
 
-        // Countdown target
+        // ══ COUNTDOWN — uses wedding_date + muhurtham_time ══
         if(data.wedding_date&&data.muhurtham_time){
             countdownTarget=new Date(`${data.wedding_date}T${data.muhurtham_time}:00+05:30`).getTime();
-            const label=`తేదీ ${data.wedding_date_te||data.wedding_date_display||''} ${data.wedding_day_te||''} ${data.muhurtham_time_display||''}కు`;
-            set('cdLabel',label.trim());
+            const dayTe=data.wedding_day_te?` ${data.wedding_day_te}`:'';
+            const label=`${data.wedding_date_te||data.wedding_date_display||''}${dayTe} ${data.muhurtham_time_display||''}`;
+            set('cdLabel',label.trim()+' కి');
+        } else if(data.wedding_date){
+            countdownTarget=new Date(data.wedding_date+'T00:00:00+05:30').getTime();
         }
 
-        // Events — Ceremony
-        set('ceremonyDateDisplay',(data.wedding_date_te||'—')+' — '+(data.wedding_day_te||''));
-        set('ceremonyTimeDisplay',data.muhurtham_time_display||'—');
-        set('ceremonyVenueLine',data.venue_te||'—');
+        // Events — Ceremony (uses SAME wedding date & time from top section)
+        const wDateTe=data.wedding_date_te||'—';
+        const wDayTe=data.wedding_day_te?(' — '+data.wedding_day_te):'';
+        set('ceremonyDateDisplay', wDateTe+wDayTe);
+        set('ceremonyTimeDisplay', data.muhurtham_time_display||'—');
+        set('ceremonyVenueLine', data.venue_te||'—');
 
         // Events — Reception
-        if(data.reception_date_te||data.reception_date_display){
-            set('receptionDateDisplay',(data.reception_date_te||data.reception_date_display||'—')+' — '+(data.reception_day_te||''));
-            set('receptionTimeDisplay',data.reception_time_display||'—');
-            if(data.reception_venue_te||data.reception_note_te){
-                const noteEl=document.getElementById('receptionNoteRow');
-                if(noteEl){noteEl.style.display='grid';set('receptionNoteDisplay',(data.reception_venue_te||'')+' '+( data.reception_note_te||''));}
+        if(data.reception_date||data.reception_date_te){
+            const rDateTe=data.reception_date_te||data.reception_date_display||'—';
+            const rDayTe=data.reception_day_te?(' — '+data.reception_day_te):'';
+            set('receptionDateDisplay', rDateTe+rDayTe);
+            set('receptionTimeDisplay', data.reception_time_display||'—');
+
+            // Venue display: same venue pill OR custom venue + note
+            const sameVenue=data.reception_same_venue===true||data.reception_venue_te==='అదే వేదికలో';
+            const venueRow=document.getElementById('receptionVenueRow');
+            if(venueRow){
+                if(sameVenue){
+                    setHTML('receptionVenueDisplay','<span class="same-venue-pill">అదే వేదికలో</span>');
+                } else {
+                    const parts=[data.reception_venue_te,data.reception_note_te].filter(Boolean);
+                    set('receptionVenueDisplay',parts.join(' — ')||'—');
+                }
             }
         } else {
             const rc=document.getElementById('receptionCard');
@@ -594,9 +619,9 @@
         const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:0.1});
         document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 
-        // Start countdown now that we have the target
+        // Start countdown
         tick();
-        setInterval(tick,1000);
+        cdInterval=setInterval(tick,1000);
     }
 
     function showError(){
@@ -608,7 +633,17 @@
         if(!countdownTarget)return;
         const diff=countdownTarget-Date.now();
         const p=n=>String(Math.max(0,n)).padStart(2,'0');
-        if(diff<=0){['d','h','m','s'].forEach(id=>set(id,'00'));return;}
+        const grid=document.getElementById('cdGrid');
+        const complete=document.getElementById('cdComplete');
+        if(diff<=0){
+            // Wedding has happened — show celebration message
+            if(grid)grid.style.display='none';
+            if(complete)complete.style.display='block';
+            if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+            return;
+        }
+        if(grid)grid.style.display='grid';
+        if(complete)complete.style.display='none';
         set('d',p(Math.floor(diff/86400000)));
         set('h',p(Math.floor((diff%86400000)/3600000)));
         set('m',p(Math.floor((diff%3600000)/60000)));
