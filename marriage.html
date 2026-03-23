@@ -93,8 +93,8 @@
         /* COUNTDOWN */
         .s-countdown{background:var(--ink2);border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);position:relative;overflow:hidden;padding-top:3rem;padding-bottom:4rem;}
         .s-countdown::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(201,168,76,0.06),transparent);}
-        .cd-label{font-size:0.85rem;color:var(--gold3);text-align:center;margin-bottom:2.5rem;line-height:2;position:relative;z-index:2;}
-        .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;max-width:400px;margin:0 auto;position:relative;z-index:2;}
+        .cd-label{font-size:0.85rem;color:var(--gold3);text-align:center;margin-bottom:2.5rem;line-height:2;position:relative;z-index:2;opacity:1;}
+        .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;max-width:400px;margin:0 auto;position:relative;z-index:2;opacity:1;}
         .cd-cell{text-align:center;background:rgba(255,255,255,0.03);border:1px solid var(--gborder);border-radius:4px;padding:1.2rem 0.3rem 1rem;position:relative;}
         .cd-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
         .cd-n{font-family:var(--number-font);font-size:1.8rem;font-weight:600;color:var(--gold2);line-height:1;display:block;}
@@ -308,14 +308,14 @@
 
     <!-- COUNTDOWN -->
     <section class="s-countdown">
-        <p class="cd-label rv" id="cdLabel">వివాహ సుముహూర్తానికి</p>
-        <div class="cd-grid rv rv-d1" id="cdGrid">
+        <p class="cd-label" id="cdLabel">వివాహ సుముహూర్తానికి</p>
+        <div class="cd-grid" id="cdGrid">
             <div class="cd-cell"><span class="cd-n" id="d">00</span><span class="cd-l">రోజులు</span></div>
             <div class="cd-cell"><span class="cd-n" id="h">00</span><span class="cd-l">గంటలు</span></div>
             <div class="cd-cell"><span class="cd-n" id="m">00</span><span class="cd-l">నిమిషాలు</span></div>
             <div class="cd-cell"><span class="cd-n" id="s">00</span><span class="cd-l">సెకన్లు</span></div>
         </div>
-        <div class="cd-complete rv rv-d1" id="cdComplete">
+        <div class="cd-complete" id="cdComplete">
             <div class="cd-complete-text">🪷 శుభ వివాహ శుభాకాంక్షలు! 🪷</div>
         </div>
     </section>
@@ -541,14 +541,25 @@
         set('muhDate', data.wedding_date_display||'—');
         set('muhTime', data.muhurtham_time_display||'—');
 
-        // ══ COUNTDOWN — uses wedding_date + muhurtham_time ══
-        if(data.wedding_date&&data.muhurtham_time){
-            countdownTarget=new Date(`${data.wedding_date}T${data.muhurtham_time}:00+05:30`).getTime();
-            const dayTe=data.wedding_day_te?` ${data.wedding_day_te}`:'';
-            const label=`${data.wedding_date_te||data.wedding_date_display||''}${dayTe} ${data.muhurtham_time_display||''}`;
-            set('cdLabel',label.trim()+' కి');
+        // ══ COUNTDOWN — parse wedding_date (YYYY-MM-DD) + muhurtham_time (HH:MM or HH:MM:SS) as IST ══
+        if(data.wedding_date && data.muhurtham_time){
+            // Split safely — time may come as "HH:MM" or "HH:MM:SS" from Supabase
+            const [dy, dm, dd] = data.wedding_date.split('-').map(Number);
+            const timeParts = data.muhurtham_time.split(':').map(Number);
+            const th = timeParts[0] || 0;
+            const tm = timeParts[1] || 0;
+            // Build UTC ms: IST = UTC+5:30, so subtract 5h30m to get UTC
+            const istOffsetMs = (5 * 60 + 30) * 60 * 1000;
+            const localMs = Date.UTC(dy, dm - 1, dd, th, tm, 0);
+            countdownTarget = localMs - istOffsetMs;
+
+            const dayTe = data.wedding_day_te ? ` ${data.wedding_day_te}` : '';
+            const label = `${data.wedding_date_te || data.wedding_date_display || ''}${dayTe} ${data.muhurtham_time_display || ''}`;
+            set('cdLabel', label.trim() + ' కి');
         } else if(data.wedding_date){
-            countdownTarget=new Date(data.wedding_date+'T00:00:00+05:30').getTime();
+            const [dy, dm, dd] = data.wedding_date.split('-').map(Number);
+            const istOffsetMs = (5 * 60 + 30) * 60 * 1000;
+            countdownTarget = Date.UTC(dy, dm - 1, dd, 0, 0, 0) - istOffsetMs;
         }
 
         // Events — Ceremony (uses SAME wedding date & time from top section)
