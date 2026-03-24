@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/:id",
-      "destination": "/index.html?id=:id"
+      "source": "/(?<id>[a-zA-Z0-9-]+)",
+      "destination": "/index.html?id=$id"
     }
   ]
 }
