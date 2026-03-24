@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'IBM Plex Sans', sans-serif; background-color: #F1EFFF; color: #0f172a; padding: 2rem; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(103, 61, 230, 0.05); }
+        h1 { color: #673DE6; margin-bottom: 1.5rem; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+        .action-btn { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; margin-right: 5px; text-decoration: none; display: inline-block; }
+        .btn-view { background: #e0e7ff; color: #4338ca; }
+        .btn-edit { background: #fef3c7; color: #b45309; }
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .loader { text-align: center; padding: 2rem; color: #64748b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✦ My Invitations ✦</h1>
+    <div style="text-align: right; margin-bottom: 1rem;">
+        <a href="admin.html" class="action-btn btn-view" style="background: #673DE6; color: white;">+ Create New</a>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Couple</th>
+                <th>Link ID</th>
+                <th>Wedding Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="invite-list">
+            <tr><td colspan="4" class="loader">Loading invitations...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const supabaseClient = supabase.createClient(
+        'https://jihtqbzrqymdkypicajz.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+    );
+
+    async function loadInvitations() {
+        const { data, error } = await supabaseClient
+            .from('invitations')
+            .select('id, bride_name, groom_name, event_date')
+            .order('created_at', { ascending: false });
+
+        const tbody = document.getElementById('invite-list');
+        tbody.innerHTML = '';
+
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color:red;">Error loading data</td></tr>`;
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="loader">No invitations found. Create one!</td></tr>`;
+            return;
+        }
+
+        data.forEach(invite => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${invite.groom_name} & ${invite.bride_name}</strong></td>
+                <td>/${invite.id}</td>
+                <td>${invite.event_date}</td>
+                <td>
+                    <a href="/${invite.id}" target="_blank" class="action-btn btn-view">View</a>
+                    <a href="admin.html?edit=${invite.id}" class="action-btn btn-edit">Edit</a>
+                    <button onclick="deleteInvite('${invite.id}')" class="action-btn btn-delete">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function deleteInvite(id) {
+        if (confirm(`Are you sure you want to delete the invitation for /${id}? This cannot be undone.`)) {
+            const { error } = await supabaseClient.from('invitations').delete().eq('id', id);
+            if (error) alert("Error deleting: " + error.message);
+            else loadInvitations(); // Reload list
+        }
+    }
+
+    loadInvitations();
+</script>
+</body>
+</html>
