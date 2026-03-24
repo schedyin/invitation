@@ -41,6 +41,39 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
     );
 
+    // --- NEW: Date Formatter (YYYY-MM-DD to DD-MM-YYYY) ---
+    function formatTeluguDate(dateStr) {
+        if (!dateStr || !dateStr.includes('-')) return dateStr;
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        return dateStr;
+    }
+
+    // --- NEW: Time Formatter (23:41 to రాత్రి 11:41 నిమిషాలకు) ---
+    function formatTeluguTime(timeStr) {
+        if (!timeStr || !timeStr.includes(':')) return timeStr;
+        let [hh, mm] = timeStr.split(':');
+        let hour = parseInt(hh, 10);
+        let period = '';
+        
+        // Determine the Telugu time of day
+        if (hour >= 0 && hour < 12) period = 'ఉదయం'; // Morning
+        else if (hour >= 12 && hour < 16) period = 'మధ్యాహ్నం'; // Afternoon
+        else if (hour >= 16 && hour < 20) period = 'సాయంత్రం'; // Evening
+        else period = 'రాత్రి'; // Night (20:00 to 23:59)
+        
+        // Convert to 12-hour format
+        let hour12 = hour % 12;
+        if (hour12 === 0) hour12 = 12;
+        
+        // Apply "గంటలకు" (hours) or "నిమిషాలకు" (minutes)
+        if (mm === '00') {
+            return `${period} ${hour12}:00 గంటలకు`;
+        } else {
+            return `${period} ${hour12}:${mm} నిమిషాలకు`;
+        }
+    }
+
     async function renderInvite() {
       let pathName = window.location.pathname.replace(/^\/|\/$/g, ''); 
       let inviteId = null;
@@ -73,7 +106,7 @@
 
         let html = invite.templates.html_code;
 
-        // Combine all data into one object for easy searching
+        // Combine all data into one object
         const allData = {
             bride_name: invite.bride_name,
             groom_name: invite.groom_name,
@@ -81,33 +114,45 @@
             ...(invite.details || {})
         };
 
-        // 1. MAGIC CONDITIONAL BLOCKS: Process {{#if tag}} ... {{/if}}
-        // This will completely hide buttons or sections if the data is missing!
+        // 1. Process {{#if tag}} ... {{/if}} to hide missing blocks
         html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
-            if (allData[key] && allData[key].toString().trim() !== '') {
-                return content; // The data exists, keep the HTML!
-            }
-            return ''; // The data is missing, delete this entire block!
+            if (allData[key] && allData[key].toString().trim() !== '') return content; 
+            return ''; 
         });
 
-        // 2. Standard Tag Replacements (Swap {{tags}} with actual text)
+        // 2. Standard Tag Replacements (With Date & Time Formatting!)
         for (const [key, value] of Object.entries(allData)) {
-            if (typeof value === 'string' || typeof value === 'boolean') {
+            let finalValue = value;
+            
+            if (typeof finalValue === 'string') {
+                // If the key contains the word 'date', format it!
+                if (key.includes('date')) finalValue = formatTeluguDate(finalValue);
+                // If the key contains the word 'time', format it!
+                if (key.includes('time')) finalValue = formatTeluguTime(finalValue);
+                
                 const regex = new RegExp(`{{${key}}}`, 'g');
-                html = html.replace(regex, value);
+                html = html.replace(regex, finalValue);
             }
         }
 
-        // 3. Format Date
-        const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
-          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        });
-        html = html.replace(/{{event_date}}/g, formattedDate);
-
-        // 4. Cleanup any leftover tags that were blank in the admin panel
+        // Cleanup empty tags
         html = html.replace(/{{[^{}]+}}/g, '');
 
+        // Inject HTML
         document.getElementById('invitation-container').innerHTML = html;
+
+        // --- NEW: FORCE SCRIPTS TO RUN ---
+        // Browsers block <script> tags injected via innerHTML. This forces them to execute!
+        const scripts = document.getElementById('invitation-container').getElementsByTagName('script');
+        for (let i = 0; i < scripts.length; i++) {
+            const newScript = document.createElement('script');
+            if (scripts[i].src) {
+                newScript.src = scripts[i].src;
+            } else {
+                newScript.textContent = scripts[i].innerHTML;
+            }
+            document.body.appendChild(newScript);
+        }
 
       } catch (err) {
         document.getElementById('loader').innerText = "An error occurred while loading.";
