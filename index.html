@@ -35,39 +35,34 @@
   <div id="invitation-container"></div>
 
   <script>
-    // Initialize Supabase Client (Using supabaseClient to avoid naming collisions)
+    // Initialize Supabase Client
     const supabaseClient = supabase.createClient(
       'https://jihtqbzrqymdkypicajz.supabase.co', 
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
     );
 
     async function renderInvite() {
-      // 1. Grab the path from the URL and clean up any stray slashes
-      // This turns "/harshajw" or "/harshajw/" into exactly "harshajw"
+      // 1. Bulletproof ID Extraction (Handles both schedy.in/id and ?id=id)
       let pathName = window.location.pathname.replace(/^\/|\/$/g, ''); 
-      
       let inviteId = null;
 
-      // 2. Check if the path is a custom ID (ignore if it's just "index.html" or empty)
       if (pathName && pathName !== 'index.html') {
         inviteId = pathName; 
       } else {
-        // 3. Fallback: If there's no path ID, look for the old ?id= format
         const urlParams = new URLSearchParams(window.location.search);
         inviteId = urlParams.get('id');
       }
 
-      // 4. If we still have no ID, stop and show an error
       if (!inviteId) {
         document.getElementById('loader').innerText = "Invalid Invitation Link.";
         return;
       }
 
       try {
-        // 5. Fetch the invitation details and the linked template HTML from Supabase
+        // 2. Fetch the invitation details (INCLUDING the new 'details' JSON column)
         const { data: invite, error } = await supabaseClient
           .from('invitations')
-          .select(`bride_name, groom_name, event_date, templates ( html_code )`)
+          .select(`bride_name, groom_name, event_date, details, templates ( html_code )`)
           .eq('id', inviteId)
           .single();
 
@@ -77,21 +72,35 @@
           return;
         }
 
-        // 6. Hide loader once data is found
         document.getElementById('loader').style.display = 'none';
 
-        // 7. Replace the {{placeholders}} with actual database values
         let html = invite.templates.html_code;
+
+        // 3. MAGIC REPLACER: Loop through the JSON details and replace matching {{tags}}
+        if (invite.details) {
+            for (const [key, value] of Object.entries(invite.details)) {
+                if (typeof value === 'string') {
+                    // This looks for {{surname-te}}, {{venue-en}}, etc.
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    html = html.replace(regex, value);
+                }
+            }
+        }
+
+        // 4. Fallback for the Core Standard Fields
         html = html.replace(/{{bride_name}}/g, invite.bride_name);
         html = html.replace(/{{groom_name}}/g, invite.groom_name);
         
-        // Format the date nicely (e.g., "Saturday, August 24, 2026")
+        // Format the core event date nicely
         const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
         });
         html = html.replace(/{{event_date}}/g, formattedDate);
 
-        // 8. Inject the final HTML into the page
+        // 5. CLEANUP: If any {{tags}} were left blank in the admin panel, strip them out so the text doesn't look broken
+        html = html.replace(/{{[^{}]+}}/g, '');
+
+        // 6. Inject the final HTML into the page
         document.getElementById('invitation-container').innerHTML = html;
 
       } catch (err) {
