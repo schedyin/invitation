@@ -42,53 +42,62 @@
     );
 
     async function renderInvite() {
-      // 1. Try to get the ID from a query parameter (e.g., ?id=harshajw)
-      const urlParams = new URLSearchParams(window.location.search);
-      let inviteId = urlParams.get('id');
+      // 1. Grab the path from the URL and clean up any stray slashes
+      // This turns "/harshajw" or "/harshajw/" into exactly "harshajw"
+      let pathName = window.location.pathname.replace(/^\/|\/$/g, ''); 
+      
+      let inviteId = null;
 
-      // 2. NEW LOGIC: If no query parameter, get the ID from the URL path (e.g., schedy.in/harshajw)
-      if (!inviteId && window.location.pathname.length > 1) {
-        // substring(1) removes the leading slash ("/") to get just "harshajw"
-        inviteId = window.location.pathname.substring(1); 
-        
-        // Safety cleanup just in case there's a trailing slash
-        inviteId = inviteId.replace(/\/$/, "");
+      // 2. Check if the path is a custom ID (ignore if it's just "index.html" or empty)
+      if (pathName && pathName !== 'index.html') {
+        inviteId = pathName; 
+      } else {
+        // 3. Fallback: If there's no path ID, look for the old ?id= format
+        const urlParams = new URLSearchParams(window.location.search);
+        inviteId = urlParams.get('id');
       }
 
-      if (!inviteId || inviteId === "index.html") {
+      // 4. If we still have no ID, stop and show an error
+      if (!inviteId) {
         document.getElementById('loader').innerText = "Invalid Invitation Link.";
         return;
       }
 
-      // 3. Fetch the invitation details and the linked template HTML from Supabase
-      const { data: invite, error } = await supabaseClient
-        .from('invitations')
-        .select(`bride_name, groom_name, event_date, templates ( html_code )`)
-        .eq('id', inviteId)
-        .single();
+      try {
+        // 5. Fetch the invitation details and the linked template HTML from Supabase
+        const { data: invite, error } = await supabaseClient
+          .from('invitations')
+          .select(`bride_name, groom_name, event_date, templates ( html_code )`)
+          .eq('id', inviteId)
+          .single();
 
-      if (error || !invite || !invite.templates) {
-        document.getElementById('loader').innerText = "Invitation not found.";
-        console.error("Supabase Fetch Error:", error);
-        return;
+        if (error || !invite || !invite.templates) {
+          document.getElementById('loader').innerText = "Invitation not found.";
+          console.error("Supabase Fetch Error:", error);
+          return;
+        }
+
+        // 6. Hide loader once data is found
+        document.getElementById('loader').style.display = 'none';
+
+        // 7. Replace the {{placeholders}} with actual database values
+        let html = invite.templates.html_code;
+        html = html.replace(/{{bride_name}}/g, invite.bride_name);
+        html = html.replace(/{{groom_name}}/g, invite.groom_name);
+        
+        // Format the date nicely (e.g., "Saturday, August 24, 2026")
+        const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        html = html.replace(/{{event_date}}/g, formattedDate);
+
+        // 8. Inject the final HTML into the page
+        document.getElementById('invitation-container').innerHTML = html;
+
+      } catch (err) {
+        document.getElementById('loader').innerText = "An error occurred while loading.";
+        console.error("General Error:", err);
       }
-
-      // 4. Hide loader once data is found
-      document.getElementById('loader').style.display = 'none';
-
-      // 5. Replace the {{placeholders}} with actual database values
-      let html = invite.templates.html_code;
-      html = html.replace(/{{bride_name}}/g, invite.bride_name);
-      html = html.replace(/{{groom_name}}/g, invite.groom_name);
-      
-      // Format the date nicely (e.g., "Saturday, August 24, 2026")
-      const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-      });
-      html = html.replace(/{{event_date}}/g, formattedDate);
-
-      // 6. Inject the final HTML into the page
-      document.getElementById('invitation-container').innerHTML = html;
     }
 
     // Execute the function when the script loads
