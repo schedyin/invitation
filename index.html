@@ -1,40 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wedding Invitation</title>
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <style>
-    /* Reset styles to ensure the injected templates look pixel-perfect */
-    body { 
-      margin: 0; 
-      padding: 0; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      background-color: #f9f9f9; 
-    }
-    #loader { 
-      font-family: 'IBM Plex Sans', sans-serif; 
-      font-size: 1.2rem; 
-      color: #555; 
-    }
-    #invitation-container { 
-      width: 100%; 
-      max-width: 100%; 
-    }
-  </style>
-</head>
-<body>
-  
-  <div id="loader">Loading invitation...</div>
-  <div id="invitation-container"></div>
-
-  <script>
+<script>
     // Initialize Supabase Client
     const supabaseClient = supabase.createClient(
       'https://jihtqbzrqymdkypicajz.supabase.co', 
@@ -42,7 +6,6 @@
     );
 
     async function renderInvite() {
-      // 1. Bulletproof ID Extraction (Handles both schedy.in/id and ?id=id)
       let pathName = window.location.pathname.replace(/^\/|\/$/g, ''); 
       let inviteId = null;
 
@@ -59,7 +22,6 @@
       }
 
       try {
-        // 2. Fetch the invitation details (INCLUDING the new 'details' JSON column)
         const { data: invite, error } = await supabaseClient
           .from('invitations')
           .select(`bride_name, groom_name, event_date, details, templates ( html_code )`)
@@ -68,7 +30,6 @@
 
         if (error || !invite || !invite.templates) {
           document.getElementById('loader').innerText = "Invitation not found.";
-          console.error("Supabase Fetch Error:", error);
           return;
         }
 
@@ -76,41 +37,46 @@
 
         let html = invite.templates.html_code;
 
-        // 3. MAGIC REPLACER: Loop through the JSON details and replace matching {{tags}}
-        if (invite.details) {
-            for (const [key, value] of Object.entries(invite.details)) {
-                if (typeof value === 'string') {
-                    // This looks for {{surname-te}}, {{venue-en}}, etc.
-                    const regex = new RegExp(`{{${key}}}`, 'g');
-                    html = html.replace(regex, value);
-                }
+        // Combine all data into one object for easy searching
+        const allData = {
+            bride_name: invite.bride_name,
+            groom_name: invite.groom_name,
+            event_date: invite.event_date,
+            ...(invite.details || {})
+        };
+
+        // 1. MAGIC CONDITIONAL BLOCKS: Process {{#if tag}} ... {{/if}}
+        // This will completely hide buttons or sections if the data is missing!
+        html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
+            if (allData[key] && allData[key].toString().trim() !== '') {
+                return content; // The data exists, keep the HTML!
+            }
+            return ''; // The data is missing, delete this entire block!
+        });
+
+        // 2. Standard Tag Replacements (Swap {{tags}} with actual text)
+        for (const [key, value] of Object.entries(allData)) {
+            if (typeof value === 'string' || typeof value === 'boolean') {
+                const regex = new RegExp(`{{${key}}}`, 'g');
+                html = html.replace(regex, value);
             }
         }
 
-        // 4. Fallback for the Core Standard Fields
-        html = html.replace(/{{bride_name}}/g, invite.bride_name);
-        html = html.replace(/{{groom_name}}/g, invite.groom_name);
-        
-        // Format the core event date nicely
+        // 3. Format Date
         const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
         });
         html = html.replace(/{{event_date}}/g, formattedDate);
 
-        // 5. CLEANUP: If any {{tags}} were left blank in the admin panel, strip them out so the text doesn't look broken
+        // 4. Cleanup any leftover tags that were blank in the admin panel
         html = html.replace(/{{[^{}]+}}/g, '');
 
-        // 6. Inject the final HTML into the page
         document.getElementById('invitation-container').innerHTML = html;
 
       } catch (err) {
         document.getElementById('loader').innerText = "An error occurred while loading.";
-        console.error("General Error:", err);
       }
     }
 
-    // Execute the function when the script loads
     renderInvite();
   </script>
-</body>
-</html>
