@@ -25,11 +25,16 @@
 
   <div id="result-link"></div>
 
-  <script>
-    const supabase = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
+<script>
+    // FIX: Changed to supabaseClient
+    const supabaseClient = supabase.createClient(
+      'https://jihtqbzrqymdkypicajz.supabase.co', 
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+    );
 
     async function loadTemplates() {
-      const { data, error } = await supabase.from('templates').select('id, name');
+      // FIX: Use supabaseClient
+      const { data, error } = await supabaseClient.from('templates').select('id, name');
       const select = document.getElementById('template-select');
       select.innerHTML = '<option value="">-- Select a Template --</option>';
       
@@ -48,7 +53,8 @@
 
       if (!template_id) return alert("Please select a template!");
 
-      const { data, error } = await supabase
+      // FIX: Use supabaseClient
+      const { data, error } = await supabaseClient
         .from('invitations')
         .insert([{ bride_name, groom_name, event_date, template_id }])
         .select()
