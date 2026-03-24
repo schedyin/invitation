@@ -14,7 +14,7 @@
 
 <select id="template"></select><br><br>
 
-<button onclick="create()">Generate Link</button>
+<button onclick="createInvite()">Generate Link</button>
 
 <p id="link"></p>
 
@@ -22,10 +22,12 @@
 <script>
 const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ✅ FIXED NAME
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadTemplates() {
-  const { data } = await supabase.from('templates').select('*');
+  const { data } = await client.from('templates').select('*');
 
   const select = document.getElementById('template');
 
@@ -39,14 +41,15 @@ async function loadTemplates() {
 
 loadTemplates();
 
-async function create() {
+// ✅ RENAMED FUNCTION
+async function createInvite() {
   const bride_name = document.getElementById('bride').value;
   const groom_name = document.getElementById('groom').value;
   const date = document.getElementById('date').value;
   const venue = document.getElementById('venue').value;
   const template_id = document.getElementById('template').value;
 
-  const { data } = await supabase
+  const { data } = await client
     .from('invitations')
     .insert([{ bride_name, groom_name, date, venue, template_id }])
     .select();
@@ -55,7 +58,8 @@ async function create() {
 
   const url = window.location.origin + "/index.html?id=" + id;
 
-  document.getElementById('link').innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+  document.getElementById('link').innerHTML =
+    `<a href="${url}" target="_blank">${url}</a>`;
 }
 </script>
 
