@@ -1,67 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin</title>
+  <meta charset="UTF-8">
+  <title>Admin - Create Invitation</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans', sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    input, select, button { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; }
+    #result-link { margin-top: 20px; padding: 10px; background: #e0f7fa; display: none; word-wrap: break-word;}
+  </style>
 </head>
 <body>
+  <h2>Generate Invitation Link</h2>
+  
+  <select id="template-select">
+    <option value="">Loading templates...</option>
+  </select>
+  
+  <input type="text" id="bride-name" placeholder="Bride's Name">
+  <input type="text" id="groom-name" placeholder="Groom's Name">
+  <input type="date" id="event-date">
+  
+  <button onclick="createInvite()">Generate Link</button>
 
-<h2>Create Invitation</h2>
+  <div id="result-link"></div>
 
-<input id="bride" placeholder="Bride Name"><br><br>
-<input id="groom" placeholder="Groom Name"><br><br>
-<input id="date" placeholder="Date"><br><br>
-<input id="venue" placeholder="Venue"><br><br>
+  <script>
+    const supabase = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
 
-<select id="template"></select><br><br>
+    async function loadTemplates() {
+      const { data, error } = await supabase.from('templates').select('id, name');
+      const select = document.getElementById('template-select');
+      select.innerHTML = '<option value="">-- Select a Template --</option>';
+      
+      if (data) {
+        data.forEach(t => {
+          select.innerHTML += `<option value="${t.id}">${t.name}</option>`;
+        });
+      }
+    }
 
-<button onclick="createInvite()">Generate Link</button>
+    async function createInvite() {
+      const template_id = document.getElementById('template-select').value;
+      const bride_name = document.getElementById('bride-name').value;
+      const groom_name = document.getElementById('groom-name').value;
+      const event_date = document.getElementById('event-date').value;
 
-<p id="link"></p>
+      if (!template_id) return alert("Please select a template!");
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
+      const { data, error } = await supabase
+        .from('invitations')
+        .insert([{ bride_name, groom_name, event_date, template_id }])
+        .select()
+        .single();
 
-// ✅ FIXED NAME
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      if (error) {
+        alert('Error: ' + error.message);
+      } else {
+        const linkBox = document.getElementById('result-link');
+        const url = `${window.location.origin}/index.html?id=${data.id}`;
+        linkBox.style.display = 'block';
+        linkBox.innerHTML = `<strong>Success! Share this link:</strong><br><a href="${url}" target="_blank">${url}</a>`;
+      }
+    }
 
-async function loadTemplates() {
-  const { data } = await client.from('templates').select('*');
-
-  const select = document.getElementById('template');
-
-  data.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.id;
-    opt.textContent = t.name;
-    select.appendChild(opt);
-  });
-}
-
-loadTemplates();
-
-// ✅ RENAMED FUNCTION
-async function createInvite() {
-  const bride_name = document.getElementById('bride').value;
-  const groom_name = document.getElementById('groom').value;
-  const date = document.getElementById('date').value;
-  const venue = document.getElementById('venue').value;
-  const template_id = document.getElementById('template').value;
-
-  const { data } = await client
-    .from('invitations')
-    .insert([{ bride_name, groom_name, date, venue, template_id }])
-    .select();
-
-  const id = data[0].id;
-
-  const url = window.location.origin + "/index.html?id=" + id;
-
-  document.getElementById('link').innerHTML =
-    `<a href="${url}" target="_blank">${url}</a>`;
-}
-</script>
-
+    // Load templates when page opens
+    loadTemplates();
+  </script>
 </body>
 </html>
