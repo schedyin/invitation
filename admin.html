@@ -71,7 +71,7 @@
         }
       } else {
         const linkBox = document.getElementById('result-link');
-        const url = `${window.location.origin}/index.html?id=${data.id}`;
+        const url = `${window.location.origin}/${data.id}`;
         linkBox.style.display = 'block';
         linkBox.innerHTML = `<strong>Success! Share this link:</strong><br><a href="${url}" target="_blank">${url}</a>`;
       }
