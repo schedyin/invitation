@@ -17,6 +17,8 @@
     <option value="">Loading templates...</option>
   </select>
   
+  <input type="text" id="custom-id" placeholder="Custom Link ID (e.g., harsha-vardhini)">
+  
   <input type="text" id="bride-name" placeholder="Bride's Name">
   <input type="text" id="groom-name" placeholder="Groom's Name">
   <input type="date" id="event-date">
@@ -25,15 +27,13 @@
 
   <div id="result-link"></div>
 
-<script>
-    // FIX: Changed to supabaseClient
+  <script>
     const supabaseClient = supabase.createClient(
       'https://jihtqbzrqymdkypicajz.supabase.co', 
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
     );
 
     async function loadTemplates() {
-      // FIX: Use supabaseClient
       const { data, error } = await supabaseClient.from('templates').select('id, name');
       const select = document.getElementById('template-select');
       select.innerHTML = '<option value="">-- Select a Template --</option>';
@@ -47,21 +47,28 @@
 
     async function createInvite() {
       const template_id = document.getElementById('template-select').value;
+      const custom_id = document.getElementById('custom-id').value.trim().toLowerCase().replace(/\s+/g, '-'); // Formats 'Harsha Vardhini' to 'harsha-vardhini'
       const bride_name = document.getElementById('bride-name').value;
       const groom_name = document.getElementById('groom-name').value;
       const event_date = document.getElementById('event-date').value;
 
       if (!template_id) return alert("Please select a template!");
+      if (!custom_id) return alert("Please enter a custom Link ID!");
 
-      // FIX: Use supabaseClient
+      // Pass the custom 'id' into the insert array
       const { data, error } = await supabaseClient
         .from('invitations')
-        .insert([{ bride_name, groom_name, event_date, template_id }])
+        .insert([{ id: custom_id, bride_name, groom_name, event_date, template_id }])
         .select()
         .single();
 
       if (error) {
-        alert('Error: ' + error.message);
+        // If someone tries to use an ID that already exists, Supabase throws a unique constraint error
+        if (error.code === '23505') {
+          alert('That custom ID is already taken! Please choose another one.');
+        } else {
+          alert('Error: ' + error.message);
+        }
       } else {
         const linkBox = document.getElementById('result-link');
         const url = `${window.location.origin}/index.html?id=${data.id}`;
@@ -70,8 +77,6 @@
       }
     }
 
-    // Load templates when page opens
     loadTemplates();
   </script>
 </body>
-</html>
