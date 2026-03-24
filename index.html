@@ -1,74 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wedding Invitation</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    #loader {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-size: 20px;
-    }
+    /* Reset styles to ensure the injected templates look pixel-perfect */
+    body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f9f9f9; }
+    #loader { font-family: 'IBM Plex Sans', sans-serif; font-size: 1.2rem; color: #555; }
+    #invitation-container { width: 100%; max-width: 100%; }
   </style>
 </head>
 <body>
+  
+  <div id="loader">Loading invitation...</div>
+  <div id="invitation-container"></div>
 
-<div id="loader">Loading Invitation...</div>
+  <script>
+    const supabase = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-const SUPABASE_URL = 'https://jihtqbzrqymdkypicajz.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
+    async function renderInvite() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const inviteId = urlParams.get('id');
 
-// ✅ Correct client creation
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      if (!inviteId) {
+        document.getElementById('loader').innerText = "Invalid Invitation Link.";
+        return;
+      }
 
-async function loadInvitation() {
-  const id = new URLSearchParams(window.location.search).get("id");
+      const { data: invite, error } = await supabase
+        .from('invitations')
+        .select(`bride_name, groom_name, event_date, templates ( html_code )`)
+        .eq('id', inviteId)
+        .single();
 
-  if (!id) {
-    document.body.innerHTML = "Invalid invitation link";
-    return;
-  }
+      if (error || !invite || !invite.templates) {
+        document.getElementById('loader').innerText = "Invitation not found.";
+        return;
+      }
 
-  // ✅ Single query (JOIN)
-  const { data, error } = await client
-    .from('invitations')
-    .select(`
-      *,
-      templates (html_code)
-    `)
-    .eq('id', id)
-    .single();
+      // Hide loader
+      document.getElementById('loader').style.display = 'none';
 
-  if (error || !data) {
-    document.body.innerHTML = "Invitation not found";
-    return;
-  }
+      // Replace placeholders
+      let html = invite.templates.html_code;
+      html = html.replace(/{{bride_name}}/g, invite.bride_name);
+      html = html.replace(/{{groom_name}}/g, invite.groom_name);
+      
+      // Format date nicely (optional, basic formatting here)
+      const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      html = html.replace(/{{event_date}}/g, formattedDate);
 
-  let html = data.templates.html_code;
-
-  // ✅ Replace all placeholders dynamically
-  Object.keys(data).forEach(key => {
-    if (typeof data[key] === "string") {
-      html = html.replaceAll(`{{${key}}}`, data[key]);
+      // Inject into DOM
+      document.getElementById('invitation-container').innerHTML = html;
     }
-  });
 
-  // ✅ Smooth render (no flicker)
-  document.open();
-  document.write(html);
-  document.close();
-}
-
-// 🚀 Run
-loadInvitation();
-</script>
-
+    renderInvite();
+  </script>
 </body>
 </html>
