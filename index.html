@@ -4,12 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wedding Invitation</title>
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     /* Reset styles to ensure the injected templates look pixel-perfect */
-    body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f9f9f9; }
-    #loader { font-family: 'IBM Plex Sans', sans-serif; font-size: 1.2rem; color: #555; }
-    #invitation-container { width: 100%; max-width: 100%; }
+    body { 
+      margin: 0; 
+      padding: 0; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      background-color: #f9f9f9; 
+    }
+    #loader { 
+      font-family: 'IBM Plex Sans', sans-serif; 
+      font-size: 1.2rem; 
+      color: #555; 
+    }
+    #invitation-container { 
+      width: 100%; 
+      max-width: 100%; 
+    }
   </style>
 </head>
 <body>
@@ -18,22 +35,32 @@
   <div id="invitation-container"></div>
 
   <script>
-    // FIX: Changed to supabaseClient
+    // Initialize Supabase Client (Using supabaseClient to avoid naming collisions)
     const supabaseClient = supabase.createClient(
       'https://jihtqbzrqymdkypicajz.supabase.co', 
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
     );
 
     async function renderInvite() {
+      // 1. Try to get the ID from a query parameter (e.g., ?id=harshajw)
       const urlParams = new URLSearchParams(window.location.search);
-      const inviteId = urlParams.get('id');
+      let inviteId = urlParams.get('id');
 
-      if (!inviteId) {
+      // 2. NEW LOGIC: If no query parameter, get the ID from the URL path (e.g., schedy.in/harshajw)
+      if (!inviteId && window.location.pathname.length > 1) {
+        // substring(1) removes the leading slash ("/") to get just "harshajw"
+        inviteId = window.location.pathname.substring(1); 
+        
+        // Safety cleanup just in case there's a trailing slash
+        inviteId = inviteId.replace(/\/$/, "");
+      }
+
+      if (!inviteId || inviteId === "index.html") {
         document.getElementById('loader').innerText = "Invalid Invitation Link.";
         return;
       }
 
-      // FIX: Use supabaseClient
+      // 3. Fetch the invitation details and the linked template HTML from Supabase
       const { data: invite, error } = await supabaseClient
         .from('invitations')
         .select(`bride_name, groom_name, event_date, templates ( html_code )`)
@@ -42,25 +69,29 @@
 
       if (error || !invite || !invite.templates) {
         document.getElementById('loader').innerText = "Invitation not found.";
+        console.error("Supabase Fetch Error:", error);
         return;
       }
 
-      // Hide loader
+      // 4. Hide loader once data is found
       document.getElementById('loader').style.display = 'none';
 
-      // Replace placeholders
+      // 5. Replace the {{placeholders}} with actual database values
       let html = invite.templates.html_code;
       html = html.replace(/{{bride_name}}/g, invite.bride_name);
       html = html.replace(/{{groom_name}}/g, invite.groom_name);
       
-      // Format date nicely
-      const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      // Format the date nicely (e.g., "Saturday, August 24, 2026")
+      const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+      });
       html = html.replace(/{{event_date}}/g, formattedDate);
 
-      // Inject into DOM
+      // 6. Inject the final HTML into the page
       document.getElementById('invitation-container').innerHTML = html;
     }
 
+    // Execute the function when the script loads
     renderInvite();
   </script>
 </body>
