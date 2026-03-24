@@ -703,7 +703,6 @@
             // 1. GATHER ALL INPUTS MAGICALLY INTO JSON
             const details = {};
             document.querySelectorAll('input, textarea').forEach(input => {
-                // Ignore the custom-id and template-select as they are core fields
                 // Ensure the input actually has an ID and a value before saving
                 if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template') {
                     if (input.type === 'checkbox') {
@@ -737,16 +736,12 @@
             // 3. Push to Supabase (Notice the new 'details' field)
             const { data, error } = await supabaseClient
                 .from('invitations')
-                .insert([{ id: custom_id, bride_name, groom_name, event_date, template_id, details: details }])
+                .upsert([{ id: custom_id, bride_name, groom_name, event_date, template_id, details: details }])
                 .select()
                 .single();
 
             if (error) {
-                if (error.code === '23505') {
-                    alert('That Custom Link ID is already taken! Please change it.');
-                } else {
-                    alert('Database Error: ' + error.message);
-                }
+                alert('Database Error: ' + error.message);
             } else {
                 // Show Success Link
                 const linkBox = document.getElementById('result-link');
@@ -768,7 +763,6 @@
         // Data Limits
         const maxContacts = 2;
         const contactsCount = { groom: 0, bride: 0 };
-        let globalContactId = 0; 
         
         let eventCount = 0;
         const maxEvents = 4;
@@ -850,7 +844,7 @@
             ['bride-mother-en', 'bride-mother-te'],
             ['venue-en', 'venue-te'],
             ['reception-venue-en', 'reception-venue-te'],
-            ['compliment-title-en', 'compliment-title-te'], // Added Compliment text mapping
+            ['compliment-title-en', 'compliment-title-te'],
             ['comp-1-en', 'comp-1-te'] 
         ];
 
@@ -927,16 +921,13 @@
             document.getElementById('btn-add-compliment').style.display = 'block';
         };
 
-        // --- Add Contacts Logic ---
+        // --- Add Contacts Logic (PREDICTABLE IDs) ---
         function addContact(side) {
             if (contactsCount[side] >= maxContacts) return;
             
             contactsCount[side]++;
-            globalContactId++; 
-            const container = document.getElementById(`${side}-contacts-container`);
-            const btn = document.getElementById(`btn-add-${side}`);
             const displayIndex = contactsCount[side];
-            const idPrefix = `${side}-extra-${globalContactId}`;
+            const idPrefix = `${side}-extra-${displayIndex}`; // Generates groom-extra-1, bride-extra-2 etc.
 
             const html = `
                 <div class="dynamic-block contact-block">
@@ -967,25 +958,21 @@
                 </div>
             `;
             
-            container.insertAdjacentHTML('beforeend', html);
+            document.getElementById(`${side}-contacts-container`).insertAdjacentHTML('beforeend', html);
             setupTransliteration(`${idPrefix}-en`, `${idPrefix}-te`);
 
-            if (contactsCount[side] >= maxContacts) {
-                btn.style.display = 'none';
-            }
+            if (contactsCount[side] >= maxContacts) document.getElementById(`btn-add-${side}`).style.display = 'none';
         }
 
         document.getElementById('btn-add-groom').addEventListener('click', () => addContact('groom'));
         document.getElementById('btn-add-bride').addEventListener('click', () => addContact('bride'));
 
-        // --- Add Event Logic ---
+        // --- Add Event Logic (PREDICTABLE IDs) ---
         document.getElementById('btn-add-event').addEventListener('click', () => {
             if (eventCount >= maxEvents) return;
             eventCount++;
             
-            const container = document.getElementById('additional-events-container');
-            const btn = document.getElementById('btn-add-event');
-            const eventId = `event-extra-${Date.now()}`;
+            const eventId = `event-${eventCount}`; // Generates event-1, event-2 etc.
 
             const html = `
                 <div class="dynamic-block">
@@ -1040,24 +1027,22 @@
                 </div>
             `;
             
-            container.insertAdjacentHTML('beforeend', html);
+            document.getElementById('additional-events-container').insertAdjacentHTML('beforeend', html);
             
             // Attach bindings for new dynamic elements
             setupTransliteration(`${eventId}-name-en`, `${eventId}-name-te`);
             setupTransliteration(`${eventId}-venue-en`, `${eventId}-venue-te`);
             handleDateChange(`${eventId}-date`, `${eventId}-day`);
 
-            if (eventCount >= maxEvents) btn.style.display = 'none';
+            if (eventCount >= maxEvents) document.getElementById('btn-add-event').style.display = 'none';
         });
 
-        // --- Add Compliments Logic ---
+        // --- Add Compliments Logic (PREDICTABLE IDs) ---
         document.getElementById('btn-add-compliment').addEventListener('click', () => {
             if (complimentCount >= maxCompliments) return;
             complimentCount++;
             
-            const container = document.getElementById('compliments-container');
-            const btn = document.getElementById('btn-add-compliment');
-            const compId = `comp-${Date.now()}`;
+            const compId = `comp-${complimentCount}`; // Generates comp-2, comp-3 etc.
 
             const html = `
                 <div class="grid-2" style="position: relative; animation: fadeIn 0.3s ease-out; margin-bottom: 0;">
@@ -1075,10 +1060,10 @@
                 </div>
             `;
             
-            container.insertAdjacentHTML('beforeend', html);
+            document.getElementById('compliments-container').insertAdjacentHTML('beforeend', html);
             setupTransliteration(`${compId}-en`, `${compId}-te`);
 
-            if (complimentCount >= maxCompliments) btn.style.display = 'none';
+            if (complimentCount >= maxCompliments) document.getElementById('btn-add-compliment').style.display = 'none';
         });
 
     </script>
