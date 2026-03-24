@@ -2,21 +2,42 @@
 <html>
 <head>
   <title>Wedding Invitation</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-size: 20px;
+    }
+  </style>
 </head>
 <body>
 
-<div id="app">Loading...</div>
+<div id="loader">Loading Invitation...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'https://jihtqbzrqymdkypicajz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
 
-async function load() {
+// ✅ Correct client creation
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadInvitation() {
   const id = new URLSearchParams(window.location.search).get("id");
 
-  const { data } = await supabase
+  if (!id) {
+    document.body.innerHTML = "Invalid invitation link";
+    return;
+  }
+
+  // ✅ Single query (JOIN)
+  const { data, error } = await client
     .from('invitations')
     .select(`
       *,
@@ -25,18 +46,28 @@ async function load() {
     .eq('id', id)
     .single();
 
+  if (error || !data) {
+    document.body.innerHTML = "Invitation not found";
+    return;
+  }
+
   let html = data.templates.html_code;
 
+  // ✅ Replace all placeholders dynamically
   Object.keys(data).forEach(key => {
     if (typeof data[key] === "string") {
       html = html.replaceAll(`{{${key}}}`, data[key]);
     }
   });
 
-  document.body.innerHTML = html;
+  // ✅ Smooth render (no flicker)
+  document.open();
+  document.write(html);
+  document.close();
 }
 
-load();
+// 🚀 Run
+loadInvitation();
 </script>
 
 </body>
