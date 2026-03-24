@@ -4,76 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitation Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        body { font-family: 'IBM Plex Sans', sans-serif; background-color: #F1EFFF; color: #0f172a; padding: 2rem; }
-        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(103, 61, 230, 0.05); }
-        h1 { color: #673DE6; margin-bottom: 1.5rem; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; color: #64748b; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
-        .action-btn { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; margin-right: 5px; text-decoration: none; display: inline-block; }
+        :root {
+            --primary-dark: #2B1664;
+            --accent-color: #673DE6;
+            --pure-white: #FFFFFF;
+            --bg-light: #F1EFFF;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'IBM Plex Sans', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            padding: 2rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: var(--pure-white); 
+            padding: 2.5rem; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(103, 61, 230, 0.05); 
+            border: 1px solid rgba(103, 61, 230, 0.08);
+        }
+
+        h1 { 
+            color: var(--accent-color); 
+            margin-bottom: 2rem; 
+            text-align: center; 
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #7c53f0, var(--accent-color));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
+            transition: transform 0.2s;
+        }
+        .btn-create:hover { transform: translateY(-2px); }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            white-space: nowrap;
+        }
+
+        th, td { 
+            padding: 1.2rem 1rem; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+
+        th { 
+            background: #f8fafc; 
+            color: var(--text-sub); 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+        }
+
+        td { font-weight: 500; }
+        
+        .link-id { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+        .link-id:hover { text-decoration: underline; }
+
+        .view-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 50px;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .action-btn { 
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            margin-right: 8px; 
+            text-decoration: none; 
+            display: inline-block; 
+            transition: opacity 0.2s;
+            font-family: inherit;
+        }
+        .action-btn:hover { opacity: 0.8; }
+
         .btn-view { background: #e0e7ff; color: #4338ca; }
         .btn-edit { background: #fef3c7; color: #b45309; }
         .btn-delete { background: #fee2e2; color: #b91c1c; }
-        .loader { text-align: center; padding: 2rem; color: #64748b; }
+
+        .loader { text-align: center; padding: 3rem; color: var(--text-sub); font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>✦ My Invitations ✦</h1>
-    <div style="text-align: right; margin-bottom: 1rem;">
-        <a href="admin.html" class="action-btn btn-view" style="background: #673DE6; color: white;">+ Create New</a>
+    <h1>✦ Invitation Dashboard ✦</h1>
+    
+    <div class="header-actions">
+        <a href="admin.html" class="btn-create">+ Create New Invitation</a>
     </div>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Couple</th>
-                <th>Link ID</th>
-                <th>Wedding Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="invite-list">
-            <tr><td colspan="4" class="loader">Loading invitations...</td></tr>
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Couple Name</th>
+                    <th>Link ID</th>
+                    <th>Wedding Date</th>
+                    <th>Unique Views</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="invite-list">
+                <tr><td colspan="5" class="loader">Loading your invitations...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
+    // Initialize Supabase Client
     const supabaseClient = supabase.createClient(
         'https://jihtqbzrqymdkypicajz.supabase.co', 
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
     );
 
+    // Fetch and display all invitations
     async function loadInvitations() {
         const { data, error } = await supabaseClient
             .from('invitations')
-            .select('id, bride_name, groom_name, event_date')
+            .select('id, bride_name, groom_name, event_date, view_count')
             .order('created_at', { ascending: false });
 
         const tbody = document.getElementById('invite-list');
         tbody.innerHTML = '';
 
         if (error) {
-            tbody.innerHTML = `<tr><td colspan="4" style="color:red;">Error loading data</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="color:red; text-align: center; padding: 2rem;">Error loading data: ${error.message}</td></tr>`;
+            console.error(error);
             return;
         }
 
-        if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="loader">No invitations found. Create one!</td></tr>`;
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="loader">No invitations found. Click "Create New" to get started!</td></tr>`;
             return;
         }
 
         data.forEach(invite => {
             const tr = document.createElement('tr');
+            const views = invite.view_count || 0; // Fallback to 0 if null
+            
+            // Format the date nicely for the dashboard
+            let displayDate = invite.event_date || 'N/A';
+            if (displayDate !== 'N/A' && displayDate.includes('-')) {
+                const parts = displayDate.split('-');
+                displayDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+
             tr.innerHTML = `
-                <td><strong>${invite.groom_name} & ${invite.bride_name}</strong></td>
-                <td>/${invite.id}</td>
-                <td>${invite.event_date}</td>
+                <td><strong>${invite.groom_name || 'Unknown'} & ${invite.bride_name || 'Unknown'}</strong></td>
+                <td><a href="/${invite.id}" target="_blank" class="link-id">/${invite.id}</a></td>
+                <td>${displayDate}</td>
+                <td>
+                    <span class="view-count">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        ${views}
+                    </span>
+                </td>
                 <td>
                     <a href="/${invite.id}" target="_blank" class="action-btn btn-view">View</a>
                     <a href="admin.html?edit=${invite.id}" class="action-btn btn-edit">Edit</a>
@@ -84,14 +217,21 @@
         });
     }
 
+    // Delete an invitation
     async function deleteInvite(id) {
-        if (confirm(`Are you sure you want to delete the invitation for /${id}? This cannot be undone.`)) {
+        if (confirm(`Are you absolutely sure you want to delete the invitation for "/${id}"? This cannot be undone.`)) {
             const { error } = await supabaseClient.from('invitations').delete().eq('id', id);
-            if (error) alert("Error deleting: " + error.message);
-            else loadInvitations(); // Reload list
+            
+            if (error) {
+                alert("Error deleting: " + error.message);
+            } else {
+                // Reload the table immediately after successful deletion
+                loadInvitations(); 
+            }
         }
     }
 
+    // Load data when page opens
     loadInvitations();
 </script>
 </body>
