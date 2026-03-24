@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wedding Invitation</title>
+</head>
+<body>
+
+<div id="app">Loading...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
+const SUPABASE_KEY='YOUR_KEY';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function load() {
+  const id = new URLSearchParams(window.location.search).get("id");
+
+  const { data } = await supabase
+    .from('invitations')
+    .select(`
+      *,
+      templates (html_code)
+    `)
+    .eq('id', id)
+    .single();
+
+  let html = data.templates.html_code;
+
+  Object.keys(data).forEach(key => {
+    if (typeof data[key] === "string") {
+      html = html.replaceAll(`{{${key}}}`, data[key]);
+    }
+  });
+
+  document.body.innerHTML = html;
+}
+
+load();
+</script>
+
+</body>
+</html>
