@@ -1065,7 +1065,90 @@
 
             if (complimentCount >= maxCompliments) document.getElementById('btn-add-compliment').style.display = 'none';
         });
+// ==========================================
+        // --- EDIT MODE LOGIC ---
+        // ==========================================
+        async function checkEditMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
 
+            if (!editId) return; // Not in edit mode, do nothing
+
+            // 1. Change UI to indicate Edit Mode
+            document.querySelector('.header-section h1').textContent = '✦ Edit Invitation ✦';
+            document.querySelector('.btn-submit').textContent = 'Update Invitation';
+            
+            // 2. Fetch data from Supabase
+            const { data, error } = await supabaseClient
+                .from('invitations')
+                .select('*')
+                .eq('id', editId)
+                .single();
+
+            if (error || !data) return alert('Could not load invitation data for editing.');
+
+            // 3. Fill Core Fields
+            document.getElementById('custom-id').value = data.id;
+            document.getElementById('custom-id').setAttribute('readonly', true); // Prevent changing the URL ID
+            document.getElementById('custom-id').style.backgroundColor = '#f1f5f9';
+            
+            // Wait a tiny bit for templates to load, then select the right one
+            setTimeout(() => {
+                const hiddenInput = document.getElementById('selected-template');
+                const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                const option = document.querySelector(`.dropdown-list li[data-value="${data.template_id}"]`);
+                if (option) {
+                    hiddenInput.value = data.template_id;
+                    selectedValue.textContent = option.textContent;
+                }
+            }, 500);
+
+            // 4. Smart Fill: Reconstruct Dynamic Blocks
+            const details = data.details || {};
+            
+            // Figure out how many dynamic blocks to create based on the JSON keys
+            let maxGroom = 0, maxBride = 0, maxEvents = 0, maxComps = 1;
+            
+            Object.keys(details).forEach(key => {
+                if (key.startsWith('groom-extra-')) maxGroom = Math.max(maxGroom, parseInt(key.split('-')[2]));
+                if (key.startsWith('bride-extra-')) maxBride = Math.max(maxBride, parseInt(key.split('-')[2]));
+                if (key.startsWith('event-') && !key.includes('wedding') && !key.includes('reception')) {
+                    const parts = key.split('-');
+                    if(!isNaN(parts[1])) maxEvents = Math.max(maxEvents, parseInt(parts[1]));
+                }
+                if (key.startsWith('comp-')) maxComps = Math.max(maxComps, parseInt(key.split('-')[1]));
+            });
+
+            // Trigger the "Add" buttons to build the HTML elements
+            for(let i=0; i < maxGroom; i++) document.getElementById('btn-add-groom').click();
+            for(let i=0; i < maxBride; i++) document.getElementById('btn-add-bride').click();
+            for(let i=0; i < maxEvents; i++) document.getElementById('btn-add-event').click();
+            for(let i=1; i < maxComps; i++) document.getElementById('btn-add-compliment').click();
+
+            // 5. Fill all inputs with data
+            setTimeout(() => {
+                // Fill standalone fields that aren't in details (for backward compatibility)
+                if(document.getElementById('bride-en') && data.bride_name) document.getElementById('bride-en').value = data.bride_name;
+                if(document.getElementById('groom-en') && data.groom_name) document.getElementById('groom-en').value = data.groom_name;
+                if(document.getElementById('wedding-date') && data.event_date) document.getElementById('wedding-date').value = data.event_date;
+
+                // Fill everything from the JSON details
+                for (const [key, value] of Object.entries(details)) {
+                    const input = document.getElementById(key);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = value;
+                            input.dispatchEvent(new Event('change')); // Trigger visibility toggle
+                        } else {
+                            input.value = value;
+                        }
+                    }
+                }
+            }, 100); // Slight delay ensures dynamic DOM elements exist before filling
+        }
+
+        // Run the check when the page loads
+        checkEditMode();
     </script>
 </body>
 </html>
