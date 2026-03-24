@@ -18,7 +18,11 @@
   <div id="invitation-container"></div>
 
   <script>
-    const supabase = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
+    // FIX: Changed to supabaseClient
+    const supabaseClient = supabase.createClient(
+      'https://jihtqbzrqymdkypicajz.supabase.co', 
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+    );
 
     async function renderInvite() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -29,7 +33,8 @@
         return;
       }
 
-      const { data: invite, error } = await supabase
+      // FIX: Use supabaseClient
+      const { data: invite, error } = await supabaseClient
         .from('invitations')
         .select(`bride_name, groom_name, event_date, templates ( html_code )`)
         .eq('id', inviteId)
@@ -48,7 +53,7 @@
       html = html.replace(/{{bride_name}}/g, invite.bride_name);
       html = html.replace(/{{groom_name}}/g, invite.groom_name);
       
-      // Format date nicely (optional, basic formatting here)
+      // Format date nicely
       const formattedDate = new Date(invite.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       html = html.replace(/{{event_date}}/g, formattedDate);
 
