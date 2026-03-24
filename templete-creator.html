@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Template</title>
+</head>
+<body>
+
+<h2>Create Template</h2>
+
+<input id="name" placeholder="Template Name"><br><br>
+<textarea id="html" rows="10" cols="50" placeholder="Paste HTML with {{placeholders}}"></textarea><br><br>
+
+<button onclick="save()">Save Template</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+const SUPABASE_URL='https://jihtqbzrqymdkypicajz.supabase.co';
+const SUPABASE_KEY='YOUR_KEY';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function save() {
+  const name = document.getElementById('name').value;
+  const html = document.getElementById('html').value;
+
+  await supabase.from('templates').insert([{ name, html_code: html }]);
+
+  alert("Saved!");
+}
+</script>
+
+</body>
+</html>
