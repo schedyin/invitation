@@ -207,7 +207,6 @@
         }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(103, 61, 230, 0.3); }
 
-        /* Added for the success link display */
         #result-link {
             display: none;
             margin-bottom: 3rem;
@@ -701,7 +700,21 @@
         document.getElementById('invitation-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Gather essential data for Supabase
+            // 1. GATHER ALL INPUTS MAGICALLY INTO JSON
+            const details = {};
+            document.querySelectorAll('input, textarea').forEach(input => {
+                // Ignore the custom-id and template-select as they are core fields
+                // Ensure the input actually has an ID and a value before saving
+                if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template') {
+                    if (input.type === 'checkbox') {
+                        details[input.id] = input.checked;
+                    } else if (input.value) {
+                        details[input.id] = input.value;
+                    }
+                }
+            });
+
+            // 2. Gather core fields
             const template_id = document.getElementById('selected-template').value;
             let custom_id = document.getElementById('custom-id').value.trim().toLowerCase().replace(/\s+/g, '-');
             const bride_name = document.getElementById('bride-en').value || document.getElementById('bride-te').value;
@@ -721,10 +734,10 @@
             btnSubmit.textContent = 'Generating Database Link...';
             btnSubmit.disabled = true;
 
-            // Push to Supabase
+            // 3. Push to Supabase (Notice the new 'details' field)
             const { data, error } = await supabaseClient
                 .from('invitations')
-                .insert([{ id: custom_id, bride_name, groom_name, event_date, template_id }])
+                .insert([{ id: custom_id, bride_name, groom_name, event_date, template_id, details: details }])
                 .select()
                 .single();
 
@@ -746,6 +759,7 @@
             btnSubmit.textContent = originalText;
             btnSubmit.disabled = false;
         });
+
 
         // ==========================================
         // --- ORIGINAL LOGIC (DO NOT REMOVE) ---
