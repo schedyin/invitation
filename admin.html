@@ -80,7 +80,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            background: #f8fafc;
+            background: #E5E7EB; /* Matched to your premium template background */
         }
 
         @media (max-width: 1100px) {
@@ -609,11 +609,11 @@
         let previewDebounceTimer;
         let activeInputId = null;
 
-        // 1. Track which input the user is currently editing for auto-scroll
+        // 1. Track exactly which input box the user is typing in
         document.getElementById('invitation-form').addEventListener('focusin', (e) => {
             if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 activeInputId = e.target.id;
-                updatePreview(); // Trigger a scroll immediately upon focusing
+                updatePreview(); 
             }
         });
         
@@ -633,11 +633,10 @@
             return mm === '00' ? `${period} ${hour12}:00 గంటలకు` : `${period} ${hour12}:${mm} నిమిషాలకు`;
         }
 
-        // The master function that compiles tags into HTML
+        // Compiles the HTML and adds the invisible scroll anchor
         function compileTemplateHTML() {
             if (!currentTemplateHTML) return '';
 
-            // Gather all data
             const details = {};
             document.querySelectorAll('input, textarea').forEach(input => {
                 if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template') {
@@ -653,19 +652,26 @@
             const allData = { bride_name, groom_name, event_date, ...details };
             let html = currentTemplateHTML;
 
-            // 1. INJECT SCROLL ANCHOR: Wrap the active field's tag in a highlighted span
+            // 1. INJECT SMART SCROLL ANCHOR
             if (activeInputId) {
-                const regex = new RegExp(`{{${activeInputId}}}`, 'g');
-                // Adds a tiny, temporary yellow highlight to show exactly what's updating!
-                html = html.replace(regex, `<span id="scroll-anchor" style="background-color: rgba(217, 169, 66, 0.25); padding: 0 4px; border-radius: 4px; transition: background 0.5s;">{{${activeInputId}}}</span>`);
+                let tagToMatch = activeInputId;
+                
+                // Map English IDs to Telugu Tags so focusing English still scrolls the preview!
+                if (activeInputId.endsWith('-en')) tagToMatch = activeInputId.replace('-en', '-te');
+                if (activeInputId === 'wedding-date') tagToMatch = 'event-wedding-date';
+                if (activeInputId === 'muhurtham-time') tagToMatch = 'event-wedding-time';
+
+                const regex = new RegExp(`{{${tagToMatch}}}`, 'g');
+                // Single quotes used here to prevent breaking template JS
+                html = html.replace(regex, `<span id='scroll-anchor' style='background-color:rgba(217,169,66,0.3); border-radius:4px; display:inline-block; min-width:10px; min-height:1em; transition:background 0.5s;'>{{${tagToMatch}}}</span>`);
             }
 
-            // 2. Process conditionals to show/hide blocks
+            // 2. Process Conditionals
             html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
                 return (allData[key] && allData[key].toString().trim() !== '') ? content : ''; 
             });
 
-            // 3. Process variables
+            // 3. Process Variables
             for (const [key, value] of Object.entries(allData)) {
                 let finalValue = value;
                 if (typeof finalValue === 'string') {
@@ -675,7 +681,6 @@
                 }
             }
 
-            // 4. Cleanup empty tags and format main date
             html = html.replace(/{{[^{}]+}}/g, '');
             if(event_date) {
                 const formattedDate = new Date(event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -685,7 +690,7 @@
             return html;
         }
 
-        // Generates the base iframe environment and loads MorphDOM
+        // Builds the initial sandboxed iframe with MorphDOM
         function generateIframeContent(html) {
             return `
                 <!DOCTYPE html>
@@ -693,14 +698,15 @@
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>body { margin: 0; padding: 0; background-color: #f9f9f9; overflow-x: hidden; }</style>
+                    <style>body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }</style>
                     <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
                 </head>
                 <body>
                     <div id="invitation-container">${html}</div>
                     <script>
-                        // Force initial scripts to execute (like your flower animations!)
-                        const scripts = document.getElementById('invitation-container').getElementsByTagName('script');
+                        // Execute animation scripts ONCE on initial load
+                        const container = document.getElementById('invitation-container');
+                        const scripts = Array.from(container.getElementsByTagName('script'));
                         for (let i = 0; i < scripts.length; i++) {
                             const newScript = document.createElement('script');
                             if (scripts[i].src) newScript.src = scripts[i].src;
@@ -711,21 +717,21 @@
                         // Listen for surgical updates from the Admin Panel
                         window.addEventListener('message', (event) => {
                             if (event.data.type === 'update') {
-                                const container = document.getElementById('invitation-container');
                                 const newDOM = document.createElement('div');
                                 newDOM.id = 'invitation-container';
                                 newDOM.innerHTML = event.data.html;
                                 
-                                // Surgically update DOM to preserve your animations
-                                morphdom(container, newDOM, { childrenOnly: false });
+                                // MorphDOM surgically updates text without resetting CSS animations!
+                                morphdom(document.getElementById('invitation-container'), newDOM, { childrenOnly: false });
 
-                                // Smart Auto-Scroll to the field the user is currently typing in!
-                                const scrollAnchor = document.getElementById('scroll-anchor');
-                                if (scrollAnchor) {
-                                    scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                    // Fade out highlight after a moment
-                                    setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 1000);
-                                }
+                                // Smart Auto-Scroll Trigger
+                                setTimeout(() => {
+                                    const scrollAnchor = document.getElementById('scroll-anchor');
+                                    if (scrollAnchor) {
+                                        scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 800);
+                                    }
+                                }, 50);
                             }
                         });
                     <\/script>
@@ -734,19 +740,18 @@
             `;
         }
 
-        // Quietly sends an update message to the iframe
         function updatePreview() {
             if (!currentTemplateHTML) return;
             const compiledHtml = compileTemplateHTML();
             const iframe = document.getElementById('preview-frame');
             
-            // Post message instead of reloading iframe
+            // Post message to the iframe to trigger MorphDOM instead of reloading!
             if (iframe.contentWindow) {
                 iframe.contentWindow.postMessage({ type: 'update', html: compiledHtml }, '*');
             }
         }
 
-        // Attach event listener for Live Preview with a snappy 300ms debounce
+        // Live preview triggers smoothly after 300ms of typing
         document.getElementById('invitation-form').addEventListener('input', () => {
             clearTimeout(previewDebounceTimer);
             previewDebounceTimer = setTimeout(updatePreview, 300);
@@ -778,7 +783,7 @@
                         header.classList.remove('active');
                         e.stopPropagation();
 
-                        // FULL RELOAD of iframe when changing templates entirely
+                        // Full reload of iframe when changing to a completely different template
                         const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
                         if (selectedTemplate) {
                             currentTemplateHTML = selectedTemplate.html_code;
@@ -1185,14 +1190,14 @@
                 const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
                 if (selectedTemplateData) {
                     currentTemplateHTML = selectedTemplateData.html_code;
-                    // Trigger a full reload of the iframe to ensure scripts are set up correctly on edit load
+                    // Force complete reload of iframe for initial edit state
                     document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML());
                 }
 
             }, 200); 
         }
 
-        setTimeout(checkEditMode, 800); // Give templates time to load before checking edit mode
+        setTimeout(checkEditMode, 800);
     </script>
 </body>
 </html>
