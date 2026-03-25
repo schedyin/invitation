@@ -604,9 +604,18 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
         );
 
-        // --- LIVE PREVIEW LOGIC ---
+        // --- LIVE PREVIEW LOGIC (WITH MORPHDOM & SMART SCROLL) ---
         let currentTemplateHTML = '';
         let previewDebounceTimer;
+        let activeInputId = null;
+
+        // 1. Track which input the user is currently editing for auto-scroll
+        document.getElementById('invitation-form').addEventListener('focusin', (e) => {
+            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                activeInputId = e.target.id;
+                updatePreview(); // Trigger a scroll immediately upon focusing
+            }
+        });
         
         function formatTeluguDate(dateStr) {
             if (!dateStr || !dateStr.includes('-')) return dateStr;
@@ -624,8 +633,9 @@
             return mm === '00' ? `${period} ${hour12}:00 గంటలకు` : `${period} ${hour12}:${mm} నిమిషాలకు`;
         }
 
-        function updatePreview() {
-            if (!currentTemplateHTML) return;
+        // The master function that compiles tags into HTML
+        function compileTemplateHTML() {
+            if (!currentTemplateHTML) return '';
 
             // Gather all data
             const details = {};
@@ -643,12 +653,19 @@
             const allData = { bride_name, groom_name, event_date, ...details };
             let html = currentTemplateHTML;
 
-            // 1. Process conditionals
+            // 1. INJECT SCROLL ANCHOR: Wrap the active field's tag in a highlighted span
+            if (activeInputId) {
+                const regex = new RegExp(`{{${activeInputId}}}`, 'g');
+                // Adds a tiny, temporary yellow highlight to show exactly what's updating!
+                html = html.replace(regex, `<span id="scroll-anchor" style="background-color: rgba(217, 169, 66, 0.25); padding: 0 4px; border-radius: 4px; transition: background 0.5s;">{{${activeInputId}}}</span>`);
+            }
+
+            // 2. Process conditionals to show/hide blocks
             html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
                 return (allData[key] && allData[key].toString().trim() !== '') ? content : ''; 
             });
 
-            // 2. Process variables
+            // 3. Process variables
             for (const [key, value] of Object.entries(allData)) {
                 let finalValue = value;
                 if (typeof finalValue === 'string') {
@@ -658,26 +675,31 @@
                 }
             }
 
-            // Cleanup and format main date
+            // 4. Cleanup empty tags and format main date
             html = html.replace(/{{[^{}]+}}/g, '');
             if(event_date) {
                 const formattedDate = new Date(event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 html = html.replace(/{{event_date}}/g, formattedDate);
             }
 
-            // Build isolation iframe content
-            const fullHTML = `
+            return html;
+        }
+
+        // Generates the base iframe environment and loads MorphDOM
+        function generateIframeContent(html) {
+            return `
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>body { margin: 0; padding: 0; background-color: #f9f9f9; overflow-x: hidden; }</style>
+                    <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
                 </head>
                 <body>
                     <div id="invitation-container">${html}</div>
                     <script>
-                        // Force scripts to execute in iframe
+                        // Force initial scripts to execute (like your flower animations!)
                         const scripts = document.getElementById('invitation-container').getElementsByTagName('script');
                         for (let i = 0; i < scripts.length; i++) {
                             const newScript = document.createElement('script');
@@ -685,18 +707,49 @@
                             else newScript.textContent = scripts[i].innerHTML;
                             document.body.appendChild(newScript);
                         }
+
+                        // Listen for surgical updates from the Admin Panel
+                        window.addEventListener('message', (event) => {
+                            if (event.data.type === 'update') {
+                                const container = document.getElementById('invitation-container');
+                                const newDOM = document.createElement('div');
+                                newDOM.id = 'invitation-container';
+                                newDOM.innerHTML = event.data.html;
+                                
+                                // Surgically update DOM to preserve your animations
+                                morphdom(container, newDOM, { childrenOnly: false });
+
+                                // Smart Auto-Scroll to the field the user is currently typing in!
+                                const scrollAnchor = document.getElementById('scroll-anchor');
+                                if (scrollAnchor) {
+                                    scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    // Fade out highlight after a moment
+                                    setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 1000);
+                                }
+                            }
+                        });
                     <\/script>
                 </body>
                 </html>
             `;
-
-            document.getElementById('preview-frame').srcdoc = fullHTML;
         }
 
-        // Attach event listener for Live Preview with 800ms debounce
+        // Quietly sends an update message to the iframe
+        function updatePreview() {
+            if (!currentTemplateHTML) return;
+            const compiledHtml = compileTemplateHTML();
+            const iframe = document.getElementById('preview-frame');
+            
+            // Post message instead of reloading iframe
+            if (iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'update', html: compiledHtml }, '*');
+            }
+        }
+
+        // Attach event listener for Live Preview with a snappy 300ms debounce
         document.getElementById('invitation-form').addEventListener('input', () => {
             clearTimeout(previewDebounceTimer);
-            previewDebounceTimer = setTimeout(updatePreview, 800);
+            previewDebounceTimer = setTimeout(updatePreview, 300);
         });
 
         // --- Fetch Templates ---
@@ -725,11 +778,11 @@
                         header.classList.remove('active');
                         e.stopPropagation();
 
-                        // Trigger preview update when template changes
+                        // FULL RELOAD of iframe when changing templates entirely
                         const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
                         if (selectedTemplate) {
                             currentTemplateHTML = selectedTemplate.html_code;
-                            updatePreview();
+                            document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML());
                         }
                     });
                     dropdownList.appendChild(li);
@@ -1132,7 +1185,8 @@
                 const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
                 if (selectedTemplateData) {
                     currentTemplateHTML = selectedTemplateData.html_code;
-                    updatePreview();
+                    // Trigger a full reload of the iframe to ensure scripts are set up correctly on edit load
+                    document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML());
                 }
 
             }, 200); 
