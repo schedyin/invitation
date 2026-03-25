@@ -718,16 +718,26 @@
                                         let targetId = event.data.target;
                                         
                                         // Smart mapping rules
-                                        if (targetId.endsWith('-en')) targetId = targetId.replace('-en', '-te');
-                                        if (targetId === 'wedding-date') targetId = 'event-wedding-date';
-                                        if (targetId === 'muhurtham-time') targetId = 'event-wedding-time';
-                                        if (targetId.includes('maps') || targetId.includes('address')) {
-                                            if (targetId === 'venue-maps' || targetId === 'venue-address') targetId = 'venue-te';
-                                            else if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
-                                            else targetId = targetId.replace('-maps', '-name-te'); 
-                                        }
-                                        if (targetId.includes('compliment-title')) targetId = 'compliment-title-te';
+                                        
+                                        
+                                        
+                                        
+// Smart mapping rules
+if (targetId.endsWith('-en')) targetId = targetId.replace('-en', '-te');
+if (targetId === 'wedding-date') targetId = 'event-wedding-date';
+if (targetId === 'muhurtham-time') targetId = 'event-wedding-time';
 
+// --- NEW FIX: Route all Section 05 inputs directly to the big venue block ---
+if (targetId === 'venue-te' || targetId === 'venue-address' || targetId === 'venue-maps') {
+    targetId = 'main-venue-section';
+}
+// --------------------------------------------------------------------------
+
+if (targetId.includes('maps') || targetId.includes('address')) {
+    if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
+    else targetId = targetId.replace('-maps', '-name-te'); 
+}
+if (targetId.includes('compliment-title')) targetId = 'comp-1-te';
                                         const scrollAnchor = document.querySelector('[data-scroll-target="' + targetId + '"]');
                                         if (scrollAnchor) {
                                             scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
