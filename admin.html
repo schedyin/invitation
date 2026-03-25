@@ -36,7 +36,7 @@
             padding: 2rem 1rem;
         }
 
-        /* --- NEW SPLIT LAYOUT --- */
+        /* --- SPLIT LAYOUT --- */
         .layout-split {
             display: flex;
             gap: 2rem;
@@ -80,7 +80,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            background: #E5E7EB; /* Matched to your premium template background */
+            background: #E5E7EB; 
         }
 
         @media (max-width: 1100px) {
@@ -656,13 +656,22 @@
             if (activeInputId) {
                 let tagToMatch = activeInputId;
                 
-                // Map English IDs to Telugu Tags so focusing English still scrolls the preview!
+                // Map English IDs to Telugu Tags so focusing English still scrolls the preview
                 if (activeInputId.endsWith('-en')) tagToMatch = activeInputId.replace('-en', '-te');
                 if (activeInputId === 'wedding-date') tagToMatch = 'event-wedding-date';
                 if (activeInputId === 'muhurtham-time') tagToMatch = 'event-wedding-time';
 
+                // PREVENT BUG: Map addresses/maps to names so we don't accidentally break HTML hrefs or textareas!
+                if (activeInputId.includes('maps') || activeInputId.includes('address')) {
+                    if (activeInputId === 'venue-maps' || activeInputId === 'venue-address') tagToMatch = 'venue-te';
+                    else if (activeInputId === 'reception-venue-maps' || activeInputId === 'reception-venue-address') tagToMatch = 'reception-venue-te';
+                    else tagToMatch = activeInputId.replace('-maps', '-name-te'); // For dynamic events
+                }
+
+                // Prevent wrapping Javascript variable references in Best Compliments block
+                if (activeInputId.includes('compliment-title')) tagToMatch = 'comp-1-te';
+
                 const regex = new RegExp(`{{${tagToMatch}}}`, 'g');
-                // Single quotes used here to prevent breaking template JS
                 html = html.replace(regex, `<span id='scroll-anchor' style='background-color:rgba(217,169,66,0.3); border-radius:4px; display:inline-block; min-width:10px; min-height:1em; transition:background 0.5s;'>{{${tagToMatch}}}</span>`);
             }
 
@@ -698,7 +707,13 @@
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }</style>
+                    <style>
+                        body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }
+                        /* BEST COMPLIMENTS FIX: Force hidden elements to display in live preview so the smart scroll can locate them */
+                        .hidden { opacity: 1 !important; transform: none !important; }
+                        .invite-divider.hidden { display: flex !important; }
+                        .invite-names.hidden { display: block !important; }
+                    </style>
                     <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
                 </head>
                 <body>
@@ -946,6 +961,13 @@
             const weddingEventDate = document.getElementById('event-wedding-date');
             weddingEventDate.value = e.target.value;
             weddingEventDate.dispatchEvent(new Event('change'));
+        });
+
+        // --- NEW TIME SYNC FIX ---
+        document.getElementById('muhurtham-time').addEventListener('change', (e) => {
+            const weddingEventTime = document.getElementById('event-wedding-time');
+            weddingEventTime.value = e.target.value;
+            weddingEventTime.dispatchEvent(new Event('change'));
         });
 
         const sameVenueCheckbox = document.getElementById('same-venue');
@@ -1197,7 +1219,7 @@
             }, 200); 
         }
 
-        setTimeout(checkEditMode, 800);
+        setTimeout(checkEditMode, 800); // Give templates time to load before checking edit mode
     </script>
 </body>
 </html>
