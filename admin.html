@@ -404,11 +404,11 @@
                         <span class="section-number">Section 04</span>
                         <div class="section-name">
                             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            Main Event & Reception Details
+                            Reception Details
                         </div>
                     </div>
                     
-                    <div class="hint-text full-width mb-4">Wedding Date and Muhurtham Time are automatically pulled from Section 01 to prevent errors.</div>
+                    <div class="hint-text full-width mb-4">The Main Wedding Date & Time are automatically applied from Section 01 to prevent errors.</div>
 
                     <div class="sub-heading"><span class="telugu-font">విందు సమారంభం</span> — Reception</div>
                     <div class="grid-3">
@@ -595,11 +595,11 @@
         function gatherData() {
             const details = {};
             document.querySelectorAll('input, textarea').forEach(input => {
-                if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template') {
+                if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
                     if (input.type === 'checkbox') {
                         details[input.id] = input.checked;
                     } else if (input.value.trim() !== '') { 
-                        // Only save to DB if it's not empty to prevent bloat!
+                        // DATABASE CLEANER: Only save to DB if it's not empty to prevent bloat!
                         details[input.id] = input.value.trim();
                     }
                 }
@@ -648,6 +648,7 @@
             };
         }
 
+        // NO MORE INJECTED SPAN TAGS! Pure text replacement for perfect MorphDOM support.
         function compileTemplateHTML(allData) {
             if (!currentTemplateHTML) return '';
             let html = currentTemplateHTML;
@@ -685,7 +686,7 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
                         body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }
-                        /* Best Compliments CSS Override for Edit Mode */
+                        /* BEST COMPLIMENTS FIX: Force hidden elements to display in live preview so the smart scroll can locate them */
                         .hidden { opacity: 1 !important; transform: none !important; }
                         .invite-divider.hidden { display: flex !important; }
                         .invite-names.hidden { display: block !important; }
@@ -725,11 +726,15 @@
                                             else if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
                                             else targetId = targetId.replace('-maps', '-name-te'); 
                                         }
-                                        if (targetId.includes('compliment-title')) targetId = 'comp-1-te';
+                                        if (targetId.includes('compliment-title')) targetId = 'compliment-title-te';
 
                                         const scrollAnchor = document.querySelector('[data-scroll-target="' + targetId + '"]');
                                         if (scrollAnchor) {
                                             scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            // Soft highlight
+                                            scrollAnchor.style.transition = 'background-color 0.5s';
+                                            scrollAnchor.style.backgroundColor = 'rgba(217,169,66,0.3)';
+                                            setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 800);
                                         }
                                     }, 50);
                                 }
@@ -807,6 +812,22 @@
             if (!dataObj.core.event_date) return alert("Please select a wedding date.");
 
             const custom_id = dataObj.core.custom_id || ('invite-' + Date.now());
+
+            // USERNAME PROTECTION: Check if ID exists before creating a NEW invite
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+
+            if (!editId) {
+                const { data: existing } = await supabaseClient
+                    .from('invitations')
+                    .select('id')
+                    .eq('id', custom_id)
+                    .single();
+
+                if (existing) {
+                    return alert("This Link ID is already in use! Please enter a different one to avoid overwriting data.");
+                }
+            }
 
             const btnSubmit = document.querySelector('.btn-submit');
             const originalText = btnSubmit.textContent;
