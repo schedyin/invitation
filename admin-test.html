@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wedding Invitation System</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* --- DESIGN SYSTEM TOKENS --- */
+        :root {
+            --primary-dark: #2B1664;
+            --accent-color: #673DE6;
+            --pure-white: #FFFFFF;
+            --bg-light: #F8F9FA;
+            --bg-body: #FFFFFF;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 16px;
+            --ease-cubic: cubic-bezier(0.25, 0.8, 0.25, 1);
+            --btn-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'IBM Plex Sans', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+            padding: 2rem 1rem;
+            padding-right: calc(375px + 2rem);
+        }
+        /* --- EXACT DESKTOP & MOBILE SPLIT LAYOUT --- */
+        .layout-split {
+            display: flex;
+            max-width: 1000px;
+            margin: 0 auto;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .form-side {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+        }
+        .preview-side {
+            width: 375px; 
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: #fff;
+            border-left: 1px solid var(--border-color);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        .preview-header { display: none; }
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #E5E7EB; 
+        }
+        /* --- RESPONSIVE MOBILE LAYOUT --- */
+        .sticky-action-bar { display: none; }
+        @media (max-width: 1150px) {
+            .layout-split { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 0;
+            }
+            .form-side { width: 100%; }
+            .preview-side { 
+                width: 100%;
+                left: 0;
+                right: 0;
+                border-left: none;
+                z-index: 998; 
+                padding-bottom: 80px; 
+            }
+            
+            .sticky-action-bar.mobile-only {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--pure-white);
+                padding: 1rem;
+                border-top: 1px solid var(--border-color);
+                z-index: 1000;
+                gap: 1rem;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+            }
+            body {
+                padding-right: 1rem; 
+                padding-bottom: 90px; 
+            }
+            .form-side .btn-submit { display: none; }
+            .mobile-hidden { display: none !important; }
+        }
+        
+        @media (max-width: 450px) {
+            body { padding: 1rem 0.5rem; padding-bottom: 90px; }
+        }
+        /* --- MOBILE BUTTON STYLES --- */
+        .btn-half {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            font-family: inherit;
+            transition: all 0.3s var(--ease-cubic);
+        }
+        .btn-outline-mobile { background: transparent; border: 1.5px solid var(--accent-color); color: var(--accent-color); }
+        .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
+        /* --- FORM STYLES --- */
+        .header-section { 
+            text-align: center; 
+            margin-bottom: 2rem; 
+            background: var(--pure-white);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px rgba(103, 61, 230, 0.05);
+            border: 1px solid rgba(103, 61, 230, 0.08);
+        }
+        .header-section h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent-color); }
+        .header-section p { color: var(--text-sub); font-size: 0.95rem; font-weight: 500; }
+        .form-section { 
+            margin-bottom: 2rem; 
+            background: var(--pure-white);
+            padding: 2.5rem 3rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color); 
+        }
+        .section-title { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        .section-number { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; }
+        .section-name { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 700; color: var(--primary-dark); }
+        .section-icon { width: 24px; height: 24px; color: var(--accent-color); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+        .full-width { grid-column: 1 / -1; }
+        .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; }
+        .input-group input, .input-group textarea {
+            width: 100%; background-color: transparent; border: 1px solid var(--border-color);
+            border-radius: 12px; font-size: 16px; font-weight: 500; padding: 14px;
+            font-family: inherit; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-group textarea { resize: vertical; min-height: 100px; }
+        .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
+        .input-group label {
+            position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500; pointer-events: none;
+            transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0;
+        }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
+        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label {
+            top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-color); background: var(--pure-white); padding: 0 5px;
+        }
+        .hint-text { font-size: 0.85rem; color: var(--text-sub); margin-top: -0.5rem; margin-bottom: 1rem; margin-left: 4px; font-weight: 500; }
+        .sub-heading { font-weight: 600; font-size: 1rem; margin: 1.5rem 0 1rem; color: var(--text-main); }
+        .btn-outline { width: 100%; padding: 1rem; font-size: 0.95rem; font-weight: 700; font-family: inherit; color: var(--text-main); background-color: transparent; border: 1.5px dashed var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; margin-top: 0.5rem; }
+        .btn-outline:hover { border-color: var(--accent-color); color: var(--accent-color); background: var(--bg-light); }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--text-main); margin-bottom: 1.5rem; }
+        .checkbox-wrapper input { width: 18px; height: 18px; accent-color: var(--accent-color); cursor: pointer; }
+        .btn-submit {
+            width: 100%; padding: 1.125rem; font-size: 1.1rem; font-weight: 700; font-family: inherit; color: var(--pure-white);
+            background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; border-radius: 16px; cursor: pointer;
+            transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); margin-top: 1rem; margin-bottom: 1rem;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(103, 61, 230, 0.3); }
+        .custom-dropdown { position: relative; width: 100%; }
+        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 500; color: var(--text-main); font-size: 16px; }
+        .dropdown-header:hover { border-color: var(--text-sub); }
+        .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
+        .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
+        .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent-color); }
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; }
+        .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-list li { padding: 14px 15px; cursor: pointer; transition: background 0.2s; font-weight: 500; font-size: 16px;}
+        .dropdown-list li:hover { background: var(--bg-light); color: var(--accent-color); }
+        .dynamic-block { animation: fadeIn 0.3s ease-out; margin-top: 1.5rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px; border: 1px solid var(--border-color); }
+        .contact-block { background: transparent; padding: 0; border: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .dynamic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .dynamic-header .sub-heading { margin: 0; }
+        .btn-delete { display: inline-flex; align-items: center; gap: 4px; background: transparent; border: none; color: #ef4444; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: color 0.3s; }
+        .btn-delete:hover { color: #dc2626; }
+        .mt-4 { margin-top: 1rem; } .mb-4 { margin-bottom: 1rem; }
+        #result-link { display: none; margin-bottom: 3rem; padding: 1.5rem; background: #e0f7fa; border: 1px solid #b2ebf2; border-radius: 12px; word-wrap: break-word; font-size: 1.1rem; color: #006064; text-align: center; }
+        #result-link a { color: var(--accent-color); font-weight: bold; text-decoration: none; display: block; margin-top: 8px; }
+        [id$="-te"], [for$="-te"], #event-wedding-day, label[for="event-wedding-day"], #event-reception-day, label[for="event-reception-day"], #venue-address, label[for="venue-address"], #reception-venue-address, label[for="reception-venue-address"], .telugu-font {
+            font-family: 'Noto Sans Telugu', 'IBM Plex Sans', sans-serif !important;
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 0.5rem; }
+            .form-section { padding: 1.5rem; }
+            .dynamic-block { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-split">
+        <div class="form-side">
+            <div class="header-section">
+                <h1>✦ Wedding Invitation System ✦</h1>
+                <p>Fill all details to generate a personalised Telugu wedding invitation</p>
+            </div>
+            <form id="invitation-form">
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Template Options</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            Select Template
+                        </div>
+                    </div>
+                    
+                    <div class="custom-dropdown" id="template-dropdown">
+                        <div class="dropdown-header">
+                            <span class="selected-value">Loading templates from Supabase...</span>
+                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <ul class="dropdown-list">
+                            <li data-value="fallback">Loading...</li>
+                        </ul>
+                        <input type="hidden" id="selected-template" name="template" value="">
+                    </div>
+                    <div class="input-group mt-4">
+                        <input type="text" id="custom-id" placeholder=" ">
+                        <label for="custom-id">Custom Link ID (e.g., harsha-vardhini)</label>
+                        <div class="hint-text" style="margin-top: 6px;">Your link will look like: <strong>schedy.in/your-custom-id</strong></div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 01</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            Family Surname & Wedding Date
+                        </div>
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="surname-en" placeholder=" ">
+                            <label for="surname-en">Family Surname EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="surname-te" placeholder=" ">
+                            <label for="surname-te">Family Surname తె</label>
+                            <div class="hint-text telugu-font" style="margin-top: 6px;">Appears as "[Surname] వారి పెండ్లిపిలుపు"</div>
+                        </div>
+                    </div>
+                    <div class="grid-2 mt-4">
+                        <div class="input-group">
+                            <input type="date" id="wedding-date" placeholder=" ">
+                            <label for="wedding-date">Wedding Date</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="time" id="muhurtham-time" placeholder=" ">
+                            <label for="muhurtham-time">Muhurtham Time</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 02</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            Groom's Details
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="groom-en" placeholder=" ">
+                            <label for="groom-en">Groom's Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="groom-te" placeholder=" ">
+                            <label for="groom-te">Groom's Name తె</label>
+                            <div class="hint-text" style="margin-top: 6px;">Auto-transliterated · edit if needed</div>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Father's Details</div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="text" id="groom-father-en" placeholder=" ">
+                            <label for="groom-father-en">Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="groom-father-te" placeholder=" ">
+                            <label for="groom-father-te">Name తె</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="groom-father-phone" placeholder=" ">
+                            <label for="groom-father-phone">Phone</label>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Mother's Details</div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="text" id="groom-mother-en" placeholder=" ">
+                            <label for="groom-mother-en">Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="groom-mother-te" placeholder=" ">
+                            <label for="groom-mother-te">Name తె</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="groom-mother-phone" placeholder=" ">
+                            <label for="groom-mother-phone">Phone</label>
+                        </div>
+                    </div>
+                    
+                    <div id="groom-contacts-container"></div>
+                    <button type="button" class="btn-outline" id="btn-add-groom">Add Contact (Groom's Side)</button>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 03</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            Bride's Details
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="bride-en" placeholder=" ">
+                            <label for="bride-en">Bride's Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="bride-te" placeholder=" ">
+                            <label for="bride-te">Bride's Name తె</label>
+                            <div class="hint-text" style="margin-top: 6px;">Auto-transliterated · edit if needed</div>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Father's Details</div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="text" id="bride-father-en" placeholder=" ">
+                            <label for="bride-father-en">Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="bride-father-te" placeholder=" ">
+                            <label for="bride-father-te">Name తె</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="bride-father-phone" placeholder=" ">
+                            <label for="bride-father-phone">Phone</label>
+                        </div>
+                    </div>
+                    <div class="sub-heading">Mother's Details</div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="text" id="bride-mother-en" placeholder=" ">
+                            <label for="bride-mother-en">Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="bride-mother-te" placeholder=" ">
+                            <label for="bride-mother-te">Name తె</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="bride-mother-phone" placeholder=" ">
+                            <label for="bride-mother-phone">Phone</label>
+                        </div>
+                    </div>
+                    <div id="bride-contacts-container"></div>
+                    <button type="button" class="btn-outline" id="btn-add-bride">Add Contact (Bride's Side)</button>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 04</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Reception Details
+                        </div>
+                    </div>
+                    
+                    <div class="hint-text full-width mb-4">The Main Wedding Date & Time are automatically applied from Section 01 to prevent errors.</div>
+                    <div class="sub-heading"><span class="telugu-font">విందు సమారంభం</span> — Reception</div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="date" id="event-reception-date" placeholder=" ">
+                            <label for="event-reception-date">Date</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="time" id="event-reception-time" placeholder=" ">
+                            <label for="event-reception-time">Start Time</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="event-reception-day" placeholder=" ">
+                            <label for="event-reception-day">Day తె</label>
+                        </div>
+                    </div>
+                    <label class="checkbox-wrapper mt-4">
+                        <input type="checkbox" id="same-venue" checked>
+                        <span class="telugu-font">అదే వేదికలో</span> (Same venue as wedding for reception)
+                    </label>
+                    <div id="reception-venue-container" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color);">
+                        <div class="sub-heading" style="margin-top: 0;">Reception Venue Details</div>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <input type="text" id="reception-venue-en" placeholder=" ">
+                                <label for="reception-venue-en">Venue Name EN</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="reception-venue-te" placeholder=" ">
+                                <label for="reception-venue-te">Venue Name తె</label>
+                                <div class="hint-text" style="margin-top: 6px;">Auto-transliterated</div>
+                            </div>
+                            
+                            <div class="input-group full-width">
+                                <textarea id="reception-venue-address" placeholder=" "></textarea>
+                                <label for="reception-venue-address">Venue Address తె (use &lt;br&gt; for line break)</label>
+                            </div>
+                            
+                            <div class="input-group full-width">
+                                <input type="url" id="reception-venue-maps" placeholder=" ">
+                                <label for="reception-venue-maps">Google Maps Link</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 05</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Main Venue Details
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="venue-en" placeholder=" ">
+                            <label for="venue-en">Venue Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="venue-te" placeholder=" ">
+                            <label for="venue-te">Venue Name తె</label>
+                        </div>
+                        
+                        <div class="input-group full-width">
+                            <textarea id="venue-address" placeholder=" "></textarea>
+                            <label for="venue-address">Venue Address తె (use &lt;br&gt; for line break)</label>
+                        </div>
+                        
+                        <div class="input-group full-width">
+                            <input type="url" id="venue-maps" placeholder=" ">
+                            <label for="venue-maps">Google Maps Link</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 06</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            Additional Events
+                        </div>
+                    </div>
+                    <div class="hint-text full-width mb-4">Add Pre-Wedding events like Haldi, Mehendi, Sangeet, or Engagement.</div>
+                    
+                    <div id="additional-events-container"></div>
+                    
+                    <button type="button" class="btn-outline" id="btn-add-event">Add Event</button>
+                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">Section 07</span>
+                        <div class="section-name">
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            Best Compliments
+                        </div>
+                    </div>
+                    <div class="hint-text full-width mb-4">Add names of close family members, relatives, or friends welcoming the guests.</div>
+                    
+                    <div class="grid-2 mb-4" style="border-bottom: 1px dashed var(--border-color); padding-bottom: 1.5rem;">
+                        <div class="input-group">
+                            <input type="text" id="compliment-title-en" placeholder=" " value="With Best Compliments From">
+                            <label for="compliment-title-en">Compliment Text EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="compliment-title-te" placeholder=" " value="తమరి రాకను కోరే">
+                            <label for="compliment-title-te">Compliment Text తె</label>
+                        </div>
+                    </div>
+                    <div id="compliments-container">
+                        <div class="grid-2" style="margin-bottom: 0;">
+                            <div class="input-group">
+                                <input type="text" id="comp-1-en" placeholder=" ">
+                                <label for="comp-1-en">Name(s) EN</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="comp-1-te" placeholder=" ">
+                                <label for="comp-1-te">Name(s) తె</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-outline" id="btn-add-compliment">Add More Names</button>
+                </div>
+                <button type="submit" class="btn-submit">Generate Invitation</button>
+                <div id="result-link"></div>
+            </form>
+        </div>
+        <div class="preview-side mobile-hidden">
+            <div class="preview-header">LIVE PREVIEW</div>
+            <iframe id="preview-frame" class="preview-iframe" srcdoc="
+                <div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'>
+                    <h2 style='color:#2B1664;'>No Template Selected</h2>
+                    <p>Select a template from the dropdown to see your live preview.</p>
+                </div>
+            "></iframe>
+        </div>
+    </div>
+    <div class="sticky-action-bar mobile-only">
+        <button type="button" id="btn-toggle-view" class="btn-half btn-outline-mobile">PREVIEW</button>
+        <button type="button" id="btn-create-mobile" class="btn-half btn-solid-mobile">CREATE</button>
+    </div>
+    <script>
+        // --- MOBILE TOGGLE LOGIC ---
+        const toggleBtn = document.getElementById('btn-toggle-view');
+        const createBtnMobile = document.getElementById('btn-create-mobile');
+        const formSide = document.querySelector('.form-side');
+        const previewSide = document.querySelector('.preview-side');
+        
+        toggleBtn.addEventListener('click', () => {
+            if (previewSide.classList.contains('mobile-hidden')) {
+                formSide.classList.add('mobile-hidden');
+                previewSide.classList.remove('mobile-hidden');
+                toggleBtn.textContent = 'EDIT';
+            } else {
+                previewSide.classList.add('mobile-hidden');
+                formSide.classList.remove('mobile-hidden');
+                toggleBtn.textContent = 'PREVIEW';
+            }
+        });
+        createBtnMobile.addEventListener('click', () => {
+            const event = new Event('submit', { cancelable: true, bubbles: true });
+            document.getElementById('invitation-form').dispatchEvent(event);
+        });
+
+        // --- SUPABASE INTEGRATION ---
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+
+        let currentTemplateHTML = '';
+        let previewDebounceTimer;
+        let activeInputId = null;
+
+        document.getElementById('invitation-form').addEventListener('focusin', (e) => {
+            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                activeInputId = e.target.id;
+                updatePreview(); 
+            }
+        });
+        
+        function formatTeluguDate(dateStr) {
+            if (!dateStr || !dateStr.includes('-')) return dateStr;
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            return dateStr;
+        }
+        function formatTeluguTime(timeStr) {
+            if (!timeStr || !timeStr.includes(':')) return timeStr;
+            let [hh, mm] = timeStr.split(':');
+            let hour = parseInt(hh, 10);
+            let period = hour >= 0 && hour < 12 ? 'ఉదయం' : hour >= 12 && hour < 16 ? 'మధ్యాహ్నం' : hour >= 16 && hour < 20 ? 'సాయంత్రం' : 'రాత్రి';
+            let hour12 = hour % 12 || 12;
+            return mm === '00' ? `${period} ${hour12}:00 గంటలకు` : `${period} ${hour12}:${mm} నిమిషాలకు`;
+        }
+
+        // --- GATHER ALL DATA ---
+        function gatherData() {
+            const details = {};
+            document.querySelectorAll('input, textarea').forEach(input => {
+                if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
+                    if (input.type === 'checkbox') {
+                        details[input.id] = input.checked;
+                    } else if (input.value.trim() !== '') { 
+                        details[input.id] = input.value.trim();
+                    }
+                }
+            });
+            const weddingDate = document.getElementById('wedding-date').value;
+            const muhurthamTime = document.getElementById('muhurtham-time').value;
+            let eventWeddingDay = '';
+            
+            if (weddingDate) {
+                const dateObj = new Date(weddingDate);
+                const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
+                eventWeddingDay = teluguDays[dateObj.getDay()];
+            }
+            if (weddingDate) details['event-wedding-date'] = weddingDate;
+            if (muhurthamTime) details['event-wedding-time'] = muhurthamTime;
+            if (eventWeddingDay) details['event-wedding-day'] = eventWeddingDay;
+
+            const sameVenueChecked = document.getElementById('same-venue').checked;
+            if (sameVenueChecked) {
+                delete details['reception-venue-en'];
+                delete details['reception-venue-te'];
+                delete details['reception-venue-address'];
+                delete details['reception-venue-maps'];
+            }
+            const bride_name = document.getElementById('bride-en').value || document.getElementById('bride-te').value || '';
+            const groom_name = document.getElementById('groom-en').value || document.getElementById('groom-te').value || '';
+            return {
+                core: {
+                    template_id: document.getElementById('selected-template').value,
+                    custom_id: document.getElementById('custom-id').value.trim().toLowerCase().replace(/\s+/g, '-'),
+                    bride_name,
+                    groom_name,
+                    event_date: weddingDate
+                },
+                allData: {
+                    bride_name,
+                    groom_name,
+                    event_date: weddingDate,
+                    'event-wedding-date': weddingDate,
+                    'event-wedding-time': muhurthamTime,
+                    'event-wedding-day': eventWeddingDay,
+                    ...details
+                },
+                detailsToSave: details
+            };
+        }
+
+        // --- TEMPLATE COMPILER ---
+        function compileTemplateHTML(allData) {
+            if (!currentTemplateHTML) return '';
+            let html = currentTemplateHTML;
+            html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
+                const val = allData[key];
+                if (val === undefined || val === null || val === false || val === '') return '';
+                if (typeof val === 'boolean') return val ? content : '';
+                if (typeof val === 'string' && val.trim() === '') return '';
+                return content;
+            });
+            for (const [key, value] of Object.entries(allData)) {
+                let finalValue = value;
+                if (typeof finalValue === 'string') {
+                    if (key.includes('date')) finalValue = formatTeluguDate(finalValue);
+                    if (key.includes('time')) finalValue = formatTeluguTime(finalValue);
+                    html = html.replace(new RegExp(`{{${key}}}`, 'g'), finalValue);
+                }
+            }
+            html = html.replace(/{{[^{}]+}}/g, '');
+            if(allData.event_date) {
+                const formattedDate = new Date(allData.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                html = html.replace(/{{event_date}}/g, formattedDate);
+            }
+            return html;
+        }
+
+        // =========================================================
+        // KEY FIX: generateIframeContent
+        // Scripts are STRIPPED from the morphdom-updated HTML.
+        // They only run ONCE on initial iframe load via srcdoc.
+        // On subsequent updates, morphdom patches only the DOM — 
+        // no scripts are re-injected, preventing all duplication.
+        // =========================================================
+        function stripScripts(html) {
+            return html.replace(/<script[\s\S]*?<\/script>/gi, '');
+        }
+
+        function generateIframeContent(html) {
+            // Full srcdoc for initial load — scripts run once here
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }
+                        .hidden { opacity: 1 !important; transform: none !important; }
+                        .invite-divider.hidden { display: flex !important; }
+                        .invite-names.hidden { display: block !important; }
+                    </style>
+                    <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
+                </head>
+                <body>
+                    <div id="invitation-container">${html}</div>
+                    <script>
+                        // Run template scripts once on initial load
+                        (function() {
+                            const container = document.getElementById('invitation-container');
+                            const scripts = Array.from(container.getElementsByTagName('script'));
+                            scripts.forEach(function(oldScript) {
+                                const newScript = document.createElement('script');
+                                if (oldScript.src) {
+                                    newScript.src = oldScript.src;
+                                } else {
+                                    newScript.textContent = oldScript.textContent;
+                                }
+                                document.body.appendChild(newScript);
+                                oldScript.parentNode.removeChild(oldScript);
+                            });
+                        })();
+
+                        // Listen for morphdom patch updates from parent
+                        // Scripts are stripped from update HTML — no re-execution
+                        window.addEventListener('message', function(event) {
+                            if (event.data.type === 'update') {
+                                var newDOM = document.createElement('div');
+                                newDOM.id = 'invitation-container';
+                                // CRITICAL: strip scripts before morphdom patch
+                                newDOM.innerHTML = event.data.html;
+
+                                morphdom(document.getElementById('invitation-container'), newDOM, {
+                                    childrenOnly: false,
+                                    onBeforeElUpdated: function(fromEl, toEl) {
+                                        // Never replace script tags via morphdom
+                                        if (fromEl.tagName === 'SCRIPT') return false;
+                                        return true;
+                                    }
+                                });
+
+                                if (event.data.target) {
+                                    setTimeout(function() {
+                                        var targetId = event.data.target;
+                                        if (targetId.endsWith('-en')) targetId = targetId.replace('-en', '-te');
+                                        if (targetId === 'wedding-date') targetId = 'event-wedding-date';
+                                        if (targetId === 'muhurtham-time') targetId = 'event-wedding-time';
+                                        if (targetId === 'venue-te' || targetId === 'venue-address' || targetId === 'venue-maps') {
+                                            targetId = 'main-venue-section';
+                                        }
+                                        if (targetId.includes('maps') || targetId.includes('address')) {
+                                            if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
+                                            else targetId = targetId.replace('-maps', '-name-te');
+                                        }
+                                        if (targetId.includes('compliment-title')) targetId = 'comp-1-te';
+                                        var scrollAnchor = document.querySelector('[data-scroll-target="' + targetId + '"]');
+                                        if (scrollAnchor) {
+                                            scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            scrollAnchor.style.transition = 'background-color 0.5s';
+                                            scrollAnchor.style.backgroundColor = 'rgba(217,169,66,0.3)';
+                                            setTimeout(function() { scrollAnchor.style.backgroundColor = 'transparent'; }, 800);
+                                        }
+                                    }, 50);
+                                }
+                            }
+                        });
+                    <\/script>
+                </body>
+                </html>
+            `;
+        }
+
+        function updatePreview() {
+            if (!currentTemplateHTML) return;
+            const dataObj = gatherData();
+            const compiledHtml = compileTemplateHTML(dataObj.allData);
+            const iframe = document.getElementById('preview-frame');
+            
+            if (iframe.contentWindow) {
+                // Send stripped HTML — no scripts in morphdom updates
+                iframe.contentWindow.postMessage({
+                    type: 'update',
+                    html: stripScripts(compiledHtml),
+                    target: activeInputId
+                }, '*');
+            }
+        }
+
+        document.getElementById('invitation-form').addEventListener('input', () => {
+            clearTimeout(previewDebounceTimer);
+            previewDebounceTimer = setTimeout(updatePreview, 300);
+        });
+
+        // --- Fetch Templates ---
+        window.templatesData = [];
+        async function fetchTemplates() {
+            const { data, error } = await supabaseClient.from('templates').select('id, name, html_code');
+            const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
+            const selectedValue = document.querySelector('#template-dropdown .selected-value');
+            const hiddenInput = document.getElementById('selected-template');
+            const header = document.querySelector('#template-dropdown .dropdown-header');
+            dropdownList.innerHTML = ''; 
+            
+            if (data && data.length > 0) {
+                window.templatesData = data;
+                selectedValue.textContent = 'Choose a template...';
+                data.forEach(t => {
+                    const li = document.createElement('li');
+                    li.dataset.value = t.id;
+                    li.textContent = t.name;
+                    
+                    li.addEventListener('click', (e) => {
+                        selectedValue.textContent = e.target.textContent;
+                        hiddenInput.value = e.target.dataset.value;
+                        dropdownList.classList.remove('show');
+                        header.classList.remove('active');
+                        e.stopPropagation();
+                        const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
+                        if (selectedTemplate) {
+                            currentTemplateHTML = selectedTemplate.html_code;
+                            // Full reload with scripts on template change
+                            document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
+                        }
+                    });
+                    dropdownList.appendChild(li);
+                });
+            } else {
+                selectedValue.textContent = 'No templates found in Supabase!';
+            }
+        }
+        fetchTemplates();
+
+        // --- FORM SUBMIT & SUPABASE SAVE ---
+        document.getElementById('invitation-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dataObj = gatherData();
+            if (!dataObj.core.template_id) return alert("Please select a template from the dropdown!");
+            if (!dataObj.core.bride_name || !dataObj.core.groom_name) return alert("Please enter both Bride and Groom names.");
+            if (!dataObj.core.event_date) return alert("Please select a wedding date.");
+            const custom_id = dataObj.core.custom_id || ('invite-' + Date.now());
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            if (!editId) {
+                const { data: existing } = await supabaseClient
+                    .from('invitations')
+                    .select('id')
+                    .eq('id', custom_id)
+                    .single();
+                if (existing) {
+                    return alert("This Link ID is already in use! Please enter a different one to avoid overwriting someone else's data.");
+                }
+            }
+            const btnSubmit = document.querySelector('.btn-submit');
+            const originalText = btnSubmit.textContent;
+            btnSubmit.textContent = 'Generating Database Link...';
+            btnSubmit.disabled = true;
+            const { data, error } = await supabaseClient
+                .from('invitations')
+                .upsert([{ 
+                    id: custom_id, 
+                    bride_name: dataObj.core.bride_name, 
+                    groom_name: dataObj.core.groom_name, 
+                    event_date: dataObj.core.event_date, 
+                    template_id: dataObj.core.template_id, 
+                    details: dataObj.detailsToSave 
+                }])
+                .select()
+                .single();
+            if (error) {
+                alert('Database Error: ' + error.message);
+            } else {
+                const linkBox = document.getElementById('result-link');
+                const url = `${window.location.origin}/${data.id}`;
+                linkBox.style.display = 'block';
+                linkBox.innerHTML = `<strong>Success! Share this link:</strong><br><a href="${url}" target="_blank">${url}</a>`;
+                linkBox.scrollIntoView({ behavior: 'smooth' });
+            }
+            btnSubmit.textContent = originalText;
+            btnSubmit.disabled = false;
+        });
+
+        // ==========================================
+        // --- DYNAMIC FIELDS & UTILS ---
+        // ==========================================
+        const maxContacts = 2;
+        const contactsCount = { groom: 0, bride: 0 };
+        let eventCount = 0;
+        const maxEvents = 4;
+        let complimentCount = 1;
+        const maxCompliments = 5;
+        const dropdownHeader = document.querySelector('#template-dropdown .dropdown-header');
+        const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
+        dropdownHeader.addEventListener('click', (e) => {
+            dropdownList.classList.toggle('show');
+            dropdownHeader.classList.toggle('active');
+            e.stopPropagation();
+        });
+        document.addEventListener('click', () => {
+            dropdownList.classList.remove('show');
+            dropdownHeader.classList.remove('active');
+        });
+
+        async function transliterateToTelugu(text) {
+            if (!text.trim()) return '';
+            const words = text.split(/(\s+)/);
+            const transliteratedWords = await Promise.all(words.map(async (word) => {
+                if (!word.trim()) return word; 
+                try {
+                    const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(word)}&itc=te-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8`);
+                    const data = await response.json();
+                    if (data[0] === 'SUCCESS' && data[1] && data[1][0] && data[1][0][1] && data[1][0][1][0]) {
+                        return data[1][0][1][0];
+                    }
+                } catch (e) { console.error("Transliteration error:", e); }
+                return word; 
+            }));
+            return transliteratedWords.join('');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => { clearTimeout(timeout); func(...args); };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const setupTransliteration = (enInputId, teInputId) => {
+            const enInput = document.getElementById(enInputId);
+            const teInput = document.getElementById(teInputId);
+            if (!enInput || !teInput) return;
+            enInput.addEventListener('input', debounce(async (e) => {
+                const text = e.target.value;
+                if(text) teInput.value = await transliterateToTelugu(text);
+                else teInput.value = '';
+                teInput.dispatchEvent(new Event('input', { bubbles: true })); 
+            }, 400));
+        };
+
+        const staticFields = [
+            ['surname-en', 'surname-te'], ['groom-en', 'groom-te'], ['groom-father-en', 'groom-father-te'],
+            ['groom-mother-en', 'groom-mother-te'], ['bride-en', 'bride-te'], ['bride-father-en', 'bride-father-te'],
+            ['bride-mother-en', 'bride-mother-te'], ['venue-en', 'venue-te'], ['reception-venue-en', 'reception-venue-te'],
+            ['compliment-title-en', 'compliment-title-te'], ['comp-1-en', 'comp-1-te'] 
+        ];
+        staticFields.forEach(([en, te]) => setupTransliteration(en, te));
+
+        const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
+        
+        const handleDateChange = (dateInputId, dayInputId) => {
+            const dateInput = document.getElementById(dateInputId);
+            const dayInput = document.getElementById(dayInputId);
+            if (!dateInput || !dayInput) return;
+            dateInput.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    const parts = e.target.value.split('-');
+                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    dayInput.value = teluguDays[date.getDay()];
+                } else {
+                    dayInput.value = '';
+                }
+                dayInput.dispatchEvent(new Event('input', { bubbles: true })); 
+            });
+        };
+        handleDateChange('event-reception-date', 'event-reception-day');
+        
+        const sameVenueCheckbox = document.getElementById('same-venue');
+        const receptionVenueContainer = document.getElementById('reception-venue-container');
+        sameVenueCheckbox.addEventListener('change', (e) => {
+            receptionVenueContainer.style.display = e.target.checked ? 'none' : 'block';
+            updatePreview(); 
+        });
+
+        window.removeDynamicBlock = function(btn, type, side = null) {
+            btn.closest('.dynamic-block').remove();
+            if (type === 'contact') {
+                contactsCount[side]--;
+                document.getElementById(`btn-add-${side}`).style.display = 'block';
+                const blocks = document.querySelectorAll(`#${side}-contacts-container .dynamic-block`);
+                blocks.forEach((block, idx) => {
+                    const headerText = block.querySelector('.dynamic-header-text');
+                    if(headerText) headerText.textContent = `Additional Contact ${idx + 1}`;
+                });
+            } else if (type === 'event') {
+                eventCount--;
+                document.getElementById('btn-add-event').style.display = 'block';
+                const blocks = document.querySelectorAll(`#additional-events-container .dynamic-block`);
+                blocks.forEach((block, idx) => {
+                    const headerText = block.querySelector('.dynamic-header-text');
+                    if(headerText) headerText.textContent = `Event ${idx + 1}`;
+                });
+            }
+            updatePreview(); 
+        };
+
+        window.removeComplimentRow = function(btn) {
+            btn.closest('.grid-2').remove();
+            complimentCount--;
+            document.getElementById('btn-add-compliment').style.display = 'block';
+            updatePreview(); 
+        };
+
+        function addContact(side) {
+            if (contactsCount[side] >= maxContacts) return;
+            contactsCount[side]++;
+            const displayIndex = contactsCount[side];
+            const idPrefix = `${side}-extra-${displayIndex}`; 
+            const html = `
+                <div class="dynamic-block contact-block">
+                    <div class="dynamic-header">
+                        <div class="sub-heading dynamic-header-text">Additional Contact ${displayIndex}</div>
+                        <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'contact', '${side}')">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="text" id="${idPrefix}-en" placeholder=" ">
+                            <label for="${idPrefix}-en">Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="${idPrefix}-te" placeholder=" ">
+                            <label for="${idPrefix}-te">Name తె</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="${idPrefix}-phone" placeholder=" ">
+                            <label for="${idPrefix}-phone">Phone</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById(`${side}-contacts-container`).insertAdjacentHTML('beforeend', html);
+            setupTransliteration(`${idPrefix}-en`, `${idPrefix}-te`);
+            if (contactsCount[side] >= maxContacts) document.getElementById(`btn-add-${side}`).style.display = 'none';
+        }
+
+        document.getElementById('btn-add-groom').addEventListener('click', () => addContact('groom'));
+        document.getElementById('btn-add-bride').addEventListener('click', () => addContact('bride'));
+
+        document.getElementById('btn-add-event').addEventListener('click', () => {
+            if (eventCount >= maxEvents) return;
+            eventCount++;
+            const eventId = `event-${eventCount}`; 
+            const html = `
+                <div class="dynamic-block">
+                    <div class="dynamic-header">
+                        <div class="sub-heading dynamic-header-text">Event ${eventCount}</div>
+                        <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'event')">
+                            Remove Event
+                        </button>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="${eventId}-name-en" placeholder=" ">
+                            <label for="${eventId}-name-en">Event Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="${eventId}-name-te" placeholder=" ">
+                            <label for="${eventId}-name-te">Event Name తె</label>
+                        </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <input type="date" id="${eventId}-date" placeholder=" ">
+                            <label for="${eventId}-date">Date</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="time" id="${eventId}-time" placeholder=" ">
+                            <label for="${eventId}-time">Start Time</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="${eventId}-day" placeholder=" ">
+                            <label for="${eventId}-day">Day తె</label>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <input type="text" id="${eventId}-venue-en" placeholder=" ">
+                            <label for="${eventId}-venue-en">Venue Name EN</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="${eventId}-venue-te" placeholder=" ">
+                            <label for="${eventId}-venue-te">Venue Name తె</label>
+                        </div>
+                        <div class="input-group full-width">
+                            <input type="url" id="${eventId}-maps" placeholder=" ">
+                            <label for="${eventId}-maps">Google Maps Link</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('additional-events-container').insertAdjacentHTML('beforeend', html);
+            setupTransliteration(`${eventId}-name-en`, `${eventId}-name-te`);
+            setupTransliteration(`${eventId}-venue-en`, `${eventId}-venue-te`);
+            handleDateChange(`${eventId}-date`, `${eventId}-day`);
+            if (eventCount >= maxEvents) document.getElementById('btn-add-event').style.display = 'none';
+        });
+
+        document.getElementById('btn-add-compliment').addEventListener('click', () => {
+            if (complimentCount >= maxCompliments) return;
+            complimentCount++;
+            const compId = `comp-${complimentCount}`;
+            const html = `
+                <div class="grid-2" style="position: relative; animation: fadeIn 0.3s ease-out; margin-bottom: 0;">
+                    <div class="input-group">
+                        <input type="text" id="${compId}-en" placeholder=" ">
+                        <label for="${compId}-en">Name(s) EN</label>
+                    </div>
+                    <div class="input-group" style="position: relative;">
+                        <input type="text" id="${compId}-te" placeholder=" " style="padding-right: 40px;">
+                        <label for="${compId}-te">Name(s) తె</label>
+                        <button type="button" class="btn-delete" style="position: absolute; right: 10px; top: 16px;" onclick="removeComplimentRow(this)" title="Remove">X</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('compliments-container').insertAdjacentHTML('beforeend', html);
+            setupTransliteration(`${compId}-en`, `${compId}-te`);
+            if (complimentCount >= maxCompliments) document.getElementById('btn-add-compliment').style.display = 'none';
+        });
+
+        // ==========================================
+        // --- EDIT MODE LOGIC ---
+        // ==========================================
+        async function checkEditMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            if (!editId) return;
+            document.querySelector('.header-section h1').textContent = '✦ Edit Invitation ✦';
+            document.querySelector('.btn-submit').textContent = 'Update Invitation';
+            
+            const { data, error } = await supabaseClient
+                .from('invitations')
+                .select('*')
+                .eq('id', editId)
+                .single();
+            if (error || !data) return alert('Could not load invitation data for editing.');
+            document.getElementById('custom-id').value = data.id;
+            document.getElementById('custom-id').setAttribute('readonly', true); 
+            document.getElementById('custom-id').style.backgroundColor = '#f1f5f9';
+            
+            const details = data.details || {};
+            let maxGroom = 0, maxBride = 0, maxEvts = 0, maxComps = 1;
+            
+            Object.keys(details).forEach(key => {
+                if (key.startsWith('groom-extra-')) maxGroom = Math.max(maxGroom, parseInt(key.split('-')[2]));
+                if (key.startsWith('bride-extra-')) maxBride = Math.max(maxBride, parseInt(key.split('-')[2]));
+                if (key.startsWith('event-') && !key.includes('wedding') && !key.includes('reception')) {
+                    const parts = key.split('-');
+                    if(!isNaN(parts[1])) maxEvts = Math.max(maxEvts, parseInt(parts[1]));
+                }
+                if (key.startsWith('comp-')) maxComps = Math.max(maxComps, parseInt(key.split('-')[1]));
+            });
+            for(let i=0; i < maxGroom; i++) document.getElementById('btn-add-groom').click();
+            for(let i=0; i < maxBride; i++) document.getElementById('btn-add-bride').click();
+            for(let i=0; i < maxEvts; i++) document.getElementById('btn-add-event').click();
+            for(let i=1; i < maxComps; i++) document.getElementById('btn-add-compliment').click();
+            setTimeout(() => {
+                if(document.getElementById('bride-en') && data.bride_name) document.getElementById('bride-en').value = data.bride_name;
+                if(document.getElementById('groom-en') && data.groom_name) document.getElementById('groom-en').value = data.groom_name;
+                if(document.getElementById('wedding-date') && data.event_date) document.getElementById('wedding-date').value = data.event_date;
+                for (const [key, value] of Object.entries(details)) {
+                    const input = document.getElementById(key);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = value;
+                            input.dispatchEvent(new Event('change'));
+                        } else {
+                            input.value = value;
+                        }
+                    }
+                }
+                const hiddenInput = document.getElementById('selected-template');
+                const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                const option = document.querySelector(`.dropdown-list li[data-value="${data.template_id}"]`);
+                if (option) {
+                    hiddenInput.value = data.template_id;
+                    selectedValue.textContent = option.textContent;
+                }
+                const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
+                if (selectedTemplateData) {
+                    currentTemplateHTML = selectedTemplateData.html_code;
+                    document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
+                }
+            }, 200); 
+        }
+        setTimeout(checkEditMode, 800); 
+    </script>
+</body>
+</html>
