@@ -185,14 +185,16 @@
             margin: 0 auto;
             align-items: flex-start;
             gap: 2rem;
-            /* No height: 100% so sticky works inside scrolling content-area */
+            /* Lock height to strictly fit within the content area (100vh - 80px topbar - 48px padding) */
+            height: calc(100vh - 128px);
         }
 
         .form-side {
             flex: 1;
             max-width: 800px;
             width: 100%;
-            padding-bottom: 2rem;
+            height: 100%; /* Force height constraint */
+            padding-bottom: 0;
             display: flex;
             flex-direction: column;
         }
@@ -200,9 +202,7 @@
         /* Desktop Sticky Preview */
         .preview-side {
             width: 375px; 
-            height: calc(100vh - 80px - 48px); /* Height minus topbar and container padding */
-            position: sticky;
-            top: 0;
+            height: 100%; /* Match the layout-split height */
             background: #E5E7EB;
             border: 1px solid var(--border-color);
             border-radius: 20px;
@@ -231,8 +231,8 @@
         .sticky-action-bar { display: none; }
 
         @media (max-width: 1150px) {
-            .layout-split { flex-direction: column; align-items: center; gap: 0; }
-            .form-side { width: 100%; padding-bottom: 100px; }
+            .layout-split { flex-direction: column; align-items: center; gap: 0; height: auto; }
+            .form-side { width: 100%; padding-bottom: 100px; height: auto; }
             
             /* Remove Card Design on Mobile for more width */
             .form-section {
@@ -240,6 +240,9 @@
                 border: none !important;
                 padding: 0 !important;
                 border-radius: 0 !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
             }
 
             .editor-group { display: block !important; }
@@ -289,10 +292,21 @@
             display: flex;
             flex-direction: column;
             flex: 1;
+            /* Strict constraints to prevent pushing the screen down */
+            height: 100%;
+            max-height: 100%;
+            overflow: hidden;
         }
 
         .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; flex-shrink: 0; }
-        .editor-group { flex: 1; display: flex; flex-direction: column; }
+        
+        .editor-group { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 0; /* Critical flex property to allow shrinking */
+            margin-bottom: 0;
+        }
         
         .input-group input, .input-group textarea {
             width: 100%; background-color: transparent; border: 1px solid var(--border-color);
@@ -302,12 +316,15 @@
         .input-group input { font-weight: 600; }
         
         .input-group textarea { 
-            resize: vertical; 
-            height: 600px; /* Good default for desktop */
+            resize: none; /* Disable vertical resize to preserve fixed layout */
+            flex: 1; /* Stretch smoothly to fill available space */
+            height: 100%; 
+            min-height: 0; /* Crucial for internal scrolling */
             font-family: 'Fira Code', monospace; 
             font-size: 14px; 
             line-height: 1.5; 
             background: #f8fafc; 
+            overflow-y: auto; /* Contains all scrolling securely inside the input block */
         }
         
         .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
@@ -453,19 +470,23 @@
                     <div class="form-side" id="editor-view">
                         <div class="form-section">
                             
-                            <div class="input-group" style="z-index: 20;">
-                                <div class="custom-dropdown" id="category-dropdown">
-                                    <div class="dropdown-header">
-                                        <span class="selected-value" style="font-weight: 400; color: var(--text-sub);">Select Category...</span>
-                                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <!-- Side-by-Side Category and Save Button -->
+                            <div style="display: flex; gap: 16px; align-items: center; z-index: 20; position: relative; margin-bottom: 1rem; flex-shrink: 0;">
+                                <div class="input-group" style="flex: 1; margin-bottom: 0; padding-top: 0;">
+                                    <div class="custom-dropdown" id="category-dropdown">
+                                        <div class="dropdown-header">
+                                            <span class="selected-value" style="font-weight: 400; color: var(--text-sub);">Select Category...</span>
+                                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </div>
+                                        <ul class="dropdown-list">
+                                            </ul>
+                                        <input type="hidden" id="selected-category" value="">
                                     </div>
-                                    <ul class="dropdown-list">
-                                        </ul>
-                                    <input type="hidden" id="selected-category" value="">
                                 </div>
+                                <button class="btn-submit desktop-only" onclick="saveTemplate()" id="btn-save-desktop" style="margin: 0; padding: 14px 24px; width: auto; min-width: 180px;">Save Template</button>
                             </div>
 
-                            <div class="input-group">
+                            <div class="input-group" style="flex-shrink: 0;">
                                 <input type="text" id="template-name" placeholder=" ">
                                 <label for="template-name">Template Name (e.g. Traditional Telugu Gold)</label>
                             </div>
@@ -475,7 +496,6 @@
                                 <label for="html-code">HTML Code (Paste complete template here)</label>
                             </div>
 
-                            <button class="btn-submit desktop-only" onclick="saveTemplate()" id="btn-save-desktop">Save Template</button>
                         </div>
                     </div>
 
