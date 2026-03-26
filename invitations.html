@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>All Invitations - Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* --- DASHBOARD & FORM COMBINED CSS VARIABLES --- */
+        :root {
+            --header-height-desktop: 70px;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 90px;
+            --row-height: 52px;
+            --sidebar-bg: #ffffff;
+            --header-bg: #ffffff;
+            --text-color: #18181A;
+            --icon-color: #6b7280;
+            --active-bg: #E5E5E5;
+            --hover-bg: #f3f4f6;
+            --border-subtle: #e5e7eb;
+            --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --tooltip-bg: #1f2937;
+            
+            --font-main: "IBM Plex Sans", sans-serif; 
+            --font-alt: 'Inter', sans-serif; 
+            --font-nav: 'DM Sans', sans-serif;
+            
+            --light-bg-tertiary: #f1f3f6;
+            --light-text-primary: #1f2937; 
+            --light-text-secondary: #52616b;
+            --color-background: #f8fafc; 
+
+            --primary-dark: #2B1664;
+            --accent-color: #673DE6;
+            --pure-white: #FFFFFF;
+            --bg-light: #F8F9FA;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 16px;
+            --ease-cubic: cubic-bezier(0.25, 0.8, 0.25, 1);
+            --btn-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
+        }
+
+        /* --- GLOBAL RESETS --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background: var(--color-background);
+            font-family: var(--font-alt);
+            font-weight: 500;
+            color: var(--text-main);
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+        }
+
+        /* ============= UNIFIED LAYOUT & SIDEBAR ============= */
+        .app-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .desktop-only { display: none !important; }
+        .mobile-only { display: flex; }
+        
+        .sidebar, .m-header, .profile-popup { font-family: var(--font-nav); }
+
+        .brand-logo { display: flex; align-items: center; text-decoration: none; transition: all 0.3s; }
+        .brand-logo img { height: 36px; width: auto; display: block; }
+        .mini-logo { display: none; align-items: center; justify-content: center; }
+        .mini-logo img { height: 36px; width: auto; display: block; }
+
+        .icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
+        .icon svg { width: 22px; height: 22px; stroke: var(--icon-color); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        
+        .nav-item { position: relative; display: flex; align-items: center; height: var(--row-height); padding: 0 16px; margin: 6px 0; border-radius: 10px; gap: 14px; cursor: pointer; color: var(--text-color); text-decoration: none; transition: background 0.2s, color 0.2s; white-space: nowrap; }
+        .nav-item:hover { background: var(--hover-bg); }
+        .nav-item.active { background: var(--active-bg); color: var(--text-color); font-weight: 800; }
+        .nav-item.active .icon svg { stroke: #000000; }
+
+        .account-card { display: flex; align-items: center; gap: 12px; }
+        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); }
+        .account-text { display: flex; flex-direction: column; overflow: hidden; transition: opacity 0.2s; }
+        .account-name { font-size: 15px; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; color: var(--text-color); }
+        .account-email { font-size: 13px; color: var(--text-sub); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+
+        .m-header { height: 72px; background: #fff; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .main-content { flex: 1; display: flex; flex-direction: column; margin-top: 72px; overflow: hidden; position: relative; }
+        .content-area { flex: 1; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
+        
+        .m-menu-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .m-menu-lines { width: 18px; height: 14px; position: relative; }
+        .m-menu-lines::before, .m-menu-lines::after, .m-menu-lines span { content: ""; position: absolute; left: 0; right: 0; height: 2px; background: #111827; border-radius: 10px; }
+        .m-menu-lines::before { top: 0; } .m-menu-lines span { top: 6px; } .m-menu-lines::after { bottom: 0; }
+
+        .sidebar { position: fixed; left: 0; top: 0; width: 300px; max-width: 85vw; height: 100%; background: #fff; transform: translateX(-100%); transition: 0.25s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; z-index: 2001; }
+        .sidebar.mobile-open { transform: translateX(0); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); opacity: 0; pointer-events: none; transition: 0.25s; z-index: 2000; }
+        .sidebar-overlay.mobile-open { opacity: 1; pointer-events: auto; }
+
+        .sidebar-header { height: 80px; padding: 0 20px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; transition: all 0.3s; }
+        .m-drawer-close { width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; }
+        .m-drawer-close-icon { width: 14px; height: 14px; position: relative; }
+        .m-drawer-close-icon::before, .m-drawer-close-icon::after { content: ""; position: absolute; inset: 0; margin: auto; width: 14px; height: 2px; background: #111827; }
+        .m-drawer-close-icon::before { transform: rotate(45deg); } .m-drawer-close-icon::after { transform: rotate(-45deg); }
+
+        .sidebar-inner { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+        .nav-menu { padding: 20px 12px; }
+        .account-section { padding: 20px; border-top: 1px solid var(--border-subtle); background: #fff; cursor: pointer; }
+
+        /* Left Side Profile Menu */
+        .profile-popup { position: fixed; background: #fff; border-radius: 12px; box-shadow: var(--shadow-premium); border: 1px solid #e5e7eb; width: 260px; z-index: 3000; opacity: 0; pointer-events: none; transition: 0.2s; overflow: hidden; bottom: 100px; left: 50%; transform: translateX(-50%); }
+        .profile-popup.active { opacity: 1; pointer-events: all; }
+        .popup-header { padding: 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 12px; }
+        .popup-list { list-style: none; padding: 8px; }
+        .popup-list a { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500;}
+        .popup-list a:hover { background: var(--hover-bg); }
+
+        /* Action Menu Popup (Table Row Options) */
+        .actions-popup {
+            position: absolute; 
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--shadow-premium);
+            border: 1px solid #e5e7eb;
+            width: 170px;
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
+            transform: translateY(-10px);
+        }
+        .actions-popup.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .actions-popup .popup-list {
+            list-style: none;
+            padding: 8px;
+        }
+        .actions-popup .popup-list a, .actions-popup .popup-list button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: var(--font-alt);
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .actions-popup .popup-list a:hover, .actions-popup .popup-list button:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 1150px) {
+            .app-layout { flex-direction: row; }
+            .desktop-only { display: flex !important; }
+            .mobile-only { display: none !important; }
+            .m-header { display: none; }
+            .sidebar-overlay { display: none; }
+            .brand-logo img, .mini-logo img { height: 45px; }
+            
+            .main-content { margin-top: 0; }
+            
+            .topbar {
+                height: 80px;
+                background: var(--header-bg);
+                border-bottom: 1px solid var(--border-subtle);
+                padding: 0 40px;
+                display: flex;
+                align-items: center;
+                font-weight: 600;
+                font-size: 1.75rem;
+                font-family: var(--font-main);
+                color: var(--light-text-primary);
+                flex-shrink: 0;
+            }
+
+            .sidebar { position: relative; transform: translateX(0) !important; width: var(--sidebar-width); max-width: none; background: var(--sidebar-bg); border-right: 1px solid var(--border-subtle); z-index: 100; }
+            .sidebar-header { height: auto; min-height: var(--header-height-desktop); padding: 30px 24px; border-bottom: none; }
+            .nav-menu { padding: 10px 16px; }
+            .account-section { margin-top: auto; padding: 24px 16px; }
+            
+            .profile-popup { bottom: 80px; left: 16px; transform: none; }
+            
+            .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--icon-color); display: flex; align-items: center; justify-content: center; padding: 6px; border-radius: 8px; transition: 0.2s; }
+            .sidebar-toggle:hover { background: var(--hover-bg); color: var(--text-color); }
+
+            .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
+            .sidebar.collapsed .brand-logo, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
+            .sidebar.collapsed .mini-logo, .sidebar.collapsed .btn-open-svg { display: flex !important; }
+            .btn-open-svg { display: none; }
+            .sidebar.collapsed .sidebar-header { flex-direction: column; padding: 30px 0 20px 0; gap: 30px; }
+            .sidebar.collapsed .nav-item { justify-content: center; padding: 0; }
+            .sidebar.collapsed .account-section { display: flex; justify-content: center; padding: 24px 0; }
+            .sidebar.collapsed .nav-label { display: none; }
+            .sidebar.collapsed .sidebar-inner { overflow: visible; }
+            
+            .sidebar.collapsed .nav-item:hover .nav-label { display: block; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background-color: var(--tooltip-bg); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 1000; margin-left: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
+            .sidebar.collapsed .nav-item:hover .nav-label::before { content: ""; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); border-width: 6px 6px 6px 0; border-style: solid; border-color: transparent var(--tooltip-bg) transparent transparent; }
+        }
+
+        /* =========================================
+           ALL INVITATIONS TABLE (Responsive)
+        ========================================= */
+        .invitations-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: var(--pure-white); 
+            padding: 2.5rem;
+            border-radius: var(--radius-lg); 
+            box-shadow: 0 4px 15px rgba(103, 61, 230, 0.05); 
+            border: 1px solid var(--border-color);
+            font-family: var(--font-main);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #7c53f0, var(--accent-color));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
+            transition: transform 0.2s;
+            font-family: var(--font-alt);
+        }
+        .btn-create:hover { transform: translateY(-2px); }
+
+        /* --- DESKTOP TABLE STYLES --- */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .invitations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .invitations-table th, .invitations-table td {
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        
+        .invitations-table th:last-child, .invitations-table td:last-child {
+            text-align: right;
+            padding-right: 1.5rem;
+        }
+
+        .invitations-table tr:last-child td { border-bottom: none; }
+
+        .invitations-table th {
+            background: #f8fafc;
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .couple-names { font-weight: 700; color: var(--primary-dark); font-size: 1.05rem; }
+        
+        .link-id { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+        .link-id:hover { text-decoration: underline; }
+
+        .view-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 50px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .view-count svg { width: 14px; height: 14px; }
+
+        /* More Actions 3-Dots Button */
+        .btn-more-actions {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--pure-white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .btn-more-actions:hover, .btn-more-actions.active {
+            background: var(--hover-bg);
+            color: var(--text-main);
+            border-color: #d1d5db;
+        }
+
+        .loader { text-align: center; padding: 3rem; color: var(--text-sub); font-size: 1.1rem; }
+
+        /* --- MOBILE CARD STYLES (REFINED PREMIUM GRID) --- */
+        @media (max-width: 768px) {
+            
+            /* Remove excessive outer padding to maximize space */
+            .content-area {
+                padding: 16px 12px;
+            }
+
+            .invitations-container {
+                padding: 0;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+            }
+
+            .table-wrapper {
+                border: none;
+                overflow: visible;
+            }
+
+            .invitations-table, .invitations-table tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .invitations-table thead { display: none; }
+
+            /* Pure White Premium Card */
+            .invitations-table tr {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                grid-template-rows: auto auto;
+                grid-template-areas:
+                    "couple couple actions"
+                    "date views actions";
+                gap: 8px 12px;
+                background: #ffffff;
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+                align-items: center; 
+            }
+
+            /* Removed left color line completely */
+            .invitations-table tr::before {
+                display: none;
+            }
+
+            .invitations-table td, 
+            .invitations-table td:last-child {
+                display: block;
+                padding: 0; /* Ensures desktop padding-right is overridden */
+                border: none;
+            }
+
+            .col-couple { 
+                grid-area: couple; 
+                overflow: hidden; 
+            }
+            
+            .couple-names { 
+                display: block; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis; 
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--text-main);
+                letter-spacing: -0.01em;
+                line-height: 1.2;
+            }
+
+            .col-date { 
+                grid-area: date; 
+                display: flex; 
+                align-items: center; 
+                font-size: 0.85rem;
+                color: var(--text-sub);
+                font-weight: 500;
+            }
+
+            .col-views { 
+                grid-area: views; 
+                display: flex; 
+                align-items: center; 
+                justify-content: flex-start;
+            }
+            
+            /* Refined minimal badge for views */
+            .col-views .view-count {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+                gap: 4px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                color: var(--text-sub);
+                font-weight: 600;
+            }
+            
+            .col-views .view-count svg {
+                width: 12px;
+                height: 12px;
+                color: var(--text-sub);
+            }
+
+            .col-link { display: none !important; }
+
+            /* Perfect Button Placement and soft styling */
+            .col-actions { 
+                grid-area: actions; 
+                display: flex; 
+                align-items: center; 
+                justify-content: flex-end; 
+                align-self: center; /* Vertically centers the button beautifully */
+            }
+            
+            .btn-more-actions {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-layout">
+        
+        <header class="m-header mobile-only">
+            <button class="m-menu-btn" id="m-open-drawer">
+                <div class="m-menu-lines"><span></span></div>
+            </button>
+            <a href="#" class="brand-logo">
+                <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+            </a>
+            <div style="width:40px;"></div>
+        </header>
+
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="brand-logo">
+                    <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+                </a>
+                
+                <span class="mini-logo">
+                    <img src="https://ksupvc.wixo.in/logo-square.png" alt="S">
+                </span>
+                
+                <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
+                    <svg class="btn-close-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
+                    <svg class="btn-open-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
+                </button>
+
+                <button class="m-drawer-close mobile-only" id="m-close-drawer">
+                    <div class="m-drawer-close-icon"></div>
+                </button>
+            </div>
+            
+            <div class="sidebar-inner">
+                <nav class="nav-menu">
+                    <a href="./dashboard.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a href="./create.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
+                        <span class="nav-label">Create Invitation</span>
+                    </a>
+                    <a href="./invitations.html" class="nav-item active">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></span>
+                        <span class="nav-label">All Invitations</span>
+                    </a>
+                    <a href="./create-template.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></span>
+                        <span class="nav-label">Create Template</span>
+                    </a>
+                    <a href="./templates.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg></span>
+                        <span class="nav-label">Manage Templates</span>
+                    </a>
+                    <a href="./customize.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"/><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/></svg></span>
+                        <span class="nav-label">Customize Site</span>
+                    </a>
+                    <a href="./support.html" class="nav-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                        <span class="nav-label">Support</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="account-section" id="profile-trigger">
+                <div class="account-card">
+                    <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+                    <div class="account-text">
+                        <div class="account-name">John Doe</div>
+                        <div class="account-email">admin@syncskill.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar desktop-only" id="page-title">All Invitations</header>
+            
+            <main class="content-area">
+                
+                <div class="invitations-container">
+                    <div class="header-actions">
+                        <a href="create.html" class="btn-create">+ Create New Invitation</a>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table class="invitations-table">
+                            <thead>
+                                <tr>
+                                    <th>Couple Name</th>
+                                    <th>Link ID</th>
+                                    <th>Wedding Date</th>
+                                    <th>Unique Views</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invite-list">
+                                <tr><td colspan="5" class="loader">Loading your invitations...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="profile-popup" id="profile-popup">
+        <div class="popup-header">
+            <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+            <div class="account-text">
+                <div class="account-name">John Doe</div>
+                <div class="account-email">admin@syncskill.com</div>
+            </div>
+        </div>
+        <ul class="popup-list">
+            <li><a href="#"><span>Profile</span></a></li>
+            <li><a href="#"><span>Settings</span></a></li>
+            <li><a href="#" style="color:#dc2626"><span>Logout</span></a></li>
+        </ul>
+    </div>
+
+    <div class="actions-popup" id="actions-popup">
+        <ul class="popup-list">
+            <li><a href="#" id="popup-open-btn" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open Link</span>
+            </a></li>
+            <li><a href="#" id="popup-edit-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                <span>Edit Details</span>
+            </a></li>
+            <li><button type="button" id="popup-delete-btn" style="color:#ef4444">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                <span>Delete</span>
+            </button></li>
+        </ul>
+    </div>
+
+    <script>
+        // ==========================================
+        // --- DASHBOARD UI INITIALIZATION LOGIC ---
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initSidebarNavigation();
+            loadInvitations();
+        });
+
+        function initSidebarNavigation() {
+            const sidebar = document.getElementById('sidebar');
+            const mOverlay = document.getElementById('sidebar-overlay');
+            
+            // Desktop Sidebar Toggle
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            if(toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
+
+            // Mobile Drawer Toggle
+            const mOpen = document.getElementById('m-open-drawer');
+            const mClose = document.getElementById('m-close-drawer');
+            
+            const openMobileDrawer = () => {
+                sidebar.classList.add('mobile-open');
+                mOverlay.classList.add('mobile-open');
+            };
+            const closeMobileDrawer = () => {
+                sidebar.classList.remove('mobile-open');
+                mOverlay.classList.remove('mobile-open');
+            };
+
+            if(mOpen) mOpen.onclick = openMobileDrawer;
+            if(mClose) mClose.onclick = closeMobileDrawer;
+            if(mOverlay) mOverlay.onclick = closeMobileDrawer;
+
+            // Profile Popup Interaction
+            const pPopup = document.getElementById('profile-popup');
+            const profileTrigger = document.getElementById('profile-trigger');
+
+            if(profileTrigger && pPopup) {
+                profileTrigger.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.innerWidth > 768) {
+                        pPopup.style.left = '16px';
+                        pPopup.style.bottom = '80px';
+                        pPopup.style.transform = 'none';
+                    } else {
+                        pPopup.style.left = '50%';
+                        pPopup.style.bottom = '100px';
+                        pPopup.style.transform = 'translateX(-50%)';
+                    }
+                    pPopup.classList.toggle('active');
+                };
+            }
+
+            // Global Click to close all popups
+            document.addEventListener('click', (e) => {
+                if(pPopup && pPopup.classList.contains('active')) {
+                    pPopup.classList.remove('active');
+                }
+                
+                const actionPopup = document.getElementById('actions-popup');
+                if(actionPopup && actionPopup.classList.contains('active')) {
+                    actionPopup.classList.remove('active');
+                }
+            });
+        }
+
+        // ==========================================
+        // --- INVITATION ROW ACTIONS POPUP LOGIC ---
+        // ==========================================
+        function openActionsPopup(event, id) {
+            event.stopPropagation();
+            const popup = document.getElementById('actions-popup');
+            const triggerBtn = event.currentTarget;
+            
+            // Set dynamic links and actions
+            document.getElementById('popup-open-btn').href = `/${id}`;
+            document.getElementById('popup-edit-btn').href = `create.html?edit=${id}`;
+            document.getElementById('popup-delete-btn').onclick = (e) => {
+                e.preventDefault();
+                deleteInvite(id);
+                popup.classList.remove('active');
+            };
+
+            // Calculate precise position 
+            const rect = triggerBtn.getBoundingClientRect();
+            
+            // Position vertically relative to the button
+            popup.style.top = `${rect.bottom + window.scrollY + 8}px`;
+            
+            // Align right edge of popup with right edge of the button
+            let leftPos = rect.right - 170; // 170px is the popup width
+            if (leftPos < 10) leftPos = 10; 
+            popup.style.left = `${leftPos}px`;
+
+            popup.classList.add('active');
+        }
+
+        // ==========================================
+        // --- ALL INVITATIONS DATA LOGIC ---
+        // ==========================================
+
+        // Initialize Supabase Client
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+
+        // Fetch and display all invitations
+        async function loadInvitations() {
+            const { data, error } = await supabaseClient
+                .from('invitations')
+                .select('id, bride_name, groom_name, event_date, view_count')
+                .order('created_at', { ascending: false });
+
+            const tbody = document.getElementById('invite-list');
+            tbody.innerHTML = '';
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:red; text-align: center; padding: 2rem;">Error loading data: ${error.message}</td></tr>`;
+                console.error(error);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="loader">No invitations found. Click "+ Create New Invitation" to get started!</td></tr>`;
+                return;
+            }
+
+            data.forEach(invite => {
+                const tr = document.createElement('tr');
+                const views = invite.view_count || 0; 
+                
+                // Format the date nicely
+                let displayDate = invite.event_date || 'Date not set';
+                if (displayDate !== 'Date not set' && displayDate.includes('-')) {
+                    const parts = displayDate.split('-');
+                    displayDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+
+                tr.innerHTML = `
+                    <td class="col-couple">
+                        <span class="couple-names">${invite.groom_name || 'Unknown'} & ${invite.bride_name || 'Unknown'}</span>
+                    </td>
+                    <td class="col-link">
+                        <a href="/${invite.id}" target="_blank" class="link-id">/${invite.id}</a>
+                    </td>
+                    <td class="col-date">${displayDate}</td>
+                    <td class="col-views">
+                        <span class="view-count" title="Unique Views">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            ${views}
+                        </span>
+                    </td>
+                    <td class="col-actions">
+                        <button class="btn-more-actions" onclick="openActionsPopup(event, '${invite.id}')" title="More Actions">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Delete an invitation
+        async function deleteInvite(id) {
+            if (confirm(`Are you absolutely sure you want to delete the invitation for "/${id}"? This cannot be undone.`)) {
+                const { error } = await supabaseClient.from('invitations').delete().eq('id', id);
+                
+                if (error) {
+                    alert("Error deleting: " + error.message);
+                } else {
+                    loadInvitations(); 
+                }
+            }
+        }
+    </script>
+</body>
+</html>
