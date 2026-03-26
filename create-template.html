@@ -63,7 +63,7 @@
             font-family: var(--font-alt);
             font-weight: 500;
             color: var(--text-main);
-            overflow: hidden; 
+            overflow: hidden; /* Handled by content-area */
             -webkit-font-smoothing: antialiased;
             line-height: 1.6;
         }
@@ -185,7 +185,7 @@
             margin: 0 auto;
             align-items: flex-start;
             gap: 2rem;
-            /* No height: 100% so sticky works */
+            /* No height: 100% so sticky works inside scrolling content-area */
         }
 
         .form-side {
@@ -193,6 +193,8 @@
             max-width: 800px;
             width: 100%;
             padding-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Desktop Sticky Preview */
@@ -223,7 +225,7 @@
             text-transform: uppercase;
         }
         
-        .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; }
+        .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; flex: 1; }
 
         /* Mobile specific overrides for Form Layout */
         .sticky-action-bar { display: none; }
@@ -238,6 +240,15 @@
                 border: none !important;
                 padding: 0 !important;
                 border-radius: 0 !important;
+            }
+
+            .editor-group { display: block !important; }
+
+            .input-group textarea { 
+                flex: none !important; 
+                height: 60vh !important; 
+                min-height: 400px;
+                -webkit-overflow-scrolling: touch; 
             }
 
             .preview-side { 
@@ -271,27 +282,34 @@
 
         /* --- UI COMPONENTS --- */
         .form-section { 
-            margin-bottom: 2rem; background: var(--pure-white);
+            background: var(--pure-white);
             padding: 2.5rem 3rem; border-radius: var(--radius-lg);
             border: 1px solid var(--border-color); 
             font-family: var(--font-main);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
-        .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; }
+        .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; flex-shrink: 0; }
+        .editor-group { flex: 1; display: flex; flex-direction: column; }
+        
         .input-group input, .input-group textarea {
             width: 100%; background-color: transparent; border: 1px solid var(--border-color);
             border-radius: 12px; font-size: 16px; padding: 14px;
             font-family: inherit; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
         }
         .input-group input { font-weight: 600; }
+        
         .input-group textarea { 
             resize: vertical; 
-            height: 600px; 
+            height: 600px; /* Good default for desktop */
             font-family: 'Fira Code', monospace; 
             font-size: 14px; 
             line-height: 1.5; 
             background: #f8fafc; 
         }
+        
         .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
         .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); background: #fff; }
         
@@ -308,7 +326,7 @@
         .btn-submit {
             width: 100%; padding: 1.125rem; font-size: 1.1rem; font-weight: 700; font-family: inherit; color: var(--pure-white);
             background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; border-radius: 16px; cursor: pointer;
-            transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); margin-top: 1rem; margin-bottom: 1rem;
+            transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); margin-top: 1rem; margin-bottom: 1rem; flex-shrink: 0;
         }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(103, 61, 230, 0.3); }
 
@@ -319,6 +337,21 @@
         }
         .btn-outline-mobile { background: transparent; border: 1.5px solid var(--accent-color); color: var(--accent-color); }
         .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
+
+        /* --- CUSTOM DROPDOWN --- */
+        .custom-dropdown { position: relative; width: 100%; }
+        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 600; color: var(--text-main); font-size: 16px; }
+        .dropdown-header:hover { border-color: var(--text-sub); }
+        .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
+        .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
+        .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent-color); }
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 50; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; max-height: 250px; overflow-y: auto; }
+        .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-list li { padding: 14px 15px; cursor: pointer; transition: background 0.2s; font-weight: 500; font-size: 15px;}
+        .dropdown-list li:hover { background: var(--bg-light); color: var(--accent-color); }
+        
+        .create-new-cat { border-top: 1px solid var(--border-color); color: var(--accent-color) !important; font-weight: 600 !important; display: flex; align-items: center; gap: 8px; }
+        .create-new-cat:hover { background: rgba(103, 61, 230, 0.05) !important; }
 
     </style>
 </head>
@@ -419,17 +452,30 @@
                 <div class="layout-split">
                     <div class="form-side" id="editor-view">
                         <div class="form-section">
+                            
+                            <div class="input-group" style="z-index: 20;">
+                                <div class="custom-dropdown" id="category-dropdown">
+                                    <div class="dropdown-header">
+                                        <span class="selected-value" style="font-weight: 400; color: var(--text-sub);">Select Category...</span>
+                                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </div>
+                                    <ul class="dropdown-list">
+                                        </ul>
+                                    <input type="hidden" id="selected-category" value="">
+                                </div>
+                            </div>
+
                             <div class="input-group">
                                 <input type="text" id="template-name" placeholder=" ">
                                 <label for="template-name">Template Name (e.g. Traditional Telugu Gold)</label>
                             </div>
 
-                            <div class="input-group">
+                            <div class="input-group editor-group">
                                 <textarea id="html-code" placeholder=" "></textarea>
                                 <label for="html-code">HTML Code (Paste complete template here)</label>
                             </div>
 
-                            <button class="btn-submit desktop-only" onclick="saveTemplate()" id="btn-save-desktop">Save to Supabase</button>
+                            <button class="btn-submit desktop-only" onclick="saveTemplate()" id="btn-save-desktop">Save Template</button>
                         </div>
                     </div>
 
@@ -548,6 +594,101 @@
         const previewView = document.getElementById('preview-view');
         const btnSaveDesktop = document.getElementById('btn-save-desktop');
 
+        // --- CATEGORY DROPDOWN LOGIC ---
+        const catHeader = document.querySelector('#category-dropdown .dropdown-header');
+        const catList = document.querySelector('#category-dropdown .dropdown-list');
+        const catHidden = document.getElementById('selected-category');
+        const catSelectedValue = document.querySelector('#category-dropdown .selected-value');
+
+        catHeader.addEventListener('click', (e) => {
+            catList.classList.toggle('show');
+            catHeader.classList.toggle('active');
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            catList.classList.remove('show');
+            catHeader.classList.remove('active');
+        });
+
+        async function fetchCategories() {
+            catSelectedValue.textContent = 'Loading categories...';
+            const { data, error } = await supabaseClient.from('template_categories').select('id, name').order('name');
+            
+            catList.innerHTML = '';
+            
+            if (error) {
+                catSelectedValue.textContent = 'Error loading categories';
+                return;
+            }
+
+            if (data && data.length > 0) {
+                catSelectedValue.textContent = 'Select Category...';
+                catSelectedValue.style.color = 'var(--text-sub)';
+                catSelectedValue.style.fontWeight = '400';
+
+                data.forEach(cat => {
+                    const li = document.createElement('li');
+                    li.dataset.value = cat.id;
+                    li.textContent = cat.name;
+                    li.addEventListener('click', (e) => selectCategory(cat.id, cat.name, e));
+                    catList.appendChild(li);
+                });
+            } else {
+                catSelectedValue.textContent = 'No categories found';
+            }
+
+            // Always append the "Create New" option
+            const createLi = document.createElement('li');
+            createLi.className = 'create-new-cat';
+            createLi.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Create New Category
+            `;
+            createLi.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                catList.classList.remove('show');
+                catHeader.classList.remove('active');
+                await createNewCategory();
+            });
+            catList.appendChild(createLi);
+        }
+
+        function selectCategory(id, name, event = null) {
+            if(event) event.stopPropagation();
+            catHidden.value = id;
+            catSelectedValue.textContent = name;
+            catSelectedValue.style.color = 'var(--text-main)';
+            catSelectedValue.style.fontWeight = '600';
+            catList.classList.remove('show');
+            catHeader.classList.remove('active');
+        }
+
+        async function createNewCategory() {
+            const newName = prompt("Enter the name for the new Category:");
+            if (!newName || !newName.trim()) return;
+
+            const safeName = newName.trim();
+
+            const { data, error } = await supabaseClient
+                .from('template_categories')
+                .insert([{ name: safeName }])
+                .select()
+                .single();
+
+            if (error) {
+                if (error.code === '23505') alert("A category with this name already exists!");
+                else alert("Database Error: " + error.message);
+            } else {
+                // Refresh list and auto-select the new one
+                await fetchCategories();
+                selectCategory(data.id, data.name);
+            }
+        }
+
+        // Initialize categories on load
+        fetchCategories();
+
         // --- LIVE PREVIEW ENGINE ---
         // Debounce to prevent lag while typing fast
         let timeout;
@@ -586,10 +727,10 @@
         async function saveTemplate() {
             const name = document.getElementById('template-name').value.trim();
             const html_code = document.getElementById('html-code').value.trim();
+            const category_id = document.getElementById('selected-category').value;
 
-            if (!name || !html_code) {
-                return alert("⚠️ Please provide both a Template Name and HTML Code.");
-            }
+            if (!category_id) return alert("⚠️ Please select a Category from the dropdown first.");
+            if (!name || !html_code) return alert("⚠️ Please provide both a Template Name and HTML Code.");
 
             // UI Loading state
             btnSaveDesktop.textContent = "Saving...";
@@ -597,10 +738,14 @@
             btnSaveDesktop.disabled = true;
             saveBtnMobile.disabled = true;
 
-            const { error } = await supabaseClient.from('templates').insert([{ name, html_code }]);
+            const { error } = await supabaseClient.from('templates').insert([{ 
+                name, 
+                html_code,
+                category_id 
+            }]);
             
             // Restore UI state
-            btnSaveDesktop.textContent = "Save to Supabase";
+            btnSaveDesktop.textContent = "Save Template";
             saveBtnMobile.textContent = "SAVE";
             btnSaveDesktop.disabled = false;
             saveBtnMobile.disabled = false;
@@ -611,6 +756,13 @@
                 alert('✅ Template saved successfully!');
                 document.getElementById('template-name').value = '';
                 document.getElementById('html-code').value = '';
+                
+                // Optional: reset category dropdown
+                catHidden.value = '';
+                catSelectedValue.textContent = 'Select Category...';
+                catSelectedValue.style.color = 'var(--text-sub)';
+                catSelectedValue.style.fontWeight = '400';
+
                 iframe.srcdoc = `
                     <div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'>
                         <h2 style='color:#2B1664;'>Template Saved!</h2>
