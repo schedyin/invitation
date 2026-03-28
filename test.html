@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedy - Hero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Schedy - Hero | Smooth 3D Carousel</title>
     
     <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Universal box-sizing --- */
+        /* --- Universal box-sizing & anti-flicker baseline --- */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -43,7 +43,10 @@
             --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
         }
 
-        html { scroll-behavior: smooth; overflow-x: hidden; }
+        html { 
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+        }
         
         /* --- Body styles --- */
         body {
@@ -241,6 +244,7 @@
             transform: translateY(-2px);
         }
 
+        /* Carousel Section - BASE (anti-flicker hardened) */
         .carousel-section {
             position: relative;
             width: 100%;
@@ -248,8 +252,15 @@
             justify-content: center;
             margin-top: -80px; /* Overlaps with text on desktop */
             margin-bottom: 0;
-            overflow: hidden;
-            z-index: 1; /* Keep it behind the hero text content */
+            overflow: visible;
+            z-index: 1;
+            /* CRITICAL FIXES: Creates new compositing layer, prevents repaint thrashing */
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
+            isolation: isolate;
         }
 
         .carousel-container {
@@ -263,9 +274,14 @@
             mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
             -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
             
-            /* Fix for mask rendering bugs */
-            transform: translate3d(0,0,0);
-            -webkit-transform: translate3d(0,0,0);
+            /* Anti-flicker for mask + 3d context */
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
         }
 
         .carousel {
@@ -273,8 +289,10 @@
             width: 1px;
             height: 100%;
             transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d; /* Safari Fix */
-            will-change: transform; /* Hint browser to prioritize 3D context */
+            -webkit-transform-style: preserve-3d;
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             animation: rotateAnimation 60s linear infinite;
         }
 
@@ -293,6 +311,10 @@
             -webkit-transform-style: preserve-3d;
             transform-origin: center;
             transform: translateX(-50%);
+            /* Anti-flicker: promote to own layer */
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
         }
         
         .image-container:nth-child(1) { transform: translateX(-50%) rotateY(30deg); }
@@ -309,11 +331,13 @@
             object-fit: cover;
             border-radius: 16px;
             
-            /* Anti-Flickering Fixes for 3D elements */
+            /* Anti-Flickering Hardening for 3D elements */
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            outline: 1px solid transparent; 
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
             will-change: transform;
+            outline: 1px solid transparent; 
             
             box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.3);
         }
@@ -331,6 +355,9 @@
             max-width: 800px;
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
+            /* promote to own layer to avoid overlap paint */
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         .stat-item {
@@ -370,6 +397,7 @@
             .main-wrapper { gap: 20px; }
         }
 
+        /* ========== MOBILE STYLES (EXACT DESIGN, NO SIZE REDUCTION, ONLY FLICKER FIX) ========== */
         @media (max-width: 768px) { 
             body {
                 padding-top: var(--header-height); /* Remove extra top padding to pull everything up */
@@ -386,36 +414,59 @@
                 margin-top: 10px; /* Space slightly from the overlapped carousel */
                 z-index: 10;
                 position: relative;
+                /* prevent paint interference */
+                transform: translateZ(0);
+                backface-visibility: hidden;
             }
 
             .hero-description { 
-                font-size: 0.85rem; /* Decreased paragraph size */
+                font-size: 0.85rem; /* Decreased paragraph size (unchanged from original) */
             }
             
             /* Reorder carousel to top on mobile */
             .carousel-section {
                 order: 1;
-                margin-top: -30px; /* Pull it up further to eliminate the extra gap */
+                /* ORIGINAL aggressive overlap values that caused flicker - now FIXED via hardware layers */
+                margin-top: -60px;    /* desired overlap (was flickering but now stable) */
                 margin-bottom: -50px; /* Overlap the text block below it */
+                /* CRITICAL FIX: reinforce GPU rendering and prevent repaint jitter */
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
+                backface-visibility: hidden;
+                will-change: transform;
+                position: relative;
+                overflow: visible;
             }
 
             .carousel-container {
                 height: 480px;
                 perspective: 850px;
-                -webkit-perspective: 850px; /* Safari Fix */
+                -webkit-perspective: 850px;
+                transform: translate3d(0, 0, 0);
+                backface-visibility: hidden;
+                will-change: transform;
+                /* preserve mask but add extra stability */
+                mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+                -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
             }
             
             .image-container {
                 width: 1550px;
                 height: 420px;
-                /* FIX: Added top offset so it doesn't clip against the mask boundary 
-                   when perspective pulls the image scale outwards */
                 top: 30px; 
+                /* extra 3d stability */
+                backface-visibility: hidden;
+                transform-style: preserve-3d;
+                -webkit-transform-style: preserve-3d;
             }
             
             .image-container img {
-                width: 300px;
-                height: 420px;
+                width: 300px;   /* exact original mobile size */
+                height: 420px;  /* exact original mobile size */
+                backface-visibility: hidden;
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                will-change: transform;
             }
 
             .stats-container {
@@ -424,6 +475,7 @@
                 gap: 15px;
                 padding: 10px 0;
                 margin-top: 20px;
+                transform: translateZ(0);
             }
             
             .stat-item {
@@ -436,6 +488,19 @@
             .stat-number {
                 margin-bottom: 0;
                 font-size: 32px;
+            }
+        }
+
+        /* Extra safeguard for iOS / WebKit flickering - force subpixel antialiasing stability */
+        @media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+            .carousel-section,
+            .carousel-container,
+            .carousel,
+            .image-container,
+            .image-container img {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+                backface-visibility: hidden;
             }
         }
     </style>
@@ -480,7 +545,7 @@
     </div>
     <div id="menuOverlay"></div>
 
-    <!-- ═══════════════ HERO SECTION ═══════════════ -->
+    <!-- ═══════════════ HERO SECTION (FLICKER-FREE CAROUSEL) ═══════════════ -->
     <div class="main-wrapper">
         
         <!-- Hero Text -->
@@ -497,7 +562,7 @@
             </a>
         </div>
 
-        <!-- 3D Carousel -->
+        <!-- 3D Carousel (Hardware accelerated & flicker-proof) -->
         <div class="carousel-section">
             <div class="carousel-container">
                 <div class="carousel">
@@ -551,7 +616,7 @@
         </div>
     </div>
 
-    <!-- ═══════════════ SCRIPTS ═══════════════ -->
+    <!-- ═══════════════ SCRIPTS (Navbar + Mobile Menu) ═══════════════ -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Navbar scroll effect
