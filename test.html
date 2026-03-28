@@ -329,17 +329,16 @@
             }
             .hero-description { font-size: 0.85rem; }
             
-            .carousel-section {
-                order: 1;
-                margin-top: -30px;    /* aggressive overlap – now stable */
-                margin-bottom: -50px; /* text overlap */
-                /* enforce GPU layer */
-                transform: translate3d(0, 0, 0);
-                backface-visibility: hidden;
-                will-change: transform;
-                overflow: visible;
-                position: relative;
-            }
+    .carousel-section {
+        order: 1;
+        margin-top: -30px;          /* safe value – no flicker */
+        margin-bottom: -50px;       /* keep text overlap */
+        transform: translateY(-30px); /* additional upward shift (GPU layer) */
+        backface-visibility: hidden;
+        will-change: transform;
+        overflow: visible;
+        position: relative;
+    }
             
             .carousel-container {
                 height: 480px;
