@@ -1,222 +1,546 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>గణేష్ & నోనాలి — శుభ వివాహం</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedy - Hero</title>
+    
+    <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Suranna&family=Cinzel:wght@400;500;600&family=Noto+Serif+Telugu:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* ========== COMBINED VARIABLES (LIGHT THEME) ========== */
-        :root {
-            /* Backgrounds */
-            --ink: #FFFFFF;       /* Pure white */
-            
-            /* Text Colors */
-            --ivory: #2C1A12;     /* Espresso Brown (Main dark text) */
-        }
-
-        * {
+        /* --- Universal box-sizing --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        /* --- Root variables --- */
+        :root {
+            /* Navbar Variables */
+            --font-nav: 'IBM Plex Sans', sans-serif;
+            --color-dark-teal: #002726;
+            --color-teal-hover: #004D4B;
+            --color-white: #ffffff;
+            --color-accent-green: #33C375;
+            --header-height: 72px;
+            --font-weight-medium: 500;
+            
+            /* Hero Variables */
+            --primary-bg: #fefefe;
+            --secondary-bg: #f8f8f8;
+            --accent-color: #1a1a1a;
+            --text-primary: #121212;
+            --text-secondary: #666666;
+            --text-light: #888888;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+        }
+
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        
+        /* --- Body styles --- */
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            background-color: var(--primary-bg);
+            overflow-x: hidden;
+            color: var(--text-primary);
+            /* Add padding to account for fixed header */
+            padding-top: calc(var(--header-height) + 60px); 
+            padding-bottom: 60px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        /* ══════════════════════════════
+           NAVBAR (Integrated UI/UX)
+        ══════════════════════════════ */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 100;
+            background-color: var(--color-white);
+            border-bottom: 1px solid transparent;
+            box-shadow: none;
+            display: flex; align-items: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: var(--font-nav);
+        }
+        .header.scrolled {
+            border-bottom-color: #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .header-container {
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        
+        .logo-text { 
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--color-dark-teal);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { display: none; gap: 8px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-link {
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
+            background: transparent;
+        }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+
+        .nav-right { display: flex; align-items: center; }
+        .auth-buttons { display: none; gap: 12px; }
+        @media (min-width: 768px) { .auth-buttons { display: flex; } }
+        .auth-button {
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+        }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
+        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
+        .menu-button {
+            display: flex; padding: 8px;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
+        }
+        @media (min-width: 768px) { .menu-button { display: none; } }
+
+        #mobileMenu {
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 90;
+            transform: translateY(-110%);
+            transition: transform 0.3s ease-in-out;
+            padding: 24px 5%;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; gap: 20px;
+            font-family: var(--font-nav);
+        }
+        #mobileMenu.active { transform: translateY(0); }
+        .mobile-nav-link {
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .mobile-auth-stack {
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
+        }
+        .mobile-auth-button {
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+            transition: background-color 0.2s, color 0.2s;
             -webkit-tap-highlight-color: transparent;
         }
+        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
 
-        /* Gray background outside the mobile frame on desktop */
-        html {
-            background-color: #E5E7EB; 
-            display: flex;
-            justify-content: center;
+        #menuOverlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 80; display: none;
         }
+        #menuOverlay.active { display: block; }
 
-        body {
-            font-family: 'Noto Serif Telugu', Georgia, serif;
-            background: var(--ink);
-            color: var(--ivory);
-            overflow-x: hidden;
-            
-            /* Enforce Mobile-only width */
+        /* ══════════════════════════════
+           HERO SECTION STYLES
+        ══════════════════════════════ */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
             width: 100%;
-            max-width: 480px; 
+            max-width: 1400px;
+            padding: 0 30px;
             margin: 0 auto;
-            min-height: 100vh;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.08); /* Slight shadow to separate from desktop background */
         }
 
-        /* ── HERO SECTION ── */
-        .hero {
-            min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding: 6rem 0 3.5rem; /* Increased top padding to accommodate big hangings */
-        }
-
-        .top-decor-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 5;
-            pointer-events: none; /* So they don't block clicks */
-        }
-
-        .top-decor-full {
-            width: 100%; /* Spans the entire width */
-            height: auto;
-            display: block;
-            position: relative;
-            z-index: 2; /* Keeps border above the hanging strings */
-        }
-
-        .hanging {
-            position: absolute;
-            z-index: 1; /* Hangs behind the top border */
-            transform-origin: top center;
-            animation: hangSwing 4s ease-in-out infinite alternate;
-        }
-
-        .hanging-outer {
-            top: -2px;
-            width: 6%; /* Even smaller size */
-            max-width: 24px;
-        }
-
-        .hanging-inner {
-            top: -12px; 
-            width: 5%; /* Even smaller size */
-            max-width: 20px;
-            animation-duration: 5s;
-            animation-direction: alternate-reverse;
-        }
-
-        .hanging.left { left: 3%; }
-        .hanging.left-in { left: 15%; } /* Decreased gap */
-        .hanging.right-in { right: 15%; } /* Decreased gap */
-        .hanging.right { right: 3%; }
-
-        @keyframes hangSwing {
-            from { transform: rotate(-3deg); }
-            to { transform: rotate(3deg); }
-        }
-
-        .hero-center-img {
-            display: block;
-            width: 85%;
-            max-width: 250px; /* Increased from 200px */
-            height: auto;
-            margin: 1.2rem auto 0.8rem;
-            filter: drop-shadow(0 8px 16px rgba(192, 57, 43, 0.15));
-        }
-
-        .hero-bottom-img {
-            display: block;
-            width: 100%;
-            height: auto;
-            margin: 0.2rem 0 0.5rem;
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 2;
-            width: 100%; /* Stretch to full width */
+        /* Hero Text Content */
+        .hero-text-content {
             text-align: center;
-            animation: heroReveal 1.8s cubic-bezier(.22, 1, .36, 1) both;
-        }
-
-        @keyframes heroReveal {
-            from { opacity: 0; transform: translateY(40px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .hero-sub {
-            font-family: 'Suranna', serif;
-            font-size: 1.6rem;
-            letter-spacing: 0.05em;
-            color: #3D7B89;
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-        }
-
-        .scroll-cue {
-            position: absolute;
-            bottom: 0.8rem; /* Decreased from 1.5rem to bring it lower */
-            left: 50%;
-            transform: translateX(-50%);
+            max-width: 800px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 16px;
             z-index: 10;
         }
 
-        .scroll-cue-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.44rem;
-            letter-spacing: 0.4em;
-            color: #63C1A8;
+        .hero-eyebrow {
+            color: var(--color-accent-green);
+            font-size: 0.9rem;
+            font-weight: 700;
             text-transform: uppercase;
-            font-weight: 600;
+            letter-spacing: 0.05em;
+            font-family: var(--font-nav);
         }
 
-        .scroll-cue-track {
-            width: 20px;
-            height: 34px;
-            border: 1px solid rgba(99, 193, 168, 0.6);
+        .hero-heading {
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 700;
+            color: var(--color-dark-teal);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            font-family: var(--font-nav);
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .hero-btn {
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
+            padding: 12px 28px;
             border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.1);
+            transition: transform 0.25s ease, background 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-family: var(--font-nav);
+        }
+
+        .hero-btn:hover {
+            background: #2fb168;
+            transform: translateY(-2px);
+        }
+
+        .carousel-section {
             position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 0;
             overflow: hidden;
         }
 
-        .scroll-cue-thumb {
-            position: absolute;
-            width: 4px;
-            height: 8px;
-            background: #63C1A8;
-            border-radius: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 5px;
-            animation: thumbSc 2s cubic-bezier(.4, 0, .6, 1) infinite;
+        .carousel-container {
+            width: 100%;
+            max-width: 1600px;
+            height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 800px;
+            mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+            -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
         }
 
-        @keyframes thumbSc {
-            0% { top: 5px; opacity: 1; }
-            70% { top: 18px; opacity: .4; }
-            100% { top: 5px; opacity: 0; }
+        .carousel {
+            position: relative;
+            width: 1px;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotateAnimation 60s linear infinite;
+        }
+
+        @keyframes rotateAnimation {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(-360deg); }
+        }
+
+        .image-container {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 1600px; 
+            height: 400px;
+            transform-style: preserve-3d;
+            transform-origin: center;
+            transform: translateX(-50%);
+        }
+        
+        .image-container:nth-child(1) { transform: translateX(-50%) rotateY(30deg); }
+        .image-container:nth-child(2) { transform: translateX(-50%) rotateY(60deg); }
+        .image-container:nth-child(3) { transform: translateX(-50%) rotateY(90deg); }
+        .image-container:nth-child(4) { transform: translateX(-50%) rotateY(120deg); }
+        .image-container:nth-child(5) { transform: translateX(-50%) rotateY(150deg); }
+        .image-container:nth-child(6) { transform: translateX(-50%) rotateY(180deg); }
+
+        .image-container img {
+            position: absolute;
+            width: 280px; 
+            height: 400px;
+            object-fit: cover;
+            border-radius: 16px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container .img-front { transform: rotateY(90deg); left: 0; }
+        .image-container .img-back { transform: rotateY(-90deg); right: 0; }
+
+        /* Stats Section */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 30px 0;
+            width: 100%;
+            max-width: 800px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1600px) {
+            .carousel-container { width: 98vw; }
+        }
+        
+        @media (max-width: 1200px) {
+            .stats-container { gap: 40px; }
+            .stat-number { font-size: 36px; }
+        }
+
+        @media (max-width: 992px) {
+            .main-wrapper { gap: 20px; }
+        }
+
+        @media (max-width: 768px) { 
+            .main-wrapper { padding: 0 20px; }
+            
+            .hero-description { font-size: 0.9rem; }
+            
+            .carousel-container {
+                height: 480px;
+                perspective: 850px;
+            }
+            
+            .image-container {
+                width: 1550px;
+                height: 420px;
+                top: 0px; 
+            }
+            
+            .image-container img {
+                width: 300px;
+                height: 420px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 15px;
+                padding: 10px 0;
+            }
+            
+            .stat-item {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+            
+            .stat-number {
+                margin-bottom: 0;
+                font-size: 32px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ========== HERO SECTION ========== -->
-    <section class="hero" id="top">
-        <div class="top-decor-container">
-            <!-- 4 Hangings -->
-            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Left Outer" class="hanging hanging-outer left">
-            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Left Inner" class="hanging hanging-inner left-in">
-            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Right Inner" class="hanging hanging-inner right-in">
-            <img src="https://www.schedy.in/flower-hangings.webp" alt="Hanging Right Outer" class="hanging hanging-outer right">
-            
-            <!-- Top floral border -->
-            <img src="https://www.schedy.in/flowers.png" alt="Top Decor" class="top-decor-full">
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
+    <header class="header" id="mainHeader">
+        <div class="header-container">
+            <div class="nav-left">
+                <a href="/" class="logo-text" aria-label="Home">
+                    SCHEDY
+                </a>
+                <div class="nav-links">
+                    <a class="nav-link" href="#">Upskill your Team</a>
+                    <a class="nav-link" href="#">About</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <!-- Inline Hamburger SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="auth-buttons">
+                    <a class="auth-button submit" href="#">Login</a>
+                    <a class="auth-button" href="#">Apply as Mentor</a>
+                </div>
+            </div>
         </div>
-        
-        <div class="hero-inner">
-            <p class="hero-sub">వెలుగుల వారి</p>
-            <img src="https://www.schedy.in/image.svg" alt="Center Graphic" class="hero-center-img">
-            <img src="https://www.schedy.in/hero.svg" alt="Bottom Graphic" class="hero-bottom-img">
-        </div>
-        
-        <div class="scroll-cue">
-            <div class="scroll-cue-track"><div class="scroll-cue-thumb"></div></div>
-            <div class="scroll-cue-label">Scroll</div>
-        </div>
-    </section>
+    </header>
 
+    <!-- Mobile Drawer -->
+    <div id="mobileMenu">
+        <a href="#" class="mobile-nav-link">Upskill your Team</a>
+        <a href="#" class="mobile-nav-link">About</a>
+        <div class="mobile-auth-stack">
+            <a href="#" class="mobile-auth-button submit">Login</a>
+            <a href="#" class="mobile-auth-button">Apply as Mentor</a>
+        </div>
+    </div>
+    <div id="menuOverlay"></div>
+
+    <!-- ═══════════════ HERO SECTION ═══════════════ -->
+    <div class="main-wrapper">
+        
+        <!-- Hero Text -->
+        <div class="hero-text-content">
+            <span class="hero-eyebrow">Make Every Event Memorable</span>
+            <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
+            <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
+            <a href="#" class="hero-btn">Choose Your Template</a>
+        </div>
+
+        <!-- 3D Carousel -->
+        <div class="carousel-section">
+            <div class="carousel-container">
+                <div class="carousel">
+                    <!-- Image Pair 1 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare Product Display" class="img-front">
+                        <img src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" class="img-back">
+                    </div>
+                    <!-- Image Pair 2 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Serene Minimalist Interior" class="img-front">
+                        <img src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Glass Dropper Bottles" class="img-back">
+                    </div>
+                    <!-- Image Pair 3 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Minimalist Kitchen" class="img-front">
+                        <img src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man in Hat" class="img-back">
+                    </div>
+                    <!-- Image Pair 4 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Minimalist Fashion Look" class="img-front">
+                        <img src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Minimalist Interior with Staircase" class="img-back">
+                    </div>
+                    <!-- Image Pair 5 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Minimalist Perfume Scene" class="img-front">
+                        <img src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Minimalist Skincare Arrangement" class="img-back">
+                    </div>
+                    <!-- Image Pair 6 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running Outdoors" class="img-front">
+                        <img src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Stylish Sunglasses Display" class="img-back">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ SCRIPTS ═══════════════ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navbar scroll effect
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 0);
+            });
+
+            // Mobile menu integration
+            const mobileMenu    = document.getElementById('mobileMenu');
+            const menuButton    = document.getElementById('mobileMenuButton');
+            const menuOverlay   = document.getElementById('menuOverlay');
+
+            const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
+
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                setMenuIcon(isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            }
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setMenuIcon(false);
+                }
+            });
+            
+            setMenuIcon(false);
+        });
+    </script>
 </body>
 </html>
