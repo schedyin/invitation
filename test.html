@@ -244,7 +244,7 @@
 
 .carousel-section {
     margin-top: calc(-1 * var(--header-height)); /* was: margin-top: -30px; */
-    margin-bottom: 0; /* was: margin-bottom: -50px; */
+    margin-bottom: -50px; /* was: margin-bottom: -50px; */
 }
 
         .carousel-container {
@@ -367,7 +367,7 @@
 
 @media (max-width: 768px) { 
     body {
-        padding-top: var(--header-height); /* Only header height, no extra 60px */
+        padding-top: var(--header-height); /* Only header height */
     }
     
     .main-wrapper { 
@@ -375,28 +375,27 @@
         gap: 10px;
     }
     
-    /* Move carousel up so its top touches the viewport top (behind navbar) */
+    /* Carousel stays at the top (order: 1) but no negative margin pulling it down */
     .carousel-section {
         order: 1;
-        margin-top: calc(-1 * var(--header-height)); /* Pull up exactly header height */
-        margin-bottom: 0;                          /* No extra overlap */
+        margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
+        margin-bottom: 0;                           /* No overlap with text */
         position: relative;
-        z-index: 1;                                 /* Below navbar (z-index 100) but above content */
+        z-index: 1;                                 /* Behind the text */
     }
     
-    /* Adjust container for mobile – keep mask but ensure visibility */
     .carousel-container {
         height: 480px;
         perspective: 850px;
         -webkit-perspective: 850px;
-        mask: none;           /* Remove mask to prevent clipping */
+        mask: none;          /* Prevent clipping on mobile */
         -webkit-mask: none;
     }
     
     .image-container {
         width: 1550px;
         height: 420px;
-        top: 30px;            /* Keep images centered vertically */
+        top: 30px;
     }
     
     .image-container img {
@@ -404,12 +403,12 @@
         height: 420px;
     }
     
-    /* Position hero text below the carousel */
+    /* Text will overlay the carousel */
     .hero-text-content {
         order: 2;
-
-        z-index: 10;
+        margin-top: -50px;      /* Move up 20px to overlay carousel */
         position: relative;
+        z-index: 10;            /* Above carousel (z-index:1) */
     }
     
     .hero-description { 
