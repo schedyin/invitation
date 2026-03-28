@@ -246,7 +246,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-top: -80px; /* Decreased gap to overlap */
+            margin-top: -80px; /* Overlaps with text on desktop */
             margin-bottom: 0;
             overflow: hidden;
             z-index: 1; /* Keep it behind the hero text content */
@@ -359,12 +359,28 @@
         }
 
         @media (max-width: 768px) { 
-            .main-wrapper { padding: 0 20px; }
+            .main-wrapper { 
+                padding: 0 20px; 
+                gap: 10px; /* Tighter gap on mobile */
+            }
             
-            .hero-description { font-size: 0.9rem; }
+            /* Reorder text to bottom on mobile */
+            .hero-text-content {
+                order: 2;
+                margin-top: 10px; /* Space slightly from the overlapped carousel */
+                z-index: 10;
+                position: relative;
+            }
+
+            .hero-description { 
+                font-size: 0.85rem; /* Decreased paragraph size */
+            }
             
+            /* Reorder carousel to top on mobile */
             .carousel-section {
-                margin-top: -60px;
+                order: 1;
+                margin-top: 0px; 
+                margin-bottom: -50px; /* Overlap the text block below it */
             }
 
             .carousel-container {
@@ -384,9 +400,11 @@
             }
 
             .stats-container {
+                order: 3;
                 flex-direction: column;
                 gap: 15px;
                 padding: 10px 0;
+                margin-top: 20px;
             }
             
             .stat-item {
