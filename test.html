@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Schedy — Smart Event Websites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedy - Hero</title>
     
-    <!-- Fonts (same as original) -->
+    <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ---------- GLOBAL RESET ---------- */
+        /* --- Universal box-sizing --- */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        /* --- Root variables --- */
         :root {
-            /* Navbar */
+            /* Navbar Variables */
             --font-nav: 'IBM Plex Sans', sans-serif;
             --color-dark-teal: #002726;
             --color-teal-hover: #004D4B;
@@ -28,7 +29,7 @@
             --header-height: 72px;
             --font-weight-medium: 500;
             
-            /* Hero & UI */
+            /* Hero Variables */
             --primary-bg: #fefefe;
             --secondary-bg: #f8f8f8;
             --accent-color: #1a1a1a;
@@ -42,20 +43,18 @@
             --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
         }
 
-        html {
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        
+        /* --- Body styles --- */
         body {
             font-family: var(--font-sans);
             line-height: 1.6;
             background-color: var(--primary-bg);
             overflow-x: hidden;
             color: var(--text-primary);
-            /* FIX: removed extra 60px top padding — now only header height gives clean start */
-            padding-top: var(--header-height);
-            padding-bottom: 0;
+            /* Add padding to account for fixed header */
+            padding-top: calc(var(--header-height) + 60px); 
+            padding-bottom: 60px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -65,45 +64,29 @@
         }
 
         /* ══════════════════════════════
-           NAVBAR (Integrated, sticky)
+           NAVBAR (Integrated UI/UX)
         ══════════════════════════════ */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--header-height);
-            z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 100;
             background-color: var(--color-white);
             border-bottom: 1px solid transparent;
             box-shadow: none;
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center;
             transition: border-color 0.2s, box-shadow 0.2s;
             font-family: var(--font-nav);
         }
-
         .header.scrolled {
             border-bottom-color: #f1f5f9;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
-
         .header-container {
-            width: 90%;
-            margin: 0 auto;
-            max-width: 1280px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .logo-text {
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        
+        .logo-text { 
             font-family: 'Outfit', sans-serif;
             font-size: 26px;
             font-weight: 700;
@@ -112,171 +95,80 @@
             letter-spacing: -0.5px;
         }
 
-        .nav-links {
-            display: none;
-            gap: 8px;
-        }
-
-        @media (min-width: 768px) {
-            .nav-links { display: flex; }
-        }
-
+        .nav-links { display: none; gap: 8px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
         .nav-link {
-            padding: 8px 16px;
-            font-weight: var(--font-weight-medium);
-            color: var(--color-dark-teal);
-            text-decoration: none;
-            border-radius: 0;
-            transition: color 0.2s ease;
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
             background: transparent;
         }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
 
-        .nav-link:hover {
-            color: var(--color-teal-hover);
-            background: transparent;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .auth-buttons {
-            display: none;
-            gap: 12px;
-        }
-
-        @media (min-width: 768px) {
-            .auth-buttons { display: flex; }
-        }
-
+        .nav-right { display: flex; align-items: center; }
+        .auth-buttons { display: none; gap: 12px; }
+        @media (min-width: 768px) { .auth-buttons { display: flex; } }
         .auth-button {
-            padding: 8px 24px;
-            font-weight: var(--font-weight-medium);
-            border-radius: 8px;
-            text-decoration: none;
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
             transition: background-color 0.2s, color 0.2s, border-color 0.2s;
             border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal);
-            background: transparent;
+            color: var(--color-dark-teal); background: transparent;
         }
-
-        .auth-button.submit {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-        }
-
-        .auth-button.submit:hover {
-            background-color: var(--color-teal-hover);
-            border-color: var(--color-teal-hover);
-        }
-
-        .auth-button:not(.submit):hover {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-        }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
+        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
 
         .menu-button {
-            display: flex;
-            padding: 8px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f1f5f9;
-            cursor: pointer;
-            color: var(--color-dark-teal);
-            transition: background 0.1s;
+            display: flex; padding: 8px;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
         }
-
-        @media (min-width: 768px) {
-            .menu-button { display: none; }
-        }
+        @media (min-width: 768px) { .menu-button { display: none; } }
 
         #mobileMenu {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: 100%;
-            background: var(--color-white);
-            z-index: 90;
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 90;
             transform: translateY(-110%);
             transition: transform 0.3s ease-in-out;
             padding: 24px 5%;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: flex; flex-direction: column; gap: 20px;
             font-family: var(--font-nav);
         }
-
-        #mobileMenu.active {
-            transform: translateY(0);
-        }
-
+        #mobileMenu.active { transform: translateY(0); }
         .mobile-nav-link {
-            font-size: 1.1rem;
-            font-weight: 500;
-            text-decoration: none;
-            color: var(--color-dark-teal);
-            padding: 8px 0;
-            transition: color 0.2s;
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
         }
-
-        .mobile-nav-link:hover {
-            color: var(--color-teal-hover);
-        }
-
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
         .mobile-auth-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #f1f5f9;
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
         }
-
         .mobile-auth-button {
-            width: 100%;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
             border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal);
-            background: transparent;
+            color: var(--color-dark-teal); background: transparent;
             transition: background-color 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
-
-        .mobile-auth-button.submit {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-        }
-
-        .mobile-auth-button.submit:hover {
-            background-color: var(--color-teal-hover);
-            border-color: var(--color-teal-hover);
-        }
-
-        .mobile-auth-button:not(.submit):hover {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-        }
+        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
 
         #menuOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(2px);
-            z-index: 80;
-            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 80; display: none;
         }
-
-        #menuOverlay.active {
-            display: block;
-        }
+        #menuOverlay.active { display: block; }
 
         /* ══════════════════════════════
-           MAIN LAYOUT (DESKTOP FIRST)
-           FIX: removed all negative margins that caused extra gaps
+           HERO SECTION STYLES
         ══════════════════════════════ */
         .main-wrapper {
             display: flex;
@@ -289,7 +181,7 @@
             margin: 0 auto;
         }
 
-        /* Hero Text Block */
+        /* Hero Text Content */
         .hero-text-content {
             text-align: center;
             max-width: 800px;
@@ -349,13 +241,15 @@
             transform: translateY(-2px);
         }
 
-        /* ---------- CAROUSEL SECTION (DESKTOP) ----------
-           FIX: No negative margin, clean flow between hero and stats */
         .carousel-section {
-            width: 100%;
             position: relative;
-            margin: 0;
-            padding: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: -80px; /* Overlaps with text on desktop */
+            margin-bottom: 0;
+            overflow: hidden;
+            z-index: 1; /* Keep it behind the hero text content */
         }
 
         .carousel-container {
@@ -368,9 +262,10 @@
             perspective: 800px;
             mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
             -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+            
+            /* Fix for mask rendering bugs */
             transform: translate3d(0,0,0);
             -webkit-transform: translate3d(0,0,0);
-            margin: 0 auto;
         }
 
         .carousel {
@@ -378,8 +273,8 @@
             width: 1px;
             height: 100%;
             transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d;
-            will-change: transform;
+            -webkit-transform-style: preserve-3d; /* Safari Fix */
+            will-change: transform; /* Hint browser to prioritize 3D context */
             animation: rotateAnimation 60s linear infinite;
         }
 
@@ -392,14 +287,14 @@
             position: absolute;
             top: 20px;
             left: 0;
-            width: 1600px;
+            width: 1600px; 
             height: 400px;
             transform-style: preserve-3d;
             -webkit-transform-style: preserve-3d;
             transform-origin: center;
             transform: translateX(-50%);
         }
-
+        
         .image-container:nth-child(1) { transform: translateX(-50%) rotateY(30deg); }
         .image-container:nth-child(2) { transform: translateX(-50%) rotateY(60deg); }
         .image-container:nth-child(3) { transform: translateX(-50%) rotateY(90deg); }
@@ -409,26 +304,22 @@
 
         .image-container img {
             position: absolute;
-            width: 280px;
+            width: 280px; 
             height: 400px;
             object-fit: cover;
             border-radius: 16px;
+            
+            /* Anti-Flickering Fixes for 3D elements */
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            outline: 1px solid transparent;
+            outline: 1px solid transparent; 
             will-change: transform;
+            
             box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.3);
         }
 
-        .image-container .img-front {
-            transform: rotateY(90deg);
-            left: 0;
-        }
-
-        .image-container .img-back {
-            transform: rotateY(-90deg);
-            right: 0;
-        }
+        .image-container .img-front { transform: rotateY(90deg); left: 0; }
+        .image-container .img-back { transform: rotateY(-90deg); right: 0; }
 
         /* Stats Section */
         .stats-container {
@@ -465,11 +356,11 @@
             letter-spacing: 1px;
         }
 
-        /* --- Responsive: large screens --- */
+        /* --- Responsive Adjustments --- */
         @media (max-width: 1600px) {
             .carousel-container { width: 98vw; }
         }
-
+        
         @media (max-width: 1200px) {
             .stats-container { gap: 40px; }
             .stat-number { font-size: 36px; }
@@ -479,86 +370,81 @@
             .main-wrapper { gap: 20px; }
         }
 
-        /* ══════════════════════════════
-           MOBILE: Preserve original overlapping effect
-           (Only mobile uses negative margin & text overlay)
-           Desktop remains clean & gap-free.
-        ══════════════════════════════ */
-        @media (max-width: 768px) {
-            body {
-                padding-top: var(--header-height);   /* No extra space */
-            }
-
-            .main-wrapper {
-                padding: 0 20px;
-                gap: 10px;
-            }
-
-            /* Mobile specific: carousel pulls up behind header + text overlaps */
-            .carousel-section {
-                order: 1;
-                margin-top: calc(-1 * var(--header-height));
-                margin-bottom: 0;
-                position: relative;
-                z-index: 1;
-            }
-
-            .carousel-container {
-                height: 480px;
-                perspective: 850px;
-                -webkit-perspective: 850px;
-                mask: none;
-                -webkit-mask: none;
-            }
-
-            .image-container {
-                width: 1550px;
-                height: 420px;
-                top: 30px;
-            }
-
-            .image-container img {
-                width: 300px;
-                height: 420px;
-            }
-
-            /* Hero text floats above carousel (z-index overlay) */
-            .hero-text-content {
-                order: 2;
-                margin-top: -50px;
-                position: relative;
-                z-index: 10;
-            }
-
-            .hero-description {
-                font-size: 0.85rem;
-            }
-
-            .stats-container {
-                order: 3;
-                margin-top: 20px;
-                flex-direction: column;
-                gap: 15px;
-                padding: 10px 0;
-            }
-
-            .stat-item {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                text-align: left;
-            }
-
-            .stat-number {
-                margin-bottom: 0;
-                font-size: 32px;
-            }
-        }
+@media (max-width: 768px) { 
+    body {
+        padding-top: var(--header-height); /* Only header height */
+    }
+    
+    .main-wrapper { 
+        padding: 0 20px; 
+        gap: 10px;
+    }
+    
+    /* Carousel stays at the top (order: 1) but no negative margin pulling it down */
+    .carousel-section {
+        order: 1;
+        margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
+        margin-bottom: 0;                           /* No overlap with text */
+        position: relative;
+        z-index: 1;                                 /* Behind the text */
+    }
+    
+    .carousel-container {
+        height: 480px;
+        perspective: 850px;
+        -webkit-perspective: 850px;
+        mask: none;          /* Prevent clipping on mobile */
+        -webkit-mask: none;
+    }
+    
+    .image-container {
+        width: 1550px;
+        height: 420px;
+        top: 30px;
+    }
+    
+    .image-container img {
+        width: 300px;
+        height: 420px;
+    }
+    
+    /* Text will overlay the carousel */
+    .hero-text-content {
+        order: 2;
+        margin-top: -50px;      /* Move up 20px to overlay carousel */
+        position: relative;
+        z-index: 10;            /* Above carousel (z-index:1) */
+    }
+    
+    .hero-description { 
+        font-size: 0.85rem;
+    }
+    
+    .stats-container {
+        order: 3;
+        margin-top: 20px;
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 0;
+    }
+    
+    .stat-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+    
+    .stat-number {
+        margin-bottom: 0;
+        font-size: 32px;
+    }
+}
     </style>
 </head>
 <body>
 
-    <!-- ═══════════════ NAVBAR (unchanged) ═══════════════ -->
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header class="header" id="mainHeader">
         <div class="header-container">
             <div class="nav-left">
@@ -572,6 +458,7 @@
             </div>
             <div class="nav-right">
                 <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <!-- Inline Hamburger SVG -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -584,7 +471,7 @@
         </div>
     </header>
 
-    <!-- Mobile drawer -->
+    <!-- Mobile Drawer -->
     <div id="mobileMenu">
         <a href="#" class="mobile-nav-link">Upskill your Team</a>
         <a href="#" class="mobile-nav-link">About</a>
@@ -595,10 +482,10 @@
     </div>
     <div id="menuOverlay"></div>
 
-    <!-- ═══════════════ MAIN CONTENT: HERO + CAROUSEL + STATS ═══════════════ -->
+    <!-- ═══════════════ HERO SECTION ═══════════════ -->
     <div class="main-wrapper">
         
-        <!-- Hero text block -->
+        <!-- Hero Text -->
         <div class="hero-text-content">
             <span class="hero-eyebrow">Make Every Event Memorable</span>
             <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
@@ -612,7 +499,7 @@
             </a>
         </div>
 
-        <!-- 3D Carousel (no extra gaps on desktop) -->
+        <!-- 3D Carousel -->
         <div class="carousel-section">
             <div class="carousel-container">
                 <div class="carousel">
@@ -650,7 +537,6 @@
             </div>
         </div>
 
-        <!-- Stats block -->
         <div class="stats-container">
             <div class="stat-item">
                 <div class="stat-number">500+</div>
@@ -667,16 +553,16 @@
         </div>
     </div>
 
-    <!-- ═══════════════ SCRIPTS (mobile menu & header effect) ═══════════════ -->
+    <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Navbar scroll shadow
+            // Navbar scroll effect
             const header = document.getElementById('mainHeader');
             window.addEventListener('scroll', () => {
                 header.classList.toggle('scrolled', window.scrollY > 0);
             });
 
-            // Mobile menu interactions
+            // Mobile menu integration
             const mobileMenu    = document.getElementById('mobileMenu');
             const menuButton    = document.getElementById('mobileMenuButton');
             const menuOverlay   = document.getElementById('menuOverlay');
@@ -684,9 +570,7 @@
             const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
             const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
 
-            function setMenuIcon(isOpen) {
-                menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG;
-            }
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
 
             function toggleMenu() {
                 const isActive = mobileMenu.classList.toggle('active');
