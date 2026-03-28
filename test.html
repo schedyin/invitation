@@ -453,6 +453,22 @@
                 width: 15%;
             }
         }
+
+        /* extra small devices: reduce perspective jitter */
+        @media (max-width: 480px) {
+            .carousel-container {
+                perspective: 700px;
+                height: 450px;
+            }
+            .image-container img {
+                width: 260px;
+                height: 380px;
+            }
+            .image-container {
+                height: 380px;
+                top: 35px;
+            }
+        }
     </style>
 </head>
 <body>
