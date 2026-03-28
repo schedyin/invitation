@@ -232,6 +232,7 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            gap: 10px;
             font-family: var(--font-nav);
         }
 
@@ -245,8 +246,10 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            margin: 0;
+            margin-top: -80px; /* Decreased gap to overlap */
+            margin-bottom: 0;
             overflow: hidden;
+            z-index: 1; /* Keep it behind the hero text content */
         }
 
         .carousel-container {
@@ -360,6 +363,10 @@
             
             .hero-description { font-size: 0.9rem; }
             
+            .carousel-section {
+                margin-top: -60px;
+            }
+
             .carousel-container {
                 height: 480px;
                 perspective: 850px;
@@ -444,7 +451,13 @@
             <span class="hero-eyebrow">Make Every Event Memorable</span>
             <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
             <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
-            <a href="#" class="hero-btn">Choose Your Template</a>
+            <a href="#" class="hero-btn">
+                <span>Choose Your Template</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+                    <path d="M1 7.11108L6 12L11 7.11108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M1 1L6 5.88889L11 1" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </a>
         </div>
 
         <!-- 3D Carousel -->
