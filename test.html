@@ -387,6 +387,11 @@
         margin-bottom: 0;                           /* No overlap with text */
         position: relative;
         z-index: 1;                                 /* Behind the text */
+        
+        /* Remove 20px left/right padding - counteract .main-wrapper padding */
+        margin-left: -20px;
+        margin-right: -20px;
+        width: calc(100% + 40px);
     }
     
     .carousel-container {
@@ -395,6 +400,7 @@
         -webkit-perspective: 850px;
         mask: none;          /* Prevent clipping on mobile */
         -webkit-mask: none;
+        width: 100%;         /* Ensure it fills the expanded section width */
     }
     
     .image-container {
