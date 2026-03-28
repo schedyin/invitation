@@ -2,74 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Schedy — 3D Carousel Hero | No Flicker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedy - Hero</title>
     
-    <!-- Fonts -->
+    <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ----- RESET & BASE ----- */
+        /* --- Universal box-sizing --- */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        /* --- Root variables --- */
         :root {
-            /* Navbar */
+            /* Navbar Variables */
             --font-nav: 'IBM Plex Sans', sans-serif;
             --color-dark-teal: #002726;
             --color-teal-hover: #004D4B;
             --color-white: #ffffff;
             --color-accent-green: #33C375;
             --header-height: 72px;
+            --font-weight-medium: 500;
             
-            /* Hero */
+            /* Hero Variables */
             --primary-bg: #fefefe;
+            --secondary-bg: #f8f8f8;
+            --accent-color: #1a1a1a;
             --text-primary: #121212;
             --text-secondary: #666666;
             --text-light: #888888;
             --border-color: rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             --radius: 12px;
             --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
         }
 
-        html {
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        
+        /* --- Body styles --- */
         body {
             font-family: var(--font-sans);
             line-height: 1.6;
             background-color: var(--primary-bg);
             overflow-x: hidden;
             color: var(--text-primary);
-            padding-top: calc(var(--header-height) + 60px);
+            /* Add padding to account for fixed header */
+            padding-top: calc(var(--header-height) + 60px); 
             padding-bottom: 60px;
             -webkit-font-smoothing: antialiased;
         }
 
         a, button {
             -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
-        /* ----- NAVBAR (unchanged but robust) ----- */
+        /* ══════════════════════════════
+           NAVBAR (Integrated UI/UX)
+        ══════════════════════════════ */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--header-height);
-            z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 100;
             background-color: var(--color-white);
             border-bottom: 1px solid transparent;
-            display: flex;
-            align-items: center;
+            box-shadow: none;
+            display: flex; align-items: center;
             transition: border-color 0.2s, box-shadow 0.2s;
             font-family: var(--font-nav);
         }
@@ -78,15 +81,12 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .header-container {
-            width: 90%;
-            margin: 0 auto;
-            max-width: 1280px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .nav-left { display: flex; align-items: center; gap: 32px; }
-        .logo-text {
+        
+        .logo-text { 
             font-family: 'Outfit', sans-serif;
             font-size: 26px;
             font-weight: 700;
@@ -94,99 +94,82 @@
             text-decoration: none;
             letter-spacing: -0.5px;
         }
+
         .nav-links { display: none; gap: 8px; }
         @media (min-width: 768px) { .nav-links { display: flex; } }
         .nav-link {
-            padding: 8px 16px;
-            font-weight: 500;
-            color: var(--color-dark-teal);
-            text-decoration: none;
-            transition: color 0.2s;
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
+            background: transparent;
         }
-        .nav-link:hover { color: var(--color-teal-hover); }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+
         .nav-right { display: flex; align-items: center; }
         .auth-buttons { display: none; gap: 12px; }
         @media (min-width: 768px) { .auth-buttons { display: flex; } }
         .auth-button {
-            padding: 8px 24px;
-            font-weight: 500;
-            border-radius: 8px;
-            text-decoration: none;
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
             border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal);
-            background: transparent;
-            transition: all 0.2s;
+            color: var(--color-dark-teal); background: transparent;
         }
-        .auth-button.submit {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-        }
-        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
         .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
         .menu-button {
-            display: flex;
-            padding: 8px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f1f5f9;
-            cursor: pointer;
-            color: var(--color-dark-teal);
+            display: flex; padding: 8px;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
         }
         @media (min-width: 768px) { .menu-button { display: none; } }
+
         #mobileMenu {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: 100%;
-            background: var(--color-white);
-            z-index: 90;
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 90;
             transform: translateY(-110%);
             transition: transform 0.3s ease-in-out;
             padding: 24px 5%;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: flex; flex-direction: column; gap: 20px;
             font-family: var(--font-nav);
         }
         #mobileMenu.active { transform: translateY(0); }
         .mobile-nav-link {
-            font-size: 1.1rem;
-            font-weight: 500;
-            text-decoration: none;
-            color: var(--color-dark-teal);
-            padding: 8px 0;
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
         }
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
         .mobile-auth-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #f1f5f9;
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
         }
         .mobile-auth-button {
-            width: 100%;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
             border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal);
-            background: transparent;
+            color: var(--color-dark-teal); background: transparent;
+            transition: background-color 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
         .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
         #menuOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(2px);
-            z-index: 80;
-            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 80; display: none;
         }
         #menuOverlay.active { display: block; }
 
-        /* ----- HERO SECTION - FLICKER FIXED (mask removed, GPU layers, hardened 3D) ----- */
+        /* ══════════════════════════════
+           HERO SECTION STYLES
+        ══════════════════════════════ */
         .main-wrapper {
             display: flex;
             flex-direction: column;
@@ -198,6 +181,7 @@
             margin: 0 auto;
         }
 
+        /* Hero Text Content */
         .hero-text-content {
             text-align: center;
             max-width: 800px;
@@ -207,25 +191,33 @@
             gap: 16px;
             z-index: 10;
         }
+
         .hero-eyebrow {
             color: var(--color-accent-green);
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-family: var(--font-nav);
         }
+
         .hero-heading {
             font-size: clamp(1.8rem, 4vw, 3.2rem);
             font-weight: 700;
             color: var(--color-dark-teal);
             line-height: 1.15;
             letter-spacing: -0.02em;
+            font-family: var(--font-nav);
         }
+
         .hero-description {
             font-size: 1rem;
             color: var(--text-secondary);
             max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
+
         .hero-btn {
             background: var(--color-accent-green);
             color: var(--color-dark-teal);
@@ -241,80 +233,49 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            font-family: var(--font-nav);
         }
-        .hero-btn:hover { background: #2fb168; transform: translateY(-2px); }
 
-        /* ----- CAROUSEL FIX: No mask flicker, hardware acceleration, stable 3D ----- */
+        .hero-btn:hover {
+            background: #2fb168;
+            transform: translateY(-2px);
+        }
+
         .carousel-section {
             position: relative;
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-top: -80px;   /* desktop overlap effect */
+            margin-top: -80px; /* Overlaps with text on desktop */
             margin-bottom: 0;
-            overflow: visible;
-            z-index: 1;
-        }
-
-        /* Outer wrapper: relative with overflow hidden + gradient overlays (replaces flickering mask) */
-        .carousel-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 1600px;
-            overflow-x: clip;
-            overflow-y: visible;
-            border-radius: 0;
-            /* create a stacking context for overlay gradients */
-            isolation: isolate;
-        }
-
-        /* Gradient overlays – smooth edges without harming 3D performance */
-        .carousel-wrapper::before,
-        .carousel-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 12%;
-            z-index: 20;
-            pointer-events: none;
-            background: linear-gradient(to right, var(--primary-bg), transparent);
-        }
-        .carousel-wrapper::before {
-            left: 0;
-            background: linear-gradient(to right, var(--primary-bg), rgba(254,254,254,0));
-        }
-        .carousel-wrapper::after {
-            right: 0;
-            background: linear-gradient(to left, var(--primary-bg), rgba(254,254,254,0));
+            overflow: hidden;
+            z-index: 1; /* Keep it behind the hero text content */
         }
 
         .carousel-container {
             width: 100%;
+            max-width: 1600px;
             height: 480px;
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 800px;
-            perspective-origin: 50% 50%;
-            transform: translate3d(0, 0, 0);
-            -webkit-transform: translate3d(0, 0, 0);
-            /* Force hardware compositing */
-            will-change: auto;
+            mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+            -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+            
+            /* Fix for mask rendering bugs */
+            transform: translate3d(0,0,0);
+            -webkit-transform: translate3d(0,0,0);
         }
 
-        /* The main rotating 3D group */
         .carousel {
             position: relative;
             width: 1px;
             height: 100%;
             transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d; /* Safari Fix */
+            will-change: transform; /* Hint browser to prioritize 3D context */
             animation: rotateAnimation 60s linear infinite;
-            will-change: transform;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
         }
 
         @keyframes rotateAnimation {
@@ -322,22 +283,18 @@
             to { transform: rotateY(-360deg); }
         }
 
-        /* Individual card pair container (double-sided) */
         .image-container {
             position: absolute;
             top: 20px;
             left: 0;
-            width: 1600px;
+            width: 1600px; 
             height: 400px;
             transform-style: preserve-3d;
             -webkit-transform-style: preserve-3d;
             transform-origin: center;
             transform: translateX(-50%);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            /* force GPU layer */
-            transform: translate3d(0, 0, 0);
         }
+        
         .image-container:nth-child(1) { transform: translateX(-50%) rotateY(30deg); }
         .image-container:nth-child(2) { transform: translateX(-50%) rotateY(60deg); }
         .image-container:nth-child(3) { transform: translateX(-50%) rotateY(90deg); }
@@ -345,34 +302,26 @@
         .image-container:nth-child(5) { transform: translateX(-50%) rotateY(150deg); }
         .image-container:nth-child(6) { transform: translateX(-50%) rotateY(180deg); }
 
-        /* Each image inside card: front/back layers */
         .image-container img {
             position: absolute;
-            width: 280px;
+            width: 280px; 
             height: 400px;
             object-fit: cover;
             border-radius: 16px;
-            /* CRITICAL anti-flicker combo */
+            
+            /* Anti-Flickering Fixes for 3D elements */
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
-            -webkit-transform: translate3d(0, 0, 0);
+            outline: 1px solid transparent; 
             will-change: transform;
+            
             box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.3);
-            /* ensures subpixel rendering stability */
-            image-rendering: auto;
         }
 
-        .image-container .img-front {
-            transform: rotateY(90deg) translate3d(0,0,0);
-            left: 0;
-        }
-        .image-container .img-back {
-            transform: rotateY(-90deg) translate3d(0,0,0);
-            right: 0;
-        }
+        .image-container .img-front { transform: rotateY(90deg); left: 0; }
+        .image-container .img-back { transform: rotateY(-90deg); right: 0; }
 
-        /* Stats */
+        /* Stats Section */
         .stats-container {
             display: flex;
             justify-content: center;
@@ -383,52 +332,92 @@
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
         }
-        .stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .stat-number { font-size: 42px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
-        .stat-label { font-size: 14px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ----- MOBILE SPECIFIC TWEAKS: Overlap fixes + stronger anti-flicker layers ----- */
-        @media (max-width: 768px) {
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1600px) {
+            .carousel-container { width: 98vw; }
+        }
+        
+        @media (max-width: 1200px) {
+            .stats-container { gap: 40px; }
+            .stat-number { font-size: 36px; }
+        }
+
+        @media (max-width: 992px) {
+            .main-wrapper { gap: 20px; }
+        }
+
+        @media (max-width: 768px) { 
             body {
-                padding-top: var(--header-height);
+                padding-top: var(--header-height); /* Remove extra top padding to pull everything up */
             }
-            .main-wrapper {
-                padding: 0 20px;
-                gap: 10px;
+            
+            .main-wrapper { 
+                padding: 0 20px; 
+                gap: 10px; /* Tighter gap on mobile */
             }
+            
+            /* Reorder text to bottom on mobile */
             .hero-text-content {
                 order: 2;
-                margin-top: 10px;
-                position: relative;
+                margin-top: 10px; /* Space slightly from the overlapped carousel */
                 z-index: 10;
+                position: relative;
             }
-            .hero-description {
-                font-size: 0.85rem;
+
+            .hero-description { 
+                font-size: 0.85rem; /* Decreased paragraph size */
             }
+            
+            /* Reorder carousel to top on mobile */
             .carousel-section {
                 order: 1;
-                margin-top: -60px;
-                margin-bottom: -50px;
+                margin-top: -60px; /* Pull it up further to eliminate the extra gap */
+                margin-bottom: -50px; /* Overlap the text block below it */
             }
+
             .carousel-container {
                 height: 480px;
                 perspective: 850px;
-                -webkit-perspective: 850px;
-                transform: translate3d(0,0,0);
+                -webkit-perspective: 850px; /* Safari Fix */
             }
+            
             .image-container {
                 width: 1550px;
                 height: 420px;
-                top: 30px;
-                transform: translateX(-50%) translateZ(0);
-                backface-visibility: hidden;
+                /* FIX: Added top offset so it doesn't clip against the mask boundary 
+                   when perspective pulls the image scale outwards */
+                top: 30px; 
             }
+            
             .image-container img {
                 width: 300px;
                 height: 420px;
-                backface-visibility: hidden;
-                transform: translate3d(0,0,0);
             }
+
             .stats-container {
                 order: 3;
                 flex-direction: column;
@@ -436,48 +425,30 @@
                 padding: 10px 0;
                 margin-top: 20px;
             }
+            
             .stat-item {
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
                 text-align: left;
             }
+            
             .stat-number {
                 margin-bottom: 0;
                 font-size: 32px;
-            }
-
-            /* Smoother edge overlays on mobile (no mask flicker) */
-            .carousel-wrapper::before,
-            .carousel-wrapper::after {
-                width: 15%;
-            }
-        }
-
-        /* extra small devices: reduce perspective jitter */
-        @media (max-width: 480px) {
-            .carousel-container {
-                perspective: 700px;
-                height: 450px;
-            }
-            .image-container img {
-                width: 260px;
-                height: 380px;
-            }
-            .image-container {
-                height: 380px;
-                top: 35px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR (same robust behavior) -->
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header class="header" id="mainHeader">
         <div class="header-container">
             <div class="nav-left">
-                <a href="/" class="logo-text">SCHEDY</a>
+                <a href="/" class="logo-text" aria-label="Home">
+                    SCHEDY
+                </a>
                 <div class="nav-links">
                     <a class="nav-link" href="#">Upskill your Team</a>
                     <a class="nav-link" href="#">About</a>
@@ -485,6 +456,7 @@
             </div>
             <div class="nav-right">
                 <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <!-- Inline Hamburger SVG -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -497,6 +469,7 @@
         </div>
     </header>
 
+    <!-- Mobile Drawer -->
     <div id="mobileMenu">
         <a href="#" class="mobile-nav-link">Upskill your Team</a>
         <a href="#" class="mobile-nav-link">About</a>
@@ -507,8 +480,10 @@
     </div>
     <div id="menuOverlay"></div>
 
-    <!-- HERO with flicker-free 3D carousel -->
+    <!-- ═══════════════ HERO SECTION ═══════════════ -->
     <div class="main-wrapper">
+        
+        <!-- Hero Text -->
         <div class="hero-text-content">
             <span class="hero-eyebrow">Make Every Event Memorable</span>
             <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
@@ -522,36 +497,39 @@
             </a>
         </div>
 
-        <!-- CAROUSEL SECTION - replaced mask with gradient overlays + GPU optimization -->
+        <!-- 3D Carousel -->
         <div class="carousel-section">
-            <div class="carousel-wrapper">
-                <div class="carousel-container">
-                    <div class="carousel">
-                        <!-- 6 double-sided image containers -->
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" loading="eager">
-                        </div>
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Minimalist Interior" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Bottles" loading="eager">
-                        </div>
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Kitchen" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man" loading="eager">
-                        </div>
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Fashion Look" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Staircase Interior" loading="eager">
-                        </div>
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Perfume Scene" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Skincare Arrangement" loading="eager">
-                        </div>
-                        <div class="image-container">
-                            <img class="img-front" src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running" loading="eager">
-                            <img class="img-back" src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Sunglasses Display" loading="eager">
-                        </div>
+            <div class="carousel-container">
+                <div class="carousel">
+                    <!-- Image Pair 1 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare Product Display" class="img-front">
+                        <img src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" class="img-back">
+                    </div>
+                    <!-- Image Pair 2 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Serene Minimalist Interior" class="img-front">
+                        <img src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Glass Dropper Bottles" class="img-back">
+                    </div>
+                    <!-- Image Pair 3 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Minimalist Kitchen" class="img-front">
+                        <img src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man in Hat" class="img-back">
+                    </div>
+                    <!-- Image Pair 4 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Minimalist Fashion Look" class="img-front">
+                        <img src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Minimalist Interior with Staircase" class="img-back">
+                    </div>
+                    <!-- Image Pair 5 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Minimalist Perfume Scene" class="img-front">
+                        <img src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Minimalist Skincare Arrangement" class="img-back">
+                    </div>
+                    <!-- Image Pair 6 -->
+                    <div class="image-container">
+                        <img src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running Outdoors" class="img-front">
+                        <img src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Stylish Sunglasses Display" class="img-back">
                     </div>
                 </div>
             </div>
@@ -573,74 +551,46 @@
         </div>
     </div>
 
+    <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
-        (function() {
-            // Ensure hardware acceleration and fix for any potential repaint
-            document.addEventListener('DOMContentLoaded', function () {
-                // Navbar scroll effect
-                const header = document.getElementById('mainHeader');
-                if (header) {
-                    window.addEventListener('scroll', () => {
-                        header.classList.toggle('scrolled', window.scrollY > 0);
-                    });
-                }
-
-                // Mobile menu logic (unchanged but robust)
-                const mobileMenu    = document.getElementById('mobileMenu');
-                const menuButton    = document.getElementById('mobileMenuButton');
-                const menuOverlay   = document.getElementById('menuOverlay');
-
-                const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
-                const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
-
-                function setMenuIcon(isOpen) { if(menuButton) menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
-                function toggleMenu() {
-                    if(!mobileMenu || !menuOverlay) return;
-                    const isActive = mobileMenu.classList.toggle('active');
-                    menuOverlay.classList.toggle('active');
-                    setMenuIcon(isActive);
-                    document.body.style.overflow = isActive ? 'hidden' : '';
-                }
-                if(menuButton) menuButton.addEventListener('click', toggleMenu);
-                if(menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
-                window.addEventListener('resize', () => {
-                    if (window.innerWidth >= 768 && mobileMenu && mobileMenu.classList.contains('active')) {
-                        mobileMenu.classList.remove('active');
-                        if(menuOverlay) menuOverlay.classList.remove('active');
-                        document.body.style.overflow = '';
-                        setMenuIcon(false);
-                    }
-                });
-                setMenuIcon(false);
-
-                // Additional performance: force reflow on carousel to avoid initial glitch
-                const carouselElem = document.querySelector('.carousel');
-                if(carouselElem) {
-                    // small trick to ensure 3d context is stable on mobile
-                    carouselElem.style.animation = 'none';
-                    carouselElem.offsetHeight; // force reflow
-                    carouselElem.style.animation = 'rotateAnimation 60s linear infinite';
-                }
-                
-                // Preload images hint to reduce repaint
-                const allImages = document.querySelectorAll('.image-container img');
-                if (allImages.length) {
-                    // just ensures they are loaded
-                    allImages.forEach(img => {
-                        if(img.complete === false) {
-                            img.addEventListener('load', () => {});
-                        }
-                    });
-                }
-
-                // fix for mobile flicker: set backface visibility on parent container as final safety
-                const containers = document.querySelectorAll('.image-container');
-                containers.forEach(cont => {
-                    cont.style.backfaceVisibility = 'hidden';
-                    cont.style.webkitBackfaceVisibility = 'hidden';
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navbar scroll effect
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 0);
             });
-        })();
+
+            // Mobile menu integration
+            const mobileMenu    = document.getElementById('mobileMenu');
+            const menuButton    = document.getElementById('mobileMenuButton');
+            const menuOverlay   = document.getElementById('menuOverlay');
+
+            const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
+
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                setMenuIcon(isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            }
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setMenuIcon(false);
+                }
+            });
+            
+            setMenuIcon(false);
+        });
     </script>
 </body>
 </html>
