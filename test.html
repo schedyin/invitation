@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedy - Hero</title>
     
-    <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- Universal box-sizing --- */
@@ -20,40 +19,41 @@
 
         /* --- Root variables --- */
         :root {
-            /* Navbar Variables */
+            /* Navbar & Hero Variables */
             --font-nav: 'IBM Plex Sans', sans-serif;
-            --color-dark-teal: #002726;
-            --color-teal-hover: #004D4B;
+            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
             --color-white: #ffffff;
-            --color-accent-green: #33C375;
             --header-height: 72px;
             --font-weight-medium: 500;
-            
-            /* Global/Hero Variables */
             --primary-bg: #fefefe;
             --secondary-bg: #f8f8f8;
-            --accent-color: #1a1a1a;
             --text-primary: #121212;
             --text-secondary: #666666;
             --text-light: #888888;
             --transition: all 0.3s ease;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-
-            /* Syncskill UI/UX Tokens */
-            --text-main: #18181A;
-            --text-sub: #6b7280;
-            --border-subtle: #e5e7eb;
-            --hover-bg: #f3f4f6;
-            --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --radius-md: 10px;
-            --radius-lg: 16px;
-            --card-bg: #ffffff;
-
-            /* Stacking Section Vars */
-            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --sticky-top: 100px; 
+            --radius: 12px;
+            
+            /* --- SYNCSKILL UI/UX VARIABLES --- */
+            --font-main: 'IBM Plex Sans', sans-serif;
+            --color-dark-teal: #002726;
+            --color-teal-hover: #004D4B;
+            --color-accent-green: #33C375;
+            --color-accent-hover: #2fb168;
+            --color-page-bg: #f8f9f8; 
+            --color-card-bg: #ffffff;
+            --color-card-border: #c7e6d0;
+            --color-border-subtle: #e2e8f0;
+            
+            --text-main: #111111;
+            --text-heading: #002726;
+            --text-sub: #64748b;
+            
             --radius-btn: 14px;
+            --radius-btn-sm: 8px;
+            --radius-card: 20px;
+            
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -88,7 +88,7 @@
             font-family: var(--font-nav);
         }
         .header.scrolled {
-            border-bottom-color: var(--border-subtle);
+            border-bottom-color: var(--color-border-subtle);
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
         .header-container {
@@ -121,7 +121,7 @@
         @media (min-width: 768px) { .auth-buttons { display: flex; } }
         .auth-button {
             padding: 8px 24px; font-weight: var(--font-weight-medium);
-            border-radius: 8px; text-decoration: none;
+            border-radius: var(--radius-btn-sm); text-decoration: none;
             transition: background-color 0.2s, color 0.2s, border-color 0.2s;
             border: 1px solid var(--color-dark-teal);
             color: var(--color-dark-teal); background: transparent;
@@ -132,7 +132,7 @@
 
         .menu-button {
             display: flex; padding: 8px;
-            border: 1px solid var(--border-subtle); border-radius: 8px;
+            border: 1px solid var(--color-border-subtle); border-radius: var(--radius-btn-sm);
             background: #f1f5f9; cursor: pointer;
             color: var(--color-dark-teal); transition: background 0.1s;
         }
@@ -161,7 +161,7 @@
         }
         .mobile-auth-button {
             width: 100%; padding: 12px; text-align: center;
-            border-radius: 8px; text-decoration: none; font-weight: 600;
+            border-radius: var(--radius-btn-sm); text-decoration: none; font-weight: 600;
             border: 1px solid var(--color-dark-teal);
             color: var(--color-dark-teal); background: transparent;
             transition: background-color 0.2s, color 0.2s;
@@ -343,8 +343,8 @@
             padding: 30px 0;
             width: 100%;
             max-width: 800px;
-            border-top: 1px solid var(--border-subtle);
-            border-bottom: 1px solid var(--border-subtle);
+            border-top: 1px solid var(--color-border-subtle);
+            border-bottom: 1px solid var(--color-border-subtle);
         }
 
         .stat-item {
@@ -357,7 +357,7 @@
         .stat-number {
             font-size: 42px;
             font-weight: 700;
-            color: var(--text-main);
+            color: var(--text-heading);
             line-height: 1;
             margin-bottom: 5px;
             font-family: var(--font-nav);
@@ -377,7 +377,7 @@
         ══════════════════════════════ */
         .templates-showcase {
             padding: 80px 40px;
-            background-color: var(--primary-bg);
+            background-color: var(--color-page-bg);
         }
 
         .showcase-header {
@@ -389,20 +389,23 @@
         }
 
         .showcase-header h2 {
-            font-family: var(--font-nav);
-            font-size: 32px;
+            font-family: var(--font-main);
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
             font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-main);
+            color: var(--text-heading);
+            letter-spacing: -0.02em;
             line-height: 1.2;
+            margin-bottom: 12px;
         }
 
         .showcase-header p {
             color: var(--text-sub);
-            font-family: var(--font-sans);
-            font-weight: 500;
-            font-size: 16px;
+            font-family: var(--font-main);
+            font-size: 1.05rem;
             margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* --- CATEGORY BUTTONS --- */
@@ -411,35 +414,9 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
 
-        .cat-btn {
-            padding: 10px 20px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-subtle);
-            background: var(--card-bg);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-sub);
-            font-family: var(--font-sans);
-        }
-
-        .cat-btn:hover {
-            border-color: #d1d5db;
-            background: var(--hover-bg);
-            color: var(--text-main);
-        }
-
-        .cat-btn.active {
-            background: var(--text-main);
-            color: var(--color-white);
-            border-color: var(--text-main);
-        }
-
-        /* Mobile Dropdown Styling */
         .mobile-dropdown-container {
             display: none;
             margin-bottom: 30px;
@@ -447,121 +424,61 @@
             text-align: left;
         }
 
-        .dropdown-trigger {
-            width: 100%;
-            padding: 16px 20px;
-            background: #ffffff;
-            border: 2px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 15px;
+        .cat-btn {
+            padding: 8px 20px;
+            border-radius: var(--radius-btn-sm);
+            border: 1px solid var(--color-dark-teal);
+            background: transparent;
+            font-size: 0.95rem;
             font-weight: 500;
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            transition: border-color .3s, box-shadow .3s;
             cursor: pointer;
-            user-select: none;
-        }
-
-        .dropdown-trigger:hover {
-            border-color: #cbd5e1;
-        }
-
-        .mobile-dropdown-container.open .dropdown-trigger {
-            border-color: var(--color-accent-green);
-            box-shadow: 0 0 0 4px rgba(65,182,110,0.12);
-        }
-
-        .dropdown-chevron {
-            transition: transform 0.3s var(--ease-smooth), stroke 0.3s;
-        }
-
-        .mobile-dropdown-container.open .dropdown-chevron {
-            transform: rotate(-180deg);
-            stroke: var(--color-accent-green);
-        }
-
-        .dropdown-options {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-8px);
-            transition: all 0.25s var(--ease-smooth);
-            overflow: hidden;
-        }
-
-        .mobile-dropdown-container.open .dropdown-options {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-option {
-            padding: 14px 16px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text-main);
-            transition: background .2s, color .2s;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .dropdown-option:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-option:hover, .dropdown-option.selected {
-            background: rgba(65,182,110,0.08);
+            transition: all 0.2s ease;
             color: var(--color-dark-teal);
+            font-family: var(--font-main);
+        }
+
+        .cat-btn:hover {
+            background: var(--color-dark-teal);
+            color: #ffffff;
+        }
+
+        .cat-btn.active {
+            background: var(--color-dark-teal);
+            color: #ffffff;
         }
 
         /* --- CARDS CONTAINER --- */
         .cards-container {
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
-            overflow-x: auto;
             padding: 10px 10px 40px 10px;
             max-width: 1280px;
             margin: 0 auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-subtle) transparent;
         }
 
         /* --- THE CARD --- */
         .card {
-            width: 300px;
-            flex-shrink: 0;
-            background-color: var(--card-bg);
-            border-radius: var(--radius-lg); 
-            padding: 12px;
-            border: 1px solid var(--border-subtle);
+            width: 100%;
+            background-color: var(--color-card-bg);
+            border-radius: var(--radius-card);
+            padding: 16px;
+            border: 1px solid var(--color-card-border);
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
         }
 
         .card:hover {
-            border-color: #d1d5db;
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-premium);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: #bbf7d0;
         }
 
         .card-top {
-            background-color: #f1f5f9;
-            height: 360px;
-            border-radius: 12px; 
+            background-color: #f0fdf4;
+            height: 340px;
+            border-radius: 14px;
             position: relative;
-            z-index: 2;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -572,83 +489,83 @@
             height: 100%;
             width: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
+            transition: transform 0.6s var(--ease-smooth);
         }
 
         .card:hover .product-img {
-            transform: scale(1.05);
+            transform: scale(1.06);
         }
 
-        /* Banner (Promotion) */
+        /* Banner (SyncSkill Pill Badge Style) */
         .card-banner {
-            background-color: var(--hover-bg);
-            height: 60px;
-            margin-top: -24px;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-            position: relative;
-            z-index: 1;
             display: flex;
-            align-items: flex-end;
             justify-content: center;
-            padding-bottom: 8px;
+            margin-top: 20px;
+            margin-bottom: 12px;
         }
 
         .banner-text {
-            color: var(--text-main);
-            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 999px;
+            background: rgba(65,182,110,0.1); 
+            border: 1px solid rgba(65,182,110,0.2);
+            color: #15803d; 
+            font-size: 0.75rem; 
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-family: var(--font-sans);
+            text-transform: uppercase; 
+            letter-spacing: 0.08em;
+            font-family: var(--font-main);
         }
 
         /* Actions Section */
         .card-actions {
-            padding: 16px 0 4px 0;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
         .action-btn {
             flex: 1;
-            height: 44px;
-            border-radius: var(--radius-md); 
-            font-size: 13px;
-            font-weight: 600;
+            height: 48px;
+            border-radius: var(--radius-btn);
+            font-size: 15px;
+            font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            font-family: var(--font-sans);
+            transition: all 0.25s ease;
+            font-family: var(--font-main);
+            text-decoration: none;
         }
 
         .btn-primary {
-            background-color: var(--text-main);
-            color: var(--color-white);
+            background-color: var(--color-accent-green);
+            color: #012726;
+            border: none;
+            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.3);
         }
         .btn-primary:hover {
-            background-color: #000000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: var(--color-accent-hover);
         }
 
         .btn-secondary {
-            background-color: var(--card-bg);
-            color: var(--text-sub);
-            border: 1px solid var(--border-subtle);
+            background-color: transparent;
+            color: var(--color-dark-teal);
+            border: 1px solid var(--color-dark-teal);
         }
         .btn-secondary:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-main);
-            border-color: #d1d5db;
+            background-color: var(--color-dark-teal);
+            color: #ffffff;
         }
 
         .icon-sm {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             stroke-width: 2px;
         }
 
@@ -656,168 +573,31 @@
         .view-more-container {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 24px;
             max-width: 1280px;
             margin-left: auto;
             margin-right: auto;
         }
 
         .btn-view-more {
-            padding: 12px 32px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-main);
-            font-weight: 600;
-            border-radius: var(--radius-md);
+            padding: 14px 32px;
+            background: transparent;
+            color: var(--color-dark-teal);
+            border: 1px solid var(--color-dark-teal);
+            font-family: var(--font-main);
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: var(--radius-btn);
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: var(--font-sans);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-view-more:hover {
-            background: var(--hover-bg);
-            border-color: #d1d5db;
-            color: var(--text-main);
-        }
-
-        /* ══════════════════════════════
-           PERFECT STACKING SECTION
-        ══════════════════════════════ */
-        .stacking-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding-bottom: 100vh; 
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-
-        /* LEFT SIDE - Pinned Content */
-        .left-panel {
-            flex: 0 0 320px;
-            position: sticky;
-            top: var(--sticky-top);
-            padding-top: 20px; 
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 10;
-        }
-
-        .left-panel h2 {
-            font-size: 36px;
-            font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            margin: 0;
-            color: var(--color-dark-teal);
-            font-family: var(--font-nav);
-        }
-
-        .left-panel p {
-            font-size: 18px;
-            font-weight: 400;
-            color: var(--text-sub);
-            line-height: 1.5;
-            margin: 0;
-            font-family: var(--font-sans);
-        }
-
-        .btn-stack {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: fit-content; 
-            padding: 14px 28px;
-            background: var(--color-accent-green);
-            color: #012726; 
-            border-radius: var(--radius-btn);
-            font-weight: 500; 
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.3);
-            transition: background 0.25s ease;
-            margin-top: 12px;
-            font-family: var(--font-main);
-        }
-
-        .btn-stack:hover {
-            background: var(--color-accent-hover); 
-        }
-
-        /* RIGHT SIDE - List of Cards */
-        .right-panel {
-            flex: 1;
-            max-width: 700px;
-            margin-left: auto;
-            padding-top: 20px;
-        }
-
-        .feature-card {
-            position: sticky;
-            top: var(--sticky-top);
-            /* Match page background exactly to perfectly occlude cards beneath */
-            background-color: var(--primary-bg); 
-            width: 100%;
-            border-top: 1px solid var(--border-subtle);
-            /* Distance between cards as you scroll */
-            margin-bottom: 250px; 
-            box-shadow: none; 
-        }
-
-        /* Content inside each card */
-        .card-inner {
-            display: flex;
-            align-items: flex-start;
-            gap: 25px;
-            padding-top: 30px;
-            padding-bottom: 5px; 
-        }
-
-        .icon-box {
-            width: 110px;
-            height: 90px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        .icon-box svg {
-            width: 64px;
-            height: 64px;
-            color: var(--color-accent-green);
-        }
-
-        .text-box {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-top: 2px;
-        }
-
-        .label-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-dark-teal);
-            letter-spacing: 0.02em;
-            font-family: var(--font-sans);
-        }
-
-        .desc {
-            font-size: 26px;
-            font-weight: 500;
-            line-height: 1.3;
-            letter-spacing: -0.02em;
-            color: var(--text-main);
-            margin: 0;
-            font-family: var(--font-nav);
+            background: var(--color-dark-teal);
+            color: #ffffff;
         }
 
         /* --- Responsive Adjustments --- */
@@ -831,54 +611,13 @@
         }
 
         @media (max-width: 1024px) {
-            .cards-container { grid-template-columns: repeat(2, 1fr); }
+            .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 992px) {
             .hero-wrapper { gap: 20px; padding: 40px 20px; }
-        }
-
-        @media (max-width: 900px) {
-            /* Stacking Section Mobile Adjustments */
-            .stacking-wrapper {
-                flex-direction: column;
-                padding-bottom: 120vh;
-            }
-
-            .left-panel {
-                position: sticky;
-                top: var(--header-height);
-                width: 100%;
-                flex: none;
-                padding-top: 30px;
-                height: 300px; /* Fixed height to perfectly calculate where cards should stick */
-                box-sizing: border-box;
-                margin-bottom: 0; 
-                background-color: var(--primary-bg); 
-                z-index: 20; 
-            }
-
-            .right-panel {
-                padding-top: 0;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .feature-card {
-                /* Exact match to the left-panel's height so they dock flawlessly below it */
-                top: calc(var(--header-height) + 300px); 
-                margin-bottom: 120px;
-                z-index: 10;
-            }
-
-            .card-inner {
-                gap: 15px;
-                padding-top: 20px;
-            }
-
-            .icon-box { width: 70px; height: 70px; }
-            .icon-box svg { width: 48px; height: 48px; }
-            .desc { font-size: 20px; }
         }
 
         @media (max-width: 768px) { 
@@ -951,18 +690,18 @@
 
             /* Showcase Mobile Adjustments */
             .templates-showcase {
-                padding: 40px 16px;
+                padding: 40px 5%;
             }
 
             .showcase-header h2 {
-                font-size: 24px;
+                font-size: 2rem;
                 text-align: left;
             }
 
             .showcase-header p {
-                font-size: 14px;
+                font-size: 1rem;
                 text-align: left;
-                margin-bottom: 20px;
+                margin-bottom: 24px;
             }
 
             .categories {
@@ -971,9 +710,91 @@
 
             .mobile-dropdown-container {
                 display: block;
+                margin-bottom: 30px;
+                position: relative;
+                text-align: left;
+            }
+
+            .dropdown-trigger {
+                width: 100%;
+                background: #ffffff;
+                border: 2px solid var(--color-border-subtle);
+                border-radius: 12px;
+                font-size: 15px; 
+                font-weight: 500;
+                padding: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: var(--text-main);
+                font-family: var(--font-main);
+                transition: border-color .3s, box-shadow .3s;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .dropdown-trigger:hover {
+                border-color: #cbd5e1;
+            }
+
+            .mobile-dropdown-container.open .dropdown-trigger {
+                border-color: var(--color-accent-green);
+                box-shadow: 0 0 0 4px rgba(65,182,110,0.12);
+            }
+
+            .dropdown-chevron {
+                transition: transform 0.3s var(--ease-smooth), stroke 0.3s;
+            }
+
+            .mobile-dropdown-container.open .dropdown-chevron {
+                transform: rotate(-180deg);
+                stroke: var(--color-accent-green);
+            }
+
+            .dropdown-options {
+                position: absolute;
+                top: calc(100% + 4px);
+                left: 0;
+                right: 0;
+                background: #ffffff;
+                border: 1px solid var(--color-border-subtle);
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+                z-index: 100;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-8px);
+                transition: all 0.25s var(--ease-smooth);
+                overflow: hidden;
+            }
+
+            .mobile-dropdown-container.open .dropdown-options {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .dropdown-option {
+                padding: 14px 16px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 500;
+                color: var(--text-main);
+                transition: background .2s, color .2s;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .dropdown-option:last-child {
+                border-bottom: none;
+            }
+
+            .dropdown-option:hover, .dropdown-option.selected {
+                background: rgba(65,182,110,0.08);
+                color: var(--color-dark-teal);
             }
 
             .cards-container {
+                display: flex;
                 flex-direction: column;
                 align-items: center;
                 overflow-x: hidden;
@@ -983,23 +804,19 @@
 
             .card {
                 width: 100%;
-                max-width: 340px;
+                max-width: 360px;
                 transform: none !important;
+                box-shadow: none !important;
             }
 
             .card-top {
-                height: 400px;
-            }
-
-            .action-btn {
-                height: 48px;
+                height: 360px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header class="header" id="mainHeader">
         <div class="header-container">
             <div class="nav-left">
@@ -1013,39 +830,35 @@
             </div>
             <div class="nav-right">
                 <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
-                    <!-- Inline Hamburger SVG -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
                 <div class="auth-buttons">
-                    <a class="auth-button submit" href="#">Login</a>
+                    <a class="auth-button submit" href="admin.html">Login</a>
                     <a class="auth-button" href="#">Apply as Mentor</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Drawer -->
     <div id="mobileMenu">
         <a href="#" class="mobile-nav-link">Upskill your Team</a>
         <a href="#" class="mobile-nav-link">About</a>
         <div class="mobile-auth-stack">
-            <a href="#" class="mobile-auth-button submit">Login</a>
+            <a href="admin.html" class="mobile-auth-button submit">Login</a>
             <a href="#" class="mobile-auth-button">Apply as Mentor</a>
         </div>
     </div>
     <div id="menuOverlay"></div>
 
-    <!-- ═══════════════ HERO SECTION ═══════════════ -->
     <div class="hero-wrapper">
         
-        <!-- Hero Text -->
         <div class="hero-text-content">
             <span class="hero-eyebrow">Make Every Event Memorable</span>
             <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
             <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
-            <a href="#" class="hero-btn">
+            <a href="#templates" class="hero-btn">
                 <span>Choose Your Template</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
                     <path d="M1 7.11108L6 12L11 7.11108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -1054,36 +867,29 @@
             </a>
         </div>
 
-        <!-- 3D Carousel -->
         <div class="carousel-section">
             <div class="carousel-container">
                 <div class="carousel">
-                    <!-- Image Pair 1 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare Product Display" class="img-front">
                         <img src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" class="img-back">
                     </div>
-                    <!-- Image Pair 2 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Serene Minimalist Interior" class="img-front">
                         <img src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Glass Dropper Bottles" class="img-back">
                     </div>
-                    <!-- Image Pair 3 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Minimalist Kitchen" class="img-front">
                         <img src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man in Hat" class="img-back">
                     </div>
-                    <!-- Image Pair 4 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Minimalist Fashion Look" class="img-front">
                         <img src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Minimalist Interior with Staircase" class="img-back">
                     </div>
-                    <!-- Image Pair 5 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Minimalist Perfume Scene" class="img-front">
                         <img src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Minimalist Skincare Arrangement" class="img-back">
                     </div>
-                    <!-- Image Pair 6 -->
                     <div class="image-container">
                         <img src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running Outdoors" class="img-front">
                         <img src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Stylish Sunglasses Display" class="img-back">
@@ -1108,10 +914,9 @@
         </div>
     </div>
 
-    <!-- ═══════════════ TEMPLATES SHOWCASE ═══════════════ -->
     <section class="templates-showcase" id="templates">
         <div class="showcase-header">
-            <h2>Crafted for your special day.<br>Simple to customize. Seamless to share.</h2>
+            <h2>Crafted for your special day. Simple to customize. Seamless to share.</h2>
             <p>Pick a design. Add your details. Share in seconds.</p>
             
             <div class="categories">
@@ -1123,7 +928,6 @@
                 <button class="cat-btn">Others</button>
             </div>
 
-            <!-- Custom Mobile Dropdown -->
             <div class="mobile-dropdown-container" id="custom-mobile-dropdown">
                 <div class="dropdown-trigger" tabindex="0">
                     <span id="selected-category">All Events</span>
@@ -1141,7 +945,6 @@
         </div>
 
         <div class="cards-container">
-            <!-- Card 1: Hindu -->
             <div class="card">
                 <div class="card-top" style="background-color: #fff4e5;">
                     <img 
@@ -1169,7 +972,6 @@
                 </div>
             </div>
 
-            <!-- Card 2: Christian -->
             <div class="card">
                 <div class="card-top" style="background-color: #eef2ff;">
                     <img 
@@ -1197,7 +999,6 @@
                 </div>
             </div>
 
-            <!-- Card 3: Muslim -->
             <div class="card">
                 <div class="card-top" style="background-color: #ecfdf5;">
                     <img 
@@ -1225,7 +1026,6 @@
                 </div>
             </div>
 
-            <!-- Card 4: Others -->
             <div class="card">
                 <div class="card-top" style="background-color: #f5f3ff;">
                     <img 
@@ -1262,94 +1062,6 @@
         </div>
     </section>
 
-    <!-- ═══════════════ PERFECT STACKING SECTION ═══════════════ -->
-    <section class="stacking-wrapper">
-        <!-- Sticky Heading Panel -->
-        <div class="left-panel">
-            <h2>Upgrade Student Outcomes Fast</h2>
-            <p>We integrate seamlessly to help your students build real skills, strong projects, and better outcomes.</p>
-            <a href="#" class="btn-stack">Start Collaboration</a>
-        </div>
-
-        <!-- Stacking Cards Panel -->
-        <div class="right-panel">
-            
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">1. Industry Mentors Guide Every Step</span>
-                        <p class="desc">Students learn directly from professionals — not just theory, but how work actually happens.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">2. Real Projects Students Can Present Confidently</span>
-                        <p class="desc">Every student builds work they can explain in interviews and academic reviews.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">3. Structured Execution With Clear Timelines</span>
-                        <p class="desc">No confusion, no delay — a step-by-step system that ensures completion.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">4. Performance Tracking & Measurable Progress</span>
-                        <p class="desc">You can clearly see student improvement through structured evaluation.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">5. Engagement Through Competition & Rewards</span>
-                        <p class="desc">Top performers are recognized — driving seriousness and active participation.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <div class="card-inner">
-                    <div class="icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4-8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
-                    </div>
-                    <div class="text-box">
-                        <span class="label-title">6. End-to-End Program Management</span>
-                        <p class="desc">From training to evaluation, everything is handled smoothly without adding pressure on your faculty.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Navbar scroll effect
@@ -1389,34 +1101,32 @@
             
             setMenuIcon(false);
 
-            // Custom Mobile Dropdown Integration for Showcase
+            // Custom Mobile Dropdown Logic
             const dropdown = document.getElementById('custom-mobile-dropdown');
-            if (dropdown) {
-                const trigger = dropdown.querySelector('.dropdown-trigger');
-                const options = dropdown.querySelectorAll('.dropdown-option');
-                const selectedText = document.getElementById('selected-category');
+            const trigger = dropdown.querySelector('.dropdown-trigger');
+            const options = dropdown.querySelectorAll('.dropdown-option');
+            const selectedText = document.getElementById('selected-category');
 
-                trigger.addEventListener('click', (e) => {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('open');
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    dropdown.classList.toggle('open');
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedText.textContent = option.textContent;
+                    dropdown.classList.remove('open');
                 });
+            });
 
-                options.forEach(option => {
-                    option.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        options.forEach(opt => opt.classList.remove('selected'));
-                        option.classList.add('selected');
-                        selectedText.textContent = option.textContent;
-                        dropdown.classList.remove('open');
-                    });
-                });
-
-                document.addEventListener('click', () => {
-                    if (dropdown.classList.contains('open')) {
-                        dropdown.classList.remove('open');
-                    }
-                });
-            }
+            document.addEventListener('click', () => {
+                if (dropdown.classList.contains('open')) {
+                    dropdown.classList.remove('open');
+                }
+            });
         });
     </script>
 </body>
