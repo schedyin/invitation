@@ -18,7 +18,7 @@
         .btn-primary:hover { background: #5028c2; }
         .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #64748b; }
         .btn-outline:hover { border-color: #673DE6; color: #673DE6; }
-        .message { margin-top: 15px; font-size: 14px; color: #ef4444; }
+        .message { margin-top: 15px; font-size: 14px; color: #ef4444; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -41,7 +41,11 @@
     </div>
 
     <script>
-        const supabaseClient = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+        
         const msgEl = document.getElementById('auth-message');
 
         async function routeUser() {
@@ -51,19 +55,26 @@
             const { data: profile, error } = await supabaseClient.from('app_user_roles').select('status').eq('id', user.id).single();
             
             if (error || !profile) {
-                msgEl.textContent = "Error fetching user profile.";
+                msgEl.textContent = "Error fetching user profile permissions.";
                 return;
             }
 
+            // Route based on role
             if (profile.status === 'admin') window.location.href = 'admin.html';
-            else if (profile.status === 'approved') window.location.href = 'dashboard.html'; // Change to templates.html if needed
+            else if (profile.status === 'approved') window.location.href = 'templates.html'; // Sent to dashboard
             else if (profile.status === 'declined') window.location.href = 'declined.html';
             else window.location.href = 'pending.html';
         }
 
         async function handleLogin() {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                msgEl.textContent = "Please enter both email and password.";
+                return;
+            }
+
             msgEl.textContent = "Logging in...";
             msgEl.style.color = "#64748b";
 
@@ -78,8 +89,14 @@
         }
 
         async function handleSignup() {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                msgEl.textContent = "Please enter both email and password to sign up.";
+                return;
+            }
+
             msgEl.textContent = "Creating account...";
             msgEl.style.color = "#64748b";
 
@@ -89,12 +106,20 @@
                 msgEl.textContent = error.message;
                 msgEl.style.color = "#ef4444";
             } else {
-                msgEl.textContent = "Signup successful! Logging in...";
-                await routeUser();
+                // THE FIX: Check if Supabase created a session. 
+                // If session is null, email confirmation is turned ON in Supabase.
+                if (data.session === null) {
+                    msgEl.textContent = "Signup successful! Please check your email to verify your account before logging in.";
+                    msgEl.style.color = "#10b981"; // Green success text
+                } else {
+                    msgEl.textContent = "Signup successful! Logging in...";
+                    msgEl.style.color = "#10b981";
+                    await routeUser();
+                }
             }
         }
 
-        // Check if already logged in
+        // Check if already logged in when the page loads
         routeUser();
     </script>
 </body>
