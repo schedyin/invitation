@@ -1,29 +1,389 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Declined</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Access Denied</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
     <style>
-        body { font-family: 'IBM Plex Sans', sans-serif; background: #F4F4F9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; max-width: 400px; border: 1px solid #e2e8f0; }
-        h1 { color: #b91c1c; }
-        p { color: #64748b; line-height: 1.6; }
-        .btn { background: #e2e8f0; color: #0f172a; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        :root {
+            --font-main: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; 
+            --font-alt: 'Inter', sans-serif; 
+            --font-nav: 'DM Sans', sans-serif;
+            --ease-cubic: cubic-bezier(0.25, 0.8, 0.25, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            
+            --color-primary: #012726; 
+            --color-background: #f8fafc; 
+            --color-surface: #ffffff; 
+            --color-text-primary: #0f172a; 
+            --color-text-secondary: #64748b;
+            --color-danger: #ef4444;
+            --color-border: #e2e8f0;
+            
+            --premium-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --btn-shadow: 0 4px 12px rgba(1, 39, 38, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--color-background);
+            font-family: var(--font-alt);
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        .status-container {
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            animation: fadeUp 0.6s var(--ease-out-back) forwards;
+            position: relative;
+        }
+
+        /* --- PREMIUM PULSE ANIMATION STYLES (DENIED) --- */
+        .status-animation {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--color-danger);
+            opacity: 0;
+            animation: pulse-ripple 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .pulse-ring:nth-child(2) { animation-delay: -1s; }
+        .pulse-ring:nth-child(3) { animation-delay: -2s; }
+
+        .center-node {
+            width: 52px;
+            height: 52px;
+            background: var(--color-danger);
+            border-radius: 18px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+            animation: node-pulse 2s var(--ease-cubic) infinite;
+        }
+
+        .center-node .material-symbols-outlined { font-size: 32px; font-weight: 300; }
+
+        @keyframes pulse-ripple {
+            0% { transform: scale(0.2); opacity: 0.6; }
+            80% { transform: scale(1.2); opacity: 0; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        @keyframes node-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        h1 {
+            font-family: var(--font-main);
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            color: var(--color-text-secondary);
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: var(--font-nav);
+            transition: all 0.3s var(--ease-out-back);
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0f2d2c, #012726);
+            color: white;
+            box-shadow: var(--btn-shadow);
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(1, 39, 38, 0.25);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger-light {
+            background: #fff;
+            border-color: rgba(239, 68, 68, 0.15);
+            color: var(--color-danger);
+        }
+
+        .btn-danger-light:hover:not(:disabled) {
+            background: #fef2f2;
+            border-color: var(--color-danger);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 14px 28px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--premium-shadow);
+            transition: bottom 0.4s var(--ease-out-back);
+            z-index: 4000;
+        }
+        #toast.show { bottom: 40px; }
+        #toast.success { background: #10b981; }
+        #toast.error { background: var(--color-danger); }
+        #toast.info { background: var(--color-primary); }
+
+        /* Loader */
+        #loader { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3); border-bottom-color: #ffffff; border-radius: 50%; animation: rotation 1s linear infinite; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="card">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-        <h1>Access Declined</h1>
-        <p>Your account access has been declined or revoked by an administrator.</p>
-        <button class="btn" onclick="logout()">Logout</button>
+
+    <div class="status-container">
+        <div class="status-animation">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="center-node">
+                <span class="material-symbols-outlined">block</span>
+            </div>
+        </div>
+        <h1>Access Denied</h1>
+        <p>Unfortunately, your request for access has been denied by the administrator. Please contact them if you think this is a mistake.</p>
+        
+        <div class="actions">
+            <button id="check-status-btn" class="btn btn-primary">
+                <span class="material-symbols-outlined">sync</span>
+                <span id="btn-text">Check Status</span>
+            </button>
+            <div class="secondary-actions">
+                <button data-app-action="logout" class="btn btn-secondary">
+                    <span class="material-symbols-outlined" style="font-size: 1.2rem;">logout</span>
+                    Logout
+                </button>
+                <button data-app-action="delete-account" class="btn btn-danger-light">
+                    <span class="material-symbols-outlined" style="font-size: 1.2rem;">delete_forever</span>
+                    Restart
+                </button>
+            </div>
+        </div>
     </div>
+
+    <div id="toast"></div>
+    <div id="loader"><div class="spinner"></div></div>
+
     <script>
-        const supabaseClient = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
-        async function logout() { await supabaseClient.auth.signOut(); window.location.href = 'login.html'; }
+        // --- SUPABASE INIT ---
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+
+        let cooldownTimer = null;
+
+        // --- UI UTILS ---
+        const showLoader = () => document.getElementById('loader').style.display = 'flex';
+        const hideLoader = () => document.getElementById('loader').style.display = 'none';
+        const showToast = (message, type = 'success') => { 
+            const t = document.getElementById('toast'); 
+            t.textContent = message; 
+            t.className = `show ${type}`; 
+            setTimeout(() => { t.className = t.className.replace('show', ''); }, 3000); 
+        };
+
+        // --- AUTH LOGIC ---
+        // Redirect to login if user logs out manually elsewhere
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT' || !session) {
+                window.location.replace('login.html');
+            }
+        });
+
+        // Redirect away instantly if they are somehow already approved or pending
+        supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
+            if (!session) {
+                window.location.replace('login.html');
+            } else {
+                const { data: profile } = await supabaseClient.from('app_user_roles').select('status').eq('id', session.user.id).single();
+                if (profile && profile.status === 'admin') window.location.replace('admin.html');
+                else if (profile && profile.status === 'approved') window.location.replace('templates.html');
+                else if (profile && profile.status === 'pending') window.location.replace('pending.html');
+            }
+        });
+
+        async function checkStatus() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return window.location.replace('login.html');
+
+            showLoader();
+            try {
+                const { data: profile, error } = await supabaseClient
+                    .from('app_user_roles')
+                    .select('status')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+
+                if (profile) {
+                    if (profile.status === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else if (profile.status === 'approved') {
+                        window.location.href = 'templates.html';
+                    } else if (profile.status === 'pending') {
+                        window.location.href = 'pending.html';
+                    } else {
+                        showToast("Access remains denied.", "error");
+                        startCooldown();
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Error checking status.", "error");
+            } finally {
+                hideLoader();
+            }
+        }
+
+        async function deleteAccountRequest() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return;
+
+            const isConfirmed = confirm("Are you sure you want to sign out and start over? Note: To completely delete your account record, please contact the administrator.");
+            if (!isConfirmed) return;
+
+            showLoader();
+            try {
+                await supabaseClient.auth.signOut();
+                window.location.href = 'login.html';
+            } catch (e) {
+                console.error(e);
+                showToast("Failed to process request.", "error");
+            } finally {
+                hideLoader();
+            }
+        }
+
+        function startCooldown() {
+            const btn = document.getElementById('check-status-btn');
+            const btnText = document.getElementById('btn-text');
+            let secondsLeft = 30;
+
+            btn.disabled = true;
+            btnText.innerHTML = `Wait ${secondsLeft}s`;
+            
+            cooldownTimer = setInterval(() => {
+                secondsLeft--;
+                btnText.innerHTML = `Wait ${secondsLeft}s`;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(cooldownTimer);
+                    btnText.textContent = "Check Status";
+                    btn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        // --- BIND EVENTS ---
+        document.body.addEventListener('click', async (e) => {
+            const appAction = e.target.closest('[data-app-action]');
+            if (!appAction) return;
+            
+            const action = appAction.dataset.appAction;
+            if (action === 'logout') {
+                await supabaseClient.auth.signOut();
+                window.location.href = 'login.html';
+            } else if (action === 'delete-account') {
+                await deleteAccountRequest();
+            }
+        });
+
+        document.getElementById('check-status-btn').addEventListener('click', checkStatus);
     </script>
 </body>
 </html>
