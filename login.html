@@ -72,7 +72,7 @@
         const msgEl = document.getElementById('auth-message');
 
         function performRouting(status) {
-            // Clean up the URL if it contains an OAuth hash (/#access_token=...)
+            // Instantly clear the #access_token hash from the URL
             if (window.location.hash) {
                 history.replaceState(null, null, window.location.pathname);
             }
@@ -86,41 +86,55 @@
         async function routeUser(user) {
             if (!user) return;
 
-            const { data: profile, error } = await supabaseClient
-                .from('app_user_roles')
-                .select('status')
-                .eq('id', user.id)
-                .single();
-            
-            // If profile exists, route immediately.
-            if (profile) {
-                performRouting(profile.status);
-            } else {
-                // Safety check: Database trigger might take a split second after Google signup.
-                msgEl.textContent = "Setting up your profile, please wait...";
+            let retries = 5;
+            let profileData = null;
+
+            // POLLING ENGINE: Patiently waits for Supabase to finish writing the profile
+            while (retries > 0) {
+                const { data, error } = await supabaseClient
+                    .from('app_user_roles')
+                    .select('status')
+                    .eq('id', user.id)
+                    .maybeSingle(); 
+
+                if (data) {
+                    profileData = data;
+                    break;
+                }
+
+                msgEl.textContent = "Setting up profile, please wait...";
                 msgEl.style.color = "#64748b";
-                
-                setTimeout(async () => {
-                    const { data: retryProfile } = await supabaseClient.from('app_user_roles').select('status').eq('id', user.id).single();
-                    if (retryProfile) {
-                        performRouting(retryProfile.status);
-                    } else {
-                        msgEl.textContent = "Error connecting to user profile. Please refresh the page.";
-                        msgEl.style.color = "#ef4444";
-                    }
-                }, 1500);
+                await new Promise(resolve => setTimeout(resolve, 800)); // wait 0.8s before trying again
+                retries--;
+            }
+
+            if (profileData) {
+                performRouting(profileData.status);
+            } else {
+                // FALLBACK: If trigger fails, explicitly save them to the DB as pending
+                const { data: fallbackData } = await supabaseClient
+                    .from('app_user_roles')
+                    .upsert([{ id: user.id, email: user.email, status: 'pending' }])
+                    .select()
+                    .maybeSingle();
+
+                if (fallbackData) {
+                    performRouting(fallbackData.status);
+                } else {
+                    msgEl.textContent = "Error setting up profile. Please refresh.";
+                    msgEl.style.color = "#ef4444";
+                }
             }
         }
 
-        // --- MASTER AUTH LISTENER ---
-        // This automatically detects returning users OR successful logins/signups
+        // Master Listener: Catches users returning from Google or Email logins automatically
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
                 routeUser(session.user);
             }
         });
 
-        // Check if user is already logged in right when the page loads
+        // Instant check for already logged-in users
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) routeUser(session.user);
         });
@@ -128,48 +142,28 @@
         async function handleGoogleLogin() {
             msgEl.textContent = "Redirecting to Google...";
             msgEl.style.color = "#64748b";
-            
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-            });
-            
-            if (error) {
-                msgEl.textContent = error.message;
-                msgEl.style.color = "#ef4444";
-            }
+            const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+            if (error) { msgEl.textContent = error.message; msgEl.style.color = "#ef4444"; }
         }
 
         async function handleLogin() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             
-            if (!email || !password) {
-                msgEl.textContent = "Please enter both email and password.";
-                msgEl.style.color = "#ef4444";
-                return;
-            }
+            if (!email || !password) { msgEl.textContent = "Please enter both email and password."; return; }
 
             msgEl.textContent = "Logging in...";
             msgEl.style.color = "#64748b";
 
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                msgEl.textContent = error.message;
-                msgEl.style.color = "#ef4444";
-            }
-            // Success is handled automatically by onAuthStateChange!
+            if (error) { msgEl.textContent = error.message; msgEl.style.color = "#ef4444"; }
         }
 
         async function handleSignup() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             
-            if (!email || !password) {
-                msgEl.textContent = "Please enter both email and password to sign up.";
-                msgEl.style.color = "#ef4444";
-                return;
-            }
+            if (!email || !password) { msgEl.textContent = "Please enter both email and password to sign up."; return; }
 
             msgEl.textContent = "Creating account...";
             msgEl.style.color = "#64748b";
@@ -179,15 +173,12 @@
             if (error) {
                 msgEl.textContent = error.message;
                 msgEl.style.color = "#ef4444";
+            } else if (data.session === null) {
+                msgEl.textContent = "Signup successful! Please check your email to verify your account.";
+                msgEl.style.color = "#10b981";
             } else {
-                if (data.session === null) {
-                    msgEl.textContent = "Signup successful! Please check your email to verify your account before logging in.";
-                    msgEl.style.color = "#10b981";
-                } else {
-                    msgEl.textContent = "Signup successful! Logging in...";
-                    msgEl.style.color = "#10b981";
-                    // Success routing handled by onAuthStateChange
-                }
+                msgEl.textContent = "Signup successful! Routing...";
+                msgEl.style.color = "#10b981";
             }
         }
     </script>
