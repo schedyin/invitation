@@ -72,20 +72,31 @@
         const msgEl = document.getElementById('auth-message');
 
         function performRouting(status) {
+            // Clean up the URL if it contains an OAuth hash (/#access_token=...)
+            if (window.location.hash) {
+                history.replaceState(null, null, window.location.pathname);
+            }
+
             if (status === 'admin') window.location.href = 'admin.html';
             else if (status === 'approved') window.location.href = 'templates.html';
             else if (status === 'declined') window.location.href = 'declined.html';
             else window.location.href = 'pending.html';
         }
 
-        async function routeUser() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
+        async function routeUser(user) {
             if (!user) return;
 
-            const { data: profile, error } = await supabaseClient.from('app_user_roles').select('status').eq('id', user.id).single();
+            const { data: profile, error } = await supabaseClient
+                .from('app_user_roles')
+                .select('status')
+                .eq('id', user.id)
+                .single();
             
-            // Safety check: If coming back from Google OAuth, sometimes the DB trigger takes 0.5s to finish creating the profile.
-            if (error || !profile) {
+            // If profile exists, route immediately.
+            if (profile) {
+                performRouting(profile.status);
+            } else {
+                // Safety check: Database trigger might take a split second after Google signup.
                 msgEl.textContent = "Setting up your profile, please wait...";
                 msgEl.style.color = "#64748b";
                 
@@ -98,17 +109,27 @@
                         msgEl.style.color = "#ef4444";
                     }
                 }, 1500);
-                return;
             }
-
-            performRouting(profile.status);
         }
+
+        // --- MASTER AUTH LISTENER ---
+        // This automatically detects returning users OR successful logins/signups
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                routeUser(session.user);
+            }
+        });
+
+        // Check if user is already logged in right when the page loads
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session) routeUser(session.user);
+        });
 
         async function handleGoogleLogin() {
             msgEl.textContent = "Redirecting to Google...";
             msgEl.style.color = "#64748b";
             
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+            const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
             });
             
@@ -124,20 +145,20 @@
             
             if (!email || !password) {
                 msgEl.textContent = "Please enter both email and password.";
+                msgEl.style.color = "#ef4444";
                 return;
             }
 
             msgEl.textContent = "Logging in...";
             msgEl.style.color = "#64748b";
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             
             if (error) {
                 msgEl.textContent = error.message;
                 msgEl.style.color = "#ef4444";
-            } else {
-                await routeUser();
             }
+            // Success is handled automatically by onAuthStateChange!
         }
 
         async function handleSignup() {
@@ -146,6 +167,7 @@
             
             if (!email || !password) {
                 msgEl.textContent = "Please enter both email and password to sign up.";
+                msgEl.style.color = "#ef4444";
                 return;
             }
 
@@ -164,13 +186,10 @@
                 } else {
                     msgEl.textContent = "Signup successful! Logging in...";
                     msgEl.style.color = "#10b981";
-                    await routeUser();
+                    // Success routing handled by onAuthStateChange
                 }
             }
         }
-
-        // Trigger routing immediately on load (Catches users returning from Google OAuth)
-        routeUser();
     </script>
 </body>
 </html>
