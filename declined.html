@@ -57,164 +57,76 @@
 
         /* --- PREMIUM PULSE ANIMATION STYLES (DENIED) --- */
         .status-animation {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 120px; height: 120px; margin: 0 auto 2rem;
+            display: flex; align-items: center; justify-content: center; position: relative;
         }
-
         .pulse-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-color: var(--color-danger);
-            opacity: 0;
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            background-color: var(--color-danger); opacity: 0;
             animation: pulse-ripple 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
         }
-
         .pulse-ring:nth-child(2) { animation-delay: -1s; }
         .pulse-ring:nth-child(3) { animation-delay: -2s; }
-
         .center-node {
-            width: 52px;
-            height: 52px;
-            background: var(--color-danger);
-            border-radius: 18px;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
-            animation: node-pulse 2s var(--ease-cubic) infinite;
+            width: 52px; height: 52px; background: var(--color-danger); border-radius: 18px;
+            z-index: 5; display: flex; align-items: center; justify-content: center; color: #fff;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); animation: node-pulse 2s var(--ease-cubic) infinite;
         }
-
         .center-node .material-symbols-outlined { font-size: 32px; font-weight: 300; }
 
-        @keyframes pulse-ripple {
-            0% { transform: scale(0.2); opacity: 0.6; }
-            80% { transform: scale(1.2); opacity: 0; }
-            100% { transform: scale(1.2); opacity: 0; }
-        }
+        @keyframes pulse-ripple { 0% { transform: scale(0.2); opacity: 0.6; } 80% { transform: scale(1.2); opacity: 0; } 100% { transform: scale(1.2); opacity: 0; } }
+        @keyframes node-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-        @keyframes node-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
+        h1 { font-family: var(--font-main); font-size: 2.25rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 1rem; letter-spacing: -0.03em; }
+        p { font-size: 1.05rem; line-height: 1.6; margin-bottom: 2.5rem; color: var(--color-text-secondary); }
 
-        h1 {
-            font-family: var(--font-main);
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            margin-bottom: 1rem;
-            letter-spacing: -0.03em;
-        }
-
-        p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: 2.5rem;
-            color: var(--color-text-secondary);
-        }
-
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .secondary-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .actions { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; }
+        .secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .btn {
-            padding: 14px 20px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            font-family: var(--font-nav);
-            transition: all 0.3s var(--ease-out-back);
-            border: 1.5px solid transparent;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            user-select: none;
-            white-space: nowrap;
+            padding: 14px 20px; border-radius: 14px; font-weight: 700; font-size: 0.95rem;
+            font-family: var(--font-nav); transition: all 0.3s var(--ease-out-back); border: 1.5px solid transparent;
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; user-select: none;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #0f2d2c, #012726);
-            color: white;
-            box-shadow: var(--btn-shadow);
-            width: 100%;
-        }
+        .btn-primary { background: linear-gradient(135deg, #0f2d2c, #012726); color: white; box-shadow: var(--btn-shadow); width: 100%; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(1, 39, 38, 0.25); }
+        .btn-secondary { background: #fff; border-color: var(--color-border); color: var(--color-text-primary); }
+        .btn-secondary:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-2px); }
+        .btn-danger-light { background: #fff; border-color: rgba(239, 68, 68, 0.15); color: var(--color-danger); }
+        .btn-danger-light:hover:not(:disabled) { background: #fef2f2; border-color: var(--color-danger); transform: translateY(-2px); }
+        .btn-danger { background: var(--color-danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); border: none; }
+        .btn-danger:hover:not(:disabled) { background: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; filter: grayscale(0.5); }
 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(1, 39, 38, 0.25);
+        /* --- CUSTOM MODAL POPUP --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index: 5000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            background: white; padding: 2rem; border-radius: 24px; max-width: 360px; width: 90%;
+            text-align: center; transform: scale(0.9); transition: transform 0.4s var(--ease-out-back);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .modal-overlay.show .modal-card { transform: scale(1); }
+        .modal-icon {
+            width: 64px; height: 64px; background: #fef2f2; color: #ef4444; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;
+        }
+        .modal-icon span { font-size: 32px; }
+        .modal-card h3 { font-size: 1.4rem; color: var(--color-text-primary); margin-bottom: 0.5rem; font-family: var(--font-main); }
+        .modal-card p { font-size: 0.95rem; color: var(--color-text-secondary); margin-bottom: 1.5rem; line-height: 1.5; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .btn-secondary {
-            background: #fff;
-            border-color: var(--color-border);
-            color: var(--color-text-primary);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger-light {
-            background: #fff;
-            border-color: rgba(239, 68, 68, 0.15);
-            color: var(--color-danger);
-        }
-
-        .btn-danger-light:hover:not(:disabled) {
-            background: #fef2f2;
-            border-color: var(--color-danger);
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            filter: grayscale(0.5);
-        }
-
-        /* Toast */
-        #toast {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 14px 28px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            box-shadow: var(--premium-shadow);
-            transition: bottom 0.4s var(--ease-out-back);
-            z-index: 4000;
-        }
+        /* Toast & Loader */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 14px 28px; border-radius: 12px; color: white; font-weight: 600; box-shadow: var(--premium-shadow); transition: bottom 0.4s var(--ease-out-back); z-index: 6000; }
         #toast.show { bottom: 40px; }
         #toast.success { background: #10b981; }
         #toast.error { background: var(--color-danger); }
         #toast.info { background: var(--color-primary); }
-
-        /* Loader */
         #loader { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 9999; }
         .spinner { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3); border-bottom-color: #ffffff; border-radius: 50%; animation: rotation 1s linear infinite; }
 
@@ -246,10 +158,24 @@
                     <span class="material-symbols-outlined" style="font-size: 1.2rem;">logout</span>
                     Logout
                 </button>
-                <button data-app-action="delete-account" class="btn btn-danger-light">
+                <button onclick="openModal()" class="btn btn-danger-light">
                     <span class="material-symbols-outlined" style="font-size: 1.2rem;">delete_forever</span>
                     Restart
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <span class="material-symbols-outlined">warning</span>
+            </div>
+            <h3>Delete Account?</h3>
+            <p>This will permanently erase your account and all associated data. You will need to sign up completely fresh to request access again.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()" style="width: 100%;">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()" style="width: 100%;">Yes, Delete</button>
             </div>
         </div>
     </div>
@@ -276,15 +202,16 @@
             setTimeout(() => { t.className = t.className.replace('show', ''); }, 3000); 
         };
 
+        // Modal Logic
+        const modal = document.getElementById('delete-modal');
+        function openModal() { modal.classList.add('show'); }
+        function closeModal() { modal.classList.remove('show'); }
+
         // --- AUTH LOGIC ---
-        // Redirect to login if user logs out manually elsewhere
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT' || !session) {
-                window.location.replace('login.html');
-            }
+            if (event === 'SIGNED_OUT' || !session) window.location.replace('login.html');
         });
 
-        // Redirect away instantly if they are somehow already approved or pending
         supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
             if (!session) {
                 window.location.replace('login.html');
@@ -302,49 +229,40 @@
 
             showLoader();
             try {
-                const { data: profile, error } = await supabaseClient
-                    .from('app_user_roles')
-                    .select('status')
-                    .eq('id', user.id)
-                    .single();
-
+                const { data: profile, error } = await supabaseClient.from('app_user_roles').select('status').eq('id', user.id).single();
                 if (error) throw error;
 
                 if (profile) {
-                    if (profile.status === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else if (profile.status === 'approved') {
-                        window.location.href = 'templates.html';
-                    } else if (profile.status === 'pending') {
-                        window.location.href = 'pending.html';
-                    } else {
+                    if (profile.status === 'admin') window.location.href = 'admin.html';
+                    else if (profile.status === 'approved') window.location.href = 'templates.html';
+                    else if (profile.status === 'pending') window.location.href = 'pending.html';
+                    else {
                         showToast("Access remains denied.", "error");
                         startCooldown();
                     }
                 }
             } catch (e) {
-                console.error(e);
                 showToast("Error checking status.", "error");
             } finally {
                 hideLoader();
             }
         }
 
-        async function deleteAccountRequest() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return;
-
-            const isConfirmed = confirm("Are you sure you want to sign out and start over? Note: To completely delete your account record, please contact the administrator.");
-            if (!isConfirmed) return;
-
+        // --- SECURE DELETION EXECUTION ---
+        async function confirmDelete() {
+            closeModal();
             showLoader();
             try {
+                // Call the secure Supabase function to wipe the core auth record
+                const { error } = await supabaseClient.rpc('delete_my_account');
+                
+                if (error) throw error;
+
+                // Log out locally to clear the session, redirecting automatically to login
                 await supabaseClient.auth.signOut();
-                window.location.href = 'login.html';
             } catch (e) {
                 console.error(e);
-                showToast("Failed to process request.", "error");
-            } finally {
+                showToast("Failed to delete account. Please contact admin.", "error");
                 hideLoader();
             }
         }
@@ -360,7 +278,6 @@
             cooldownTimer = setInterval(() => {
                 secondsLeft--;
                 btnText.innerHTML = `Wait ${secondsLeft}s`;
-                
                 if (secondsLeft <= 0) {
                     clearInterval(cooldownTimer);
                     btnText.textContent = "Check Status";
@@ -373,16 +290,10 @@
         document.body.addEventListener('click', async (e) => {
             const appAction = e.target.closest('[data-app-action]');
             if (!appAction) return;
-            
-            const action = appAction.dataset.appAction;
-            if (action === 'logout') {
+            if (appAction.dataset.appAction === 'logout') {
                 await supabaseClient.auth.signOut();
-                window.location.href = 'login.html';
-            } else if (action === 'delete-account') {
-                await deleteAccountRequest();
             }
         });
-
         document.getElementById('check-status-btn').addEventListener('click', checkStatus);
     </script>
 </body>
