@@ -688,7 +688,7 @@
             PERFECT STACKING SECTION
         ══════════════════════════════ */
         .stacking-section-bg {
-            background-color: #ffffff; 
+            background-color: var(--page-bg); 
             width: 100%; 
             font-family: 'IBM Plex Sans', sans-serif;
             position: relative;
@@ -701,7 +701,6 @@
             --text-sub-stack: #5E5E5E;
             --text-label-stack: #1a1a1a;
             --border-color-stack: #E5E5E5;
-            --bg-color-stack: #ffffff;
             --accent-green-stack: #41B66E;
             
             max-width: 1300px;
@@ -710,7 +709,6 @@
             padding: 0 80px; 
             justify-content: space-between;
             align-items: flex-start;
-            background-color: var(--bg-color-stack);
         }
 
         /* LEFT SIDE - Pinned Content */
@@ -746,7 +744,7 @@
             display: inline-block;
             width: fit-content; 
             padding: 12px 28px;
-            background: var(--accent-green-stack); /* Accent Green */
+            background: var(--accent-green-stack); 
             color: #0B3A38; 
             border-radius: 10px;
             font-weight: 500; 
@@ -761,55 +759,52 @@
         }
 
         .stack-wrapper .btn-stack:hover {
-            background: #38a862; /* Hover */
+            background: #38a862; 
         }
 
-/* 1. Ensure the right panel doesn't leak content into the next section */
-.stack-wrapper .right-panel {
-    flex: 1;
-    max-width: 600px;
-    margin-left: auto;
-    padding-top: 20px;
-    /* This clips the "shield" of the last card so it stays inside this section */
-    overflow: hidden; 
-}
+        /* RIGHT SIDE - List of Cards */
+        .stack-wrapper .right-panel {
+            flex: 1;
+            max-width: 600px;
+            margin-left: auto;
+            padding-top: 20px;
+            /* Do NOT add overflow: hidden here, it breaks sticky */
+        }
 
-/* 2. The Card: Add a solid background and a "shield" extension */
-.stack-wrapper .feature-card {
-    position: sticky;
-    top: var(--sticky-top-stack);
-    background-color: #ffffff; /* Solid white background */
-    width: 100%;
-    border-top: 1px solid var(--border-color-stack);
-    margin-bottom: 250px; 
-    z-index: 1;
-}
+        .stack-wrapper .feature-card {
+            position: sticky;
+            top: var(--sticky-top-stack);
+            background-color: #ffffff; /* Solid to occlude previous cards */
+            width: 100%;
+            border-top: 1px solid var(--border-color-stack);
+            margin-bottom: 250px; 
+            z-index: 10; 
+        }
 
-/* 3. The "Shield": This covers the long text of previous cards as you scroll */
-.stack-wrapper .feature-card::after {
-    content: '';
-    position: absolute;
-    top: 100%; /* Starts at the bottom of the current card */
-    left: 0;
-    width: 100%;
-    /* 500px is enough to cover any long text from the card underneath */
-    height: 500px; 
-    background: #ffffff;
-    z-index: -1; /* Sits behind the CURRENT card but above the PREVIOUS card */
-}
+        /* The Shield: Hides long text from previous cards as you scroll */
+        .stack-wrapper .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100vh; /* Massive shield to cover anything underneath */
+            background: #ffffff;
+            z-index: -1;
+        }
 
-/* 4. The Last Card: Ensure it has space to be seen before the next section arrives */
-.stack-wrapper .feature-card:last-child {
-    margin-bottom: 10vh; /* Reduced margin so it doesn't feel like a huge empty gap */
-}
+        /* Last card margin ensures we can scroll through it before the next section hits */
+        .stack-wrapper .feature-card:last-child {
+            margin-bottom: 10vh; 
+        }
 
         /* Content inside each card */
         .stack-wrapper .card-inner {
             display: flex;
-            align-items: flex-start; /* Anchor text to top right of icon */
+            align-items: flex-start;
             gap: 25px;
             padding-top: 30px;
-            padding-bottom: 5px; /* Minimized bottom padding */
+            padding-bottom: 30px; 
         }
 
         .stack-wrapper .icon-box {
@@ -854,10 +849,20 @@
             HOW IT WORKS SECTION
         ══════════════════════════════ */
         .hiw-section {
+            /* These properties naturaly hide the 'bleed' from the last stack card */
+            position: relative;
+            z-index: 20; 
+            background-color: var(--primary-bg); /* Match your site background to act as a cover */
+            
             padding: 100px 5%;
-            max-width: 1280px;
+            max-width: 100%; /* Changed from 1280px to full width so background covers bleed */
             margin: 0 auto;
             text-align: center;
+        }
+
+        .hiw-container {
+            max-width: 1280px;
+            margin: 0 auto;
         }
 
         .sec-label {
@@ -1414,6 +1419,8 @@
             color: var(--color-white);
             padding: 80px 5% 40px 5%;
             font-family: var(--font-sans);
+            position: relative;
+            z-index: 30; /* Keep above page backgrounds */
         }
 
         .footer-container {
@@ -1542,7 +1549,7 @@
             max-width: 100%;
         }
 
-        /* --- RESPONSIVE ADJUSTMENTS (ALL SECTIONS) --- */
+        /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (max-width: 1600px) {
             .carousel-container { width: 98vw; }
         }
@@ -1554,34 +1561,30 @@
 
         @media (max-width: 1024px) {
             .cards-container { grid-template-columns: repeat(2, 1fr); }
-            
-            .footer-top {
-                grid-template-columns: 1fr 1fr;
-            }
+            .footer-top { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 992px) {
             .hero-wrapper { gap: 20px; padding: 40px 20px; }
         }
 
+        /* STACKING SECTION MOBILE FIXES */
         @media (max-width: 900px) {
-            /* Stacking Section Mobile Adjustments */
             .stack-wrapper {
                 flex-direction: column;
                 padding: 0 30px;
             }
 
             .stack-wrapper .left-panel {
-                position: sticky;
-                top: var(--header-height);
+                position: relative; /* Not sticky on mobile to save screen space */
+                top: 0;
                 width: 100%;
                 flex: none;
                 padding-top: 30px;
-                height: 300px; 
-                box-sizing: border-box; 
-                margin-bottom: 0; 
-                background-color: var(--bg-color-stack); 
-                z-index: 20; 
+                height: auto; /* Let content dictate height */
+                margin-bottom: 40px; 
+                background-color: var(--page-bg); 
+                z-index: 1; 
             }
 
             .stack-wrapper .right-panel {
@@ -1591,8 +1594,9 @@
             }
 
             .stack-wrapper .feature-card {
-                top: calc(var(--header-height) + 300px); 
-                margin-bottom: 120px;
+                /* Stick cleanly underneath the header on mobile */
+                top: calc(var(--header-height) + 20px); 
+                margin-bottom: 150px; /* Reduced gap for smaller screens */
                 z-index: 10;
             }
 
@@ -1623,12 +1627,10 @@
             
             .carousel-section {
                 order: 1;
-                margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
-                margin-bottom: 0;                           /* No overlap with text */
+                margin-top: calc(-1 * var(--header-height)); 
+                margin-bottom: 0;                            
                 position: relative;
-                z-index: 1;                                 /* Behind the text */
-                
-                /* Remove 20px left/right padding - counteract .main-wrapper padding */
+                z-index: 1;                                  
                 margin-left: -20px;
                 margin-right: -20px;
                 width: calc(100% + 40px);
@@ -1638,9 +1640,9 @@
                 height: 480px;
                 perspective: 850px;
                 -webkit-perspective: 850px;
-                mask: none;          /* Prevent clipping on mobile */
+                mask: none;          
                 -webkit-mask: none;
-                width: 100%;         /* Ensure it fills the expanded section width */
+                width: 100%;         
             }
             
             .image-container {
@@ -1656,9 +1658,9 @@
             
             .hero-text-content {
                 order: 2;
-                margin-top: -50px;      /* Move up 20px to overlay carousel */
+                margin-top: -50px;      
                 position: relative;
-                z-index: 10;            /* Above carousel (z-index:1) */
+                z-index: 10;            
             }
         
             .hero-description { 
@@ -1685,23 +1687,11 @@
                 font-size: 32px;
             }
 
-            /* Product Showcase Mobile Adjustments */
-            .page-header {
-                padding: 40px 20px 0 20px;
-            }
-
-            .page-header h2 {
-                font-size: 2.2rem;
-                text-align: center;
-            }
-
-            .page-header p {
-                text-align: center;
-                margin-bottom: 28px;
-            }
+            .page-header { padding: 40px 20px 0 20px; }
+            .page-header h2 { font-size: 2.2rem; text-align: center; }
+            .page-header p { text-align: center; margin-bottom: 28px; }
 
             .categories { display: none; }
-
             .mobile-dropdown-container { display: block; }
 
             .cards-container {
@@ -1713,17 +1703,11 @@
             }
 
             .card { max-width: 360px; }
-
             .card:hover { box-shadow: none; }
-
             .card-top { height: 400px; }
-
             .btn-action { height: 48px; }
 
-            /* Comparison Mobile */
-            .comparison-section {
-                padding: 60px 5%;
-            }
+            .comparison-section { padding: 60px 5%; }
             .table-container {
                 padding: 8px;
                 border-radius: 16px;
@@ -1745,93 +1729,40 @@
                 text-align: left;
                 width: 35%;
             }
-            .comparison-table th {
-                font-size: 0.8rem;
-                padding-bottom: 12px;
-            }
-            .feature-cell {
-                gap: 8px;
-                font-size: 0.85rem !important;
-            }
+            .comparison-table th { font-size: 0.8rem; padding-bottom: 12px; }
+            .feature-cell { gap: 8px; font-size: 0.85rem !important; }
             .feature-icon {
-                width: 24px;
-                height: 24px;
-                border-radius: 6px;
+                width: 24px; height: 24px; border-radius: 6px;
             }
-            .feature-icon svg {
-                width: 12px;
-                height: 12px;
-            }
+            .feature-icon svg { width: 12px; height: 12px; }
+            
             .missingpiece-header {
-                padding: 4px 6px;
-                font-size: 0.75rem;
-                gap: 4px;
-                flex-wrap: wrap;
-                justify-content: center;
+                padding: 4px 6px; font-size: 0.75rem; gap: 4px;
+                flex-wrap: wrap; justify-content: center;
             }
-            .missingpiece-header svg {
-                width: 12px;
-                height: 12px;
-            }
+            .missingpiece-header svg { width: 12px; height: 12px; }
 
-            /* FAQ and Footer Mobile */
-            .faq-section {
-                padding: 40px 5% 80px 5%;
-            }
-
-            .footer-top {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
+            .faq-section { padding: 40px 5% 80px 5%; }
+            .footer-top { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
+                flex-direction: column; gap: 16px; text-align: center;
             }
         }
 
         @media (max-width: 480px) {
-            .comparison-section {
-                padding: 40px 6px;
-            }
-            .table-container {
-                padding: 4px;
-                border-radius: 12px;
-            }
+            .comparison-section { padding: 40px 6px; }
+            .table-container { padding: 4px; border-radius: 12px; }
             .comparison-table th, 
-            .comparison-table td {
-                padding: 10px 4px;
-                font-size: 0.75rem;
-            }
-            .comparison-table th {
-                font-size: 0.7rem;
-            }
-            .feature-icon {
-                display: none; 
-            }
-            .feature-cell {
-                font-size: 0.75rem !important;
-            }
-            .missingpiece-header {
-                font-size: 0.65rem;
-                padding: 4px;
-            }
-            .missingpiece-header svg {
-                display: none;
-            }
+            .comparison-table td { padding: 10px 4px; font-size: 0.75rem; }
+            .comparison-table th { font-size: 0.7rem; }
+            .feature-icon { display: none; }
+            .feature-cell { font-size: 0.75rem !important; }
+            .missingpiece-header { font-size: 0.65rem; padding: 4px; }
+            .missingpiece-header svg { display: none; }
 
-            .faq-question {
-                font-size: 1rem;
-                padding: 20px;
-            }
-            .faq-answer-inner {
-                font-size: 0.95rem;
-                padding: 0 20px;
-            }
-            .faq-item.active .faq-answer-inner {
-                padding-bottom: 20px;
-            }
+            .faq-question { font-size: 1rem; padding: 20px; }
+            .faq-answer-inner { font-size: 0.95rem; padding: 0 20px; }
+            .faq-item.active .faq-answer-inner { padding-bottom: 20px; }
         }
     </style>
 </head>
@@ -1855,7 +1786,6 @@
                 </div>
                 <div class="nav-right">
                     <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
-                        <!-- Inline Hamburger SVG -->
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -1900,32 +1830,26 @@
             <div class="carousel-section">
                 <div class="carousel-container">
                     <div class="carousel">
-                        <!-- Image Pair 1 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare Product Display" class="img-front">
                             <img src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" class="img-back">
                         </div>
-                        <!-- Image Pair 2 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Serene Minimalist Interior" class="img-front">
                             <img src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Glass Dropper Bottles" class="img-back">
                         </div>
-                        <!-- Image Pair 3 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Minimalist Kitchen" class="img-front">
                             <img src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man in Hat" class="img-back">
                         </div>
-                        <!-- Image Pair 4 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Minimalist Fashion Look" class="img-front">
                             <img src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Minimalist Interior with Staircase" class="img-back">
                         </div>
-                        <!-- Image Pair 5 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Minimalist Perfume Scene" class="img-front">
                             <img src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Minimalist Skincare Arrangement" class="img-back">
                         </div>
-                        <!-- Image Pair 6 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running Outdoors" class="img-front">
                             <img src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Stylish Sunglasses Display" class="img-back">
@@ -1957,7 +1881,6 @@
             <h2>Crafted for your special day.<br>Simple to customize.</h2>
             <p>Pick a design. Add your details. Share in seconds.</p>
             
-            <!-- Desktop Categories -->
             <div class="categories">
                 <button class="cat-btn active">All Events</button>
                 <button class="cat-btn">Wedding</button>
@@ -1967,7 +1890,6 @@
                 <button class="cat-btn">Others</button>
             </div>
 
-            <!-- Mobile Custom Dropdown -->
             <div class="mobile-dropdown-container" id="mobileDropdown">
                 <div class="dropdown-trigger" id="dropdownTrigger">
                     <span id="selected-category">All Events</span>
@@ -1984,16 +1906,11 @@
             </div>
         </header>
 
-        <!-- Product Grid -->
         <div class="cards-container">
-            <!-- Card 1: Hindu -->
+            <!-- Card 1 -->
             <div class="card">
                 <div class="card-top" style="background-color: #fff4e5;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=800&auto=format&fit=crop" 
-                        alt="Hindu Design" 
-                        class="product-img"
-                    >
+                    <img src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=800&auto=format&fit=crop" alt="Hindu Design" class="product-img">
                 </div>
                 <div class="card-banner">
                     <span class="banner-text">Hindu</span>
@@ -2014,14 +1931,10 @@
                 </div>
             </div>
 
-            <!-- Card 2: Christian -->
+            <!-- Card 2 -->
             <div class="card">
                 <div class="card-top" style="background-color: #eef2ff;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=800&auto=format&fit=crop" 
-                        alt="Christian Design" 
-                        class="product-img"
-                    >
+                    <img src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=800&auto=format&fit=crop" alt="Christian Design" class="product-img">
                 </div>
                 <div class="card-banner">
                     <span class="banner-text">Christian</span>
@@ -2042,14 +1955,10 @@
                 </div>
             </div>
 
-            <!-- Card 3: Muslim -->
+            <!-- Card 3 -->
             <div class="card">
                 <div class="card-top" style="background-color: #ecfdf5;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=800&auto=format&fit=crop" 
-                        alt="Muslim Design" 
-                        class="product-img"
-                    >
+                    <img src="https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=800&auto=format&fit=crop" alt="Muslim Design" class="product-img">
                 </div>
                 <div class="card-banner">
                     <span class="banner-text">Muslim</span>
@@ -2070,14 +1979,10 @@
                 </div>
             </div>
 
-            <!-- Card 4: Others -->
+            <!-- Card 4 -->
             <div class="card">
                 <div class="card-top" style="background-color: #f5f3ff;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop" 
-                        alt="Other Designs" 
-                        class="product-img"
-                    >
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop" alt="Other Designs" class="product-img">
                 </div>
                 <div class="card-banner">
                     <span class="banner-text">Others</span>
@@ -2111,7 +2016,8 @@
         ══════════════════════════════ -->
         <div class="stacking-section-bg">
             <div class="stack-wrapper">
-                <!-- Sticky Heading Panel -->
+                
+                <!-- Pinned Content -->
                 <div class="left-panel">
                     <h2>Upgrade Student Outcomes Fast</h2>
                     <p>We integrate seamlessly to help your students build real skills, strong projects, and better outcomes.</p>
@@ -2201,110 +2107,103 @@
              HOW IT WORKS SECTION
         ══════════════════════════════ -->
         <section class="hiw-section">
-            <div class="sec-label"><span class="sec-label-line"></span> Quick Setup <span class="sec-label-line"></span></div>
-            <h2 class="hiw-title">Launch Your Wedding Website in 10 Minutes</h2>
-            <p class="hiw-subtitle">Just enter your names and event details—no design work needed.</p>
-            
-            <div class="hiw-grid">
+            <div class="hiw-container">
+                <div class="sec-label"><span class="sec-label-line"></span> Quick Setup <span class="sec-label-line"></span></div>
+                <h2 class="hiw-title">Launch Your Wedding Website in 10 Minutes</h2>
+                <p class="hiw-subtitle">Just enter your names and event details—no design work needed.</p>
                 
-                <!-- Card 1 -->
-                <div class="hiw-card">
-                    <div class="hiw-visual">
-                        <!-- Left partial phone -->
-                        <div class="art-phone" style="position: absolute; left: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop');"></div>
-                        
-                        <!-- Main Center Phone -->
-                        <div class="art-phone" style="z-index: 2; background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop');">
-                            <div class="art-island"></div>
-                        </div>
-                        
-                        <!-- Right partial phone -->
-                        <div class="art-phone" style="position: absolute; right: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop');"></div>
-                    </div>
-                    <div class="hiw-content">
-                        <h3>1 - Choose a template</h3>
-                        <p>Select a design that perfectly fits your wedding aesthetics.</p>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="hiw-card">
-                    <div class="hiw-visual">
-                        <div class="art-tablet" style="background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=600&auto=format&fit=crop');">
-                            <div class="art-tablet-edit-btn">Edit</div>
+                <div class="hiw-grid">
+                    
+                    <!-- Card 1 -->
+                    <div class="hiw-card">
+                        <div class="hiw-visual">
+                            <div class="art-phone" style="position: absolute; left: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop');"></div>
                             
-                            <!-- Panel Mockup -->
-                            <div class="art-panel">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-dark-teal);">
-                                    <strong style="font-size: 11px;">Names</strong> 
-                                    <span style="color: #94a3b8; font-size: 9px;">Component</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <span style="font-size: 10px; color: #64748b;">Variant</span> 
-                                    <span style="border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--color-dark-teal); font-weight: 500;">Desktop ⌄</span>
-                                </div>
-                                <div style="margin-bottom: 12px;">
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 1</div>
-                                    <div style="border: 1px solid var(--border-focus); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(65, 182, 110, 0.1);">
-                                        A<span class="blinking-cursor"></span>
+                            <div class="art-phone" style="z-index: 2; background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop');">
+                                <div class="art-island"></div>
+                            </div>
+                            
+                            <div class="art-phone" style="position: absolute; right: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop');"></div>
+                        </div>
+                        <div class="hiw-content">
+                            <h3>1 - Choose a template</h3>
+                            <p>Select a design that perfectly fits your wedding aesthetics.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="hiw-card">
+                        <div class="hiw-visual">
+                            <div class="art-tablet" style="background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=600&auto=format&fit=crop');">
+                                <div class="art-tablet-edit-btn">Edit</div>
+                                
+                                <div class="art-panel">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-dark-teal);">
+                                        <strong style="font-size: 11px;">Names</strong> 
+                                        <span style="color: #94a3b8; font-size: 9px;">Component</span>
                                     </div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 2</div>
-                                    <div style="border: 1px solid #e2e8f0; background: #f8fafc; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main);">KANIKA</div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                        <span style="font-size: 10px; color: #64748b;">Variant</span> 
+                                        <span style="border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--color-dark-teal); font-weight: 500;">Desktop ⌄</span>
+                                    </div>
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 1</div>
+                                        <div style="border: 1px solid var(--border-focus); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(65, 182, 110, 0.1);">
+                                            A<span class="blinking-cursor"></span>
+                                        </div>
+                                        <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 2</div>
+                                        <div style="border: 1px solid #e2e8f0; background: #f8fafc; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main);">KANIKA</div>
+                                        <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="hiw-content">
-                        <h3>2 - Customise & Publish</h3>
-                        <p>Add your story, update event details, and hit publish.</p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="hiw-card">
-                    <div class="hiw-visual">
-                        <div class="art-chat-wrapper">
-                            <!-- Chat Message 1 -->
-                            <div class="art-chat-left">Hey, is your wedding date finalised?</div>
-                            <!-- Chat Message 2 -->
-                            <div class="art-chat-right">Yes! Wait, let me share the invite</div>
-                            <!-- Chat Message 3 (Card) -->
-                            <div class="art-chat-card">
-                                <div class="art-chat-card-img"></div>
-                                <div class="art-chat-card-text">
-                                    Kanika Weds Abhishek
-                                    <div class="art-chat-card-sub">kanikawedsabhishek.com</div>
-                                </div>
-                            </div>
-                            <!-- Chat Message 4 -->
-                            <div class="art-chat-left">Wow! This is stunning! 😍<br>Who made this?</div>
-                            <!-- Chat Message 5 with reaction -->
-                            <div class="art-chat-right">
-                                Bought a template from<br>yourplatform.com
-                                <div class="chat-reaction">❤️</div>
-                            </div>
+                        <div class="hiw-content">
+                            <h3>2 - Customise & Publish</h3>
+                            <p>Add your story, update event details, and hit publish.</p>
                         </div>
                     </div>
-                    <div class="hiw-content">
-                        <h3>3 - Share anywhere</h3>
-                        <p>Share your digital invite with friends and family seamlessly.</p>
+
+                    <!-- Card 3 -->
+                    <div class="hiw-card">
+                        <div class="hiw-visual">
+                            <div class="art-chat-wrapper">
+                                <div class="art-chat-left">Hey, is your wedding date finalised?</div>
+                                <div class="art-chat-right">Yes! Wait, let me share the invite</div>
+                                <div class="art-chat-card">
+                                    <div class="art-chat-card-img"></div>
+                                    <div class="art-chat-card-text">
+                                        Kanika Weds Abhishek
+                                        <div class="art-chat-card-sub">kanikawedsabhishek.com</div>
+                                    </div>
+                                </div>
+                                <div class="art-chat-left">Wow! This is stunning! 😍<br>Who made this?</div>
+                                <div class="art-chat-right">
+                                    Bought a template from<br>yourplatform.com
+                                    <div class="chat-reaction">❤️</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hiw-content">
+                            <h3>3 - Share anywhere</h3>
+                            <p>Share your digital invite with friends and family seamlessly.</p>
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
-
-            <div class="hiw-cta-wrapper">
-                <button class="hiw-cta">
-                    Choose a template
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14"/>
-                        <path d="m12 5 7 7-7 7"/>
-                    </svg>
-                </button>
+                <div class="hiw-cta-wrapper">
+                    <button class="hiw-cta">
+                        Choose a template
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -2312,14 +2211,12 @@
              COMPARISON SECTION
         ══════════════════════════════ -->
         <section class="comparison-section">
-            <!-- Header -->
             <div class="section-header">
                 <div class="sec-label"><span class="sec-label-line"></span> The Smart Choice <span class="sec-label-line"></span></div>
                 <h2 class="section-title">What Cards and Video Invites Can't Do<br>(But These Templates Can)</h2>
                 <p class="section-subtitle">See how your invite can go from a one-time message to a lasting experience — without the extra cost or hassle.</p>
             </div>
 
-            <!-- Table -->
             <div class="table-container">
                 <table class="comparison-table">
                     <thead>
@@ -2338,7 +2235,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1: Cost -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2353,7 +2249,6 @@
                             <td>Low</td>
                         </tr>
                         
-                        <!-- Row 2: Customization -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2368,7 +2263,6 @@
                             <td>Easy</td>
                         </tr>
                         
-                        <!-- Row 3: Interactivity -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2383,7 +2277,6 @@
                             <td>Responsive</td>
                         </tr>
 
-                        <!-- Row 4: Updating -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2401,7 +2294,6 @@
                 </table>
             </div>
 
-            <!-- Call to Action -->
             <a href="#" class="cta-button">
                 Choose a template
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2421,7 +2313,6 @@
             </div>
             
             <div class="faq-container">
-                <!-- FAQ Item 1 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>How long does it take to create my website?</span>
@@ -2434,7 +2325,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 2 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Can I update details after publishing?</span>
@@ -2447,7 +2337,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 3 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Are the templates mobile-friendly?</span>
@@ -2460,7 +2349,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 4 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Can I connect my own domain name?</span>
