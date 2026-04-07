@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Manage Templates - Dashboard</title>
+    <title>Manage Templates - Schedy</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,9 +74,8 @@
         .sidebar, .m-header, .profile-popup { font-family: var(--font-nav); }
 
         .brand-logo { display: flex; align-items: center; text-decoration: none; transition: all 0.3s; }
-        .brand-logo img { height: 36px; width: auto; display: block; }
-        .mini-logo { display: none; align-items: center; justify-content: center; }
-        .mini-logo img { height: 36px; width: auto; display: block; }
+        .brand-text { font-size: 1.4rem; font-weight: 800; color: #111827; letter-spacing: 1px; font-family: var(--font-main); }
+        .mini-logo { display: none; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: var(--text-color); }
 
         .icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
         .icon svg { width: 22px; height: 22px; stroke: var(--icon-color); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -87,7 +86,7 @@
         .nav-item.active .icon svg { stroke: #000000; }
 
         .account-card { display: flex; align-items: center; gap: 12px; }
-        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); }
+        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-sub); }
         .account-text { display: flex; flex-direction: column; overflow: hidden; transition: opacity 0.2s; }
         .account-name { font-size: 15px; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; color: var(--text-color); }
         .account-email { font-size: 13px; color: var(--text-sub); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
@@ -120,8 +119,8 @@
         .profile-popup.active { opacity: 1; pointer-events: all; }
         .popup-header { padding: 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 12px; }
         .popup-list { list-style: none; padding: 8px; }
-        .popup-list a { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500;}
-        .popup-list a:hover { background: var(--hover-bg); }
+        .popup-list a, .popup-list button { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; font-family: inherit; font-size: inherit; }
+        .popup-list a:hover, .popup-list button:hover { background: var(--hover-bg); }
 
         /* Desktop Adjustments */
         @media (min-width: 1150px) {
@@ -130,7 +129,7 @@
             .mobile-only { display: none !important; }
             .m-header { display: none; }
             .sidebar-overlay { display: none; }
-            .brand-logo img, .mini-logo img { height: 45px; }
+            .brand-text { font-size: 1.5rem; color: var(--text-color); }
             
             .main-content { margin-top: 0; }
             
@@ -159,7 +158,7 @@
             .sidebar-toggle:hover { background: var(--hover-bg); color: var(--text-color); }
 
             .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-            .sidebar.collapsed .brand-logo, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
+            .sidebar.collapsed .brand-text, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
             .sidebar.collapsed .mini-logo, .sidebar.collapsed .btn-open-svg { display: flex !important; }
             .btn-open-svg { display: none; }
             .sidebar.collapsed .sidebar-header { flex-direction: column; padding: 30px 0 20px 0; gap: 30px; }
@@ -480,7 +479,7 @@
 
         /* --- CUSTOM DROPDOWN (Generic) --- */
         .custom-dropdown { position: relative; width: 100%; }
-        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 600; color: var(--text-main); font-size: 16px; background-color: var(--pure-white); }
+        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 500; color: var(--text-main); font-size: 16px; background-color: var(--pure-white); }
         .dropdown-header:hover { border-color: var(--text-sub); }
         .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
         .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
@@ -492,10 +491,22 @@
         .create-new-cat { border-top: 1px solid var(--border-color); color: var(--accent-color) !important; font-weight: 600 !important; display: flex; align-items: center; gap: 8px; }
         .create-new-cat:hover { background: rgba(103, 61, 230, 0.05) !important; }
 
+        /* Auth Guard Overlay */
+        #auth-guard-overlay {
+            position: fixed; inset: 0; background: var(--pure-white); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;
+        }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(103, 61, 230, 0.2); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 
 <body>
+    
+    <!-- Auth Guard Loader -->
+    <div id="auth-guard-overlay"><div class="spinner"></div></div>
+
     <!-- App Container -->
     <div class="app-layout">
         
@@ -504,8 +515,8 @@
             <button class="m-menu-btn" id="m-open-drawer">
                 <div class="m-menu-lines"><span></span></div>
             </button>
-            <a href="#" class="brand-logo">
-                <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+            <a href="#" class="brand-logo" style="text-decoration: none;">
+                <div class="brand-text">✦ SCHEDY</div>
             </a>
             <div style="width:40px;"></div>
         </header>
@@ -516,13 +527,11 @@
         <!-- Unified Sidebar (Desktop & Mobile) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <a href="#" class="brand-logo">
-                    <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+                <a href="#" class="brand-logo" style="text-decoration: none;">
+                    <div class="brand-text" style="color: var(--text-color);">✦ SCHEDY</div>
                 </a>
                 
-                <span class="mini-logo">
-                    <img src="https://ksupvc.wixo.in/logo-square.png" alt="S">
-                </span>
+                <span class="mini-logo">✦</span>
                 
                 <!-- Desktop Collapse Button -->
                 <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
@@ -538,10 +547,6 @@
             
             <div class="sidebar-inner">
                 <nav class="nav-menu">
-                    <a href="./dashboard.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg></span>
-                        <span class="nav-label">Dashboard</span>
-                    </a>
                     <a href="./create.html" class="nav-item">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
                         <span class="nav-label">Create Invitation</span>
@@ -555,10 +560,6 @@
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg></span>
                         <span class="nav-label">Manage Templates</span>
                     </a>
-                    <a href="./customize.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"/><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/></svg></span>
-                        <span class="nav-label">Customize Site</span>
-                    </a>
                     <a href="./support.html" class="nav-item">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
                         <span class="nav-label">Support</span>
@@ -569,10 +570,12 @@
             <!-- Profile Account Section in Sidebar -->
             <div class="account-section" id="profile-trigger">
                 <div class="account-card">
-                    <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+                    <div class="account-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
                     <div class="account-text">
-                        <div class="account-name">John Doe</div>
-                        <div class="account-email">admin@syncskill.com</div>
+                        <div class="account-name" id="sidebar-user-name">Loading...</div>
+                        <div class="account-email" id="sidebar-user-email">Please wait</div>
                     </div>
                 </div>
             </div>
@@ -638,7 +641,8 @@
                                                 <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                             </div>
                                             <ul class="dropdown-list">
-                                                </ul>
+                                                <!-- Populated by JS -->
+                                            </ul>
                                             <input type="hidden" id="selected-category" value="">
                                         </div>
                                     </div>
@@ -677,28 +681,79 @@
     <!-- Profile Popup Menu -->
     <div class="profile-popup" id="profile-popup">
         <div class="popup-header">
-            <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+            <div class="account-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
             <div class="account-text">
-                <div class="account-name">John Doe</div>
-                <div class="account-email">admin@syncskill.com</div>
+                <div class="account-name" id="popup-user-name">Loading...</div>
+                <div class="account-email" id="popup-user-email">Please wait</div>
             </div>
         </div>
         <ul class="popup-list">
-            <li><a href="#"><span>Profile</span></a></li>
-            <li><a href="#"><span>Settings</span></a></li>
-            <li><a href="#" style="color:#dc2626"><span>Logout</span></a></li>
+            <li><button type="button" id="btn-logout" style="color:#dc2626"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; vertical-align:text-bottom;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>Logout</button></li>
         </ul>
     </div>
 
     <script>
         // ==========================================
-        // --- DASHBOARD UI INITIALIZATION LOGIC ---
+        // 1. SUPABASE INIT & SECURITY ROUTER
         // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            initSidebarNavigation();
-            loadDashboard();
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+
+        async function checkAuthAndRole() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) return window.location.replace('login.html');
+
+            const user = session.user;
+            const { data: profile, error } = await supabaseClient
+                .from('app_user_roles')
+                .select('status')
+                .eq('id', user.id)
+                .single();
+
+            if (error || !profile) return window.location.replace('login.html');
+
+            if (profile.status === 'pending') {
+                window.location.replace('pending.html');
+            } else if (profile.status === 'declined') {
+                window.location.replace('declined.html');
+            } else if (profile.status === 'approved' || profile.status === 'admin') {
+                // Allowed!
+                document.getElementById('auth-guard-overlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('auth-guard-overlay').remove(), 300);
+                
+                updateProfileUI(user);
+                initSidebarNavigation();
+                loadDashboard(); 
+            } else {
+                window.location.replace('login.html');
+            }
+        }
+
+        function updateProfileUI(user) {
+            const name = user.user_metadata?.full_name || user.email.split('@')[0];
+            const email = user.email;
+
+            document.getElementById('sidebar-user-name').textContent = name;
+            document.getElementById('sidebar-user-email').textContent = email;
+            document.getElementById('popup-user-name').textContent = name;
+            document.getElementById('popup-user-email').textContent = email;
+        }
+
+        checkAuthAndRole();
+
+        document.getElementById('btn-logout').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabaseClient.auth.signOut();
+            window.location.replace('login.html');
         });
 
+        // ==========================================
+        // --- DASHBOARD UI INITIALIZATION LOGIC ---
+        // ==========================================
         function initSidebarNavigation() {
             const sidebar = document.getElementById('sidebar');
             const mOverlay = document.getElementById('sidebar-overlay');
@@ -756,15 +811,11 @@
         // ==========================================
         // --- TEMPLATE MANAGER & EDITOR SCRIPTS ---
         // ==========================================
-
-        const supabaseClient = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
-
         let allTemplates = [];
         let categoriesMap = {};
         let editingTemplateId = null;
 
         // --- DASHBOARD DATA LOGIC ---
-        
         async function fetchCategoriesData() {
             const { data: catData } = await supabaseClient.from('template_categories').select('*').order('name');
             if (!catData) return;
@@ -846,8 +897,7 @@
             renderGrid(filtered);
         }
 
-        async function deleteTemplate(id, name) {
-            // Using browser confirm is acceptable here, or you could build a custom modal
+        window.deleteTemplate = async function(id, name) {
             if(confirm(`Are you sure you want to delete the template "${name}"?\nThis cannot be undone.`)) {
                 const { error } = await supabaseClient.from('templates').delete().eq('id', id);
                 if (error) alert("Error deleting: " + error.message);
@@ -856,7 +906,7 @@
                     filterTemplates();
                 }
             }
-        }
+        };
 
         // --- CUSTOM DROPDOWNS LOGIC (Generic Handling) ---
         function setupDropdown(dropdownId) {
@@ -890,7 +940,7 @@
         setupDropdown('category-dropdown');
 
         // Filter Dropdown Selection
-        function selectFilterCategory(id, name, event) {
+        window.selectFilterCategory = function(id, name, event) {
             event.stopPropagation();
             const hidden = document.getElementById('category-filter');
             const selectedText = document.querySelector('#filter-dropdown .selected-value');
@@ -903,7 +953,7 @@
             header.classList.remove('active');
             
             filterTemplates(); // Trigger update
-        }
+        };
 
         // --- EDITOR LOGIC ---
         const dashboardView = document.getElementById('dashboard-view');
@@ -969,7 +1019,7 @@
             }
         }
 
-        function openEditor(id) {
+        window.openEditor = function(id) {
             const t = allTemplates.find(x => x.id === id);
             if(!t) return;
 
@@ -998,9 +1048,9 @@
 
             // Render Preview immediately
             renderPreview(t.html_code);
-        }
+        };
 
-        function closeEditor() {
+        window.closeEditor = function() {
             // UI Switch to Dashboard
             editorWrapper.style.display = 'none';
             dashboardView.style.display = 'block';
@@ -1009,9 +1059,9 @@
 
             editingTemplateId = null;
             iframe.srcdoc = '';
-        }
+        };
 
-        async function updateTemplate() {
+        window.updateTemplate = async function() {
             const name = document.getElementById('template-name').value.trim();
             const html_code = textarea.value.trim();
             const category_id = catHidden.value;
@@ -1039,7 +1089,7 @@
                 closeEditor();
                 fetchTemplatesData(); // Refresh the grid
             }
-        }
+        };
 
         // --- PREVIEW ENGINE (Safe CSS Extractor included) ---
         let previewTimeout;
@@ -1109,7 +1159,6 @@
                 this.selectionStart = this.selectionEnd = start + 1;
             }
         });
-
     </script>
 </body>
 </html>
