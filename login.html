@@ -455,7 +455,7 @@
         function performRouting(status) {
             if (window.location.hash) history.replaceState(null, null, window.location.pathname);
             if (status === 'admin') window.location.replace('admin.html');
-            else if (status === 'approved') window.location.replace('templates.html');
+            else if (status === 'approved') window.location.replace('create.html');
             else if (status === 'declined') window.location.replace('declined.html');
             else window.location.replace('pending.html');
         }
