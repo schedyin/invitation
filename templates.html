@@ -280,7 +280,25 @@
         }
 
         /* The blurred dark overlay at the bottom */
-
+.card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65%; /* Taller to allow a smooth, smoky fade */
+            padding: 1.5rem 1.25rem 1.25rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* This mask feathers the blur so there is no harsh line */
+            -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
+            mask-image: linear-gradient(to top, black 60%, transparent 100%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Pushes content back to the bottom */
+            gap: 0.75rem;
+        }
 
         .card-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: #a78bfa; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         .card-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.3; }
