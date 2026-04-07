@@ -63,7 +63,7 @@
             font-family: var(--font-alt);
             font-weight: 500;
             color: var(--text-main);
-            overflow: hidden; 
+            overflow: hidden; /* Prevent body scroll, handled by content area */
             -webkit-font-smoothing: antialiased;
             line-height: 1.6;
         }
@@ -125,8 +125,8 @@
         .profile-popup.active { opacity: 1; pointer-events: all; }
         .popup-header { padding: 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 12px; }
         .popup-list { list-style: none; padding: 8px; }
-        .popup-list a { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500;}
-        .popup-list a:hover { background: var(--hover-bg); }
+        .popup-list a, .popup-list button { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500; font-size: inherit; font-family: inherit; border: none; background: transparent; width: 100%; text-align: left; }
+        .popup-list a:hover, .popup-list button:hover { background: var(--hover-bg); }
 
         /* Desktop Adjustments */
         @media (min-width: 1150px) {
@@ -164,7 +164,7 @@
             .sidebar-toggle:hover { background: var(--hover-bg); color: var(--text-color); }
 
             .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-            .sidebar.collapsed .brand-logo, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
+            .sidebar.collapsed .brand-text, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
             .sidebar.collapsed .mini-logo, .sidebar.collapsed .btn-open-svg { display: flex !important; }
             .btn-open-svg { display: none; }
             .sidebar.collapsed .sidebar-header { flex-direction: column; padding: 30px 0 20px 0; gap: 30px; }
@@ -196,7 +196,7 @@
         /* Desktop Sticky Preview */
         .preview-side {
             width: 375px; 
-            height: calc(100vh - 80px - 48px);
+            height: calc(100vh - 80px - 48px); 
             position: sticky;
             top: 0;
             background: #E5E7EB;
@@ -213,6 +213,7 @@
         .preview-header { display: none; }
         .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; }
 
+        /* Mobile specific overrides for Form Layout */
         .sticky-action-bar { display: none; }
 
         @media (max-width: 1150px) {
@@ -221,7 +222,7 @@
             
             .preview-side { 
                 position: fixed;
-                top: 72px; 
+                top: 72px;
                 left: 0;
                 right: 0;
                 width: 100%;
@@ -232,9 +233,17 @@
             }
             
             .sticky-action-bar.mobile-only {
-                display: flex; position: fixed; bottom: 0; left: 0; right: 0;
-                background: var(--pure-white); padding: 1rem; border-top: 1px solid var(--border-color);
-                z-index: 1000; gap: 1rem; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--pure-white);
+                padding: 1rem;
+                border-top: 1px solid var(--border-color);
+                z-index: 1000;
+                gap: 1rem;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
             }
             .form-side .btn-submit { display: none; }
             .mobile-hidden { display: none !important; }
@@ -242,8 +251,11 @@
 
         /* --- FORM STYLES --- */
         .form-section { 
-            margin-bottom: 2rem; background: var(--pure-white); padding: 2.5rem 3rem;
-            border-radius: var(--radius-lg); border: 1px solid var(--border-color); 
+            margin-bottom: 2rem; 
+            background: var(--pure-white);
+            padding: 2.5rem 3rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color); 
             font-family: var(--font-main);
         }
 
@@ -265,12 +277,19 @@
         .input-group textarea { resize: vertical; min-height: 100px; }
         .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
         .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
-        .input-group label {
+        
+        /* Specialized Dropdown Label */
+        .dropdown-label {
+            position: static; padding: 0 0 8px 5px; display: block; pointer-events: auto;
+            color: var(--text-sub); font-weight: 600; font-size: 0.85rem;
+        }
+
+        .input-group label.float-label {
             position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500; pointer-events: none;
             transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0;
         }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
-        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label {
+        .input-group input:focus + label.float-label, .input-group input:not(:placeholder-shown) + label.float-label,
+        .input-group textarea:focus + label.float-label, .input-group textarea:not(:placeholder-shown) + label.float-label {
             top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-color); background: var(--pure-white); padding: 0 5px;
         }
 
@@ -296,12 +315,12 @@
         .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
 
         .custom-dropdown { position: relative; width: 100%; }
-        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 500; color: var(--text-main); font-size: 16px; }
+        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: var(--pure-white); transition: all 0.3s; font-weight: 500; color: var(--text-main); font-size: 16px; }
         .dropdown-header:hover { border-color: var(--text-sub); }
         .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
         .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
         .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent-color); }
-        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; max-height: 250px; overflow-y: auto;}
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; max-height: 250px; overflow-y: auto; }
         .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-list li { padding: 14px 15px; cursor: pointer; transition: background 0.2s; font-weight: 500; font-size: 16px;}
         .dropdown-list li:hover { background: var(--bg-light); color: var(--accent-color); }
@@ -340,14 +359,10 @@
 </head>
 
 <body>
-    
-    <!-- Auth Guard Loader (prevents screen flash before redirect) -->
     <div id="auth-guard-overlay"><div class="spinner"></div></div>
 
-    <!-- App Container -->
     <div class="app-layout">
         
-        <!-- Mobile Header (Hidden on Desktop) -->
         <header class="m-header mobile-only">
             <button class="m-menu-btn" id="m-open-drawer">
                 <div class="m-menu-lines"><span></span></div>
@@ -358,10 +373,8 @@
             <div style="width:40px;"></div>
         </header>
 
-        <!-- Sidebar Overlay (Mobile) -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
         
-        <!-- Unified Sidebar (Desktop & Mobile) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="#" class="brand-logo" style="text-decoration: none;">
@@ -370,13 +383,11 @@
                 
                 <span class="mini-logo">✦</span>
                 
-                <!-- Desktop Collapse Button -->
                 <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
                     <svg class="btn-close-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
                     <svg class="btn-open-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
                 </button>
 
-                <!-- Mobile Close Button -->
                 <button class="m-drawer-close mobile-only" id="m-close-drawer">
                     <div class="m-drawer-close-icon"></div>
                 </button>
@@ -384,7 +395,6 @@
             
             <div class="sidebar-inner">
                 <nav class="nav-menu">
-                    <!-- HIGHLIGHTED MENU ITEM -->
                     <a href="./create.html" class="nav-item active">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
                         <span class="nav-label">Create Invitation</span>
@@ -404,7 +414,6 @@
                 </nav>
             </div>
 
-            <!-- Profile Account Section in Sidebar -->
             <div class="account-section" id="profile-trigger">
                 <div class="account-card">
                     <div class="account-avatar">
@@ -418,12 +427,10 @@
             </div>
         </aside>
 
-        <!-- Main Dashboard Content Shell -->
         <div class="main-content">
             <header class="topbar desktop-only">Create Invitation</header>
             
             <main class="content-area">
-                <!-- EMBEDDED FORM LAYOUT -->
                 <div class="layout-split">
                     <div class="form-side">
                         <form id="invitation-form">
@@ -436,20 +443,39 @@
                                     </div>
                                 </div>
                                 
-                                <div class="custom-dropdown" id="template-dropdown">
-                                    <div class="dropdown-header">
-                                        <span class="selected-value">Loading templates from Supabase...</span>
-                                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                <div class="grid-2 mb-4" style="gap: 1rem;">
+                                    <div class="input-group" style="margin-bottom: 0;">
+                                        <label class="dropdown-label">Filter by Category</label>
+                                        <div class="custom-dropdown" id="category-filter-dropdown" style="z-index: 25;">
+                                            <div class="dropdown-header">
+                                                <span class="selected-value">All Categories</span>
+                                                <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </div>
+                                            <ul class="dropdown-list">
+                                                <li data-value="ALL">All Categories</li>
+                                            </ul>
+                                            <input type="hidden" id="selected-category-filter" value="ALL">
+                                        </div>
                                     </div>
-                                    <ul class="dropdown-list">
-                                        <li data-value="fallback">Loading...</li>
-                                    </ul>
-                                    <input type="hidden" id="selected-template" name="template" value="">
+
+                                    <div class="input-group" style="margin-bottom: 0;">
+                                        <label class="dropdown-label">Select Template</label>
+                                        <div class="custom-dropdown" id="template-dropdown" style="z-index: 24;">
+                                            <div class="dropdown-header">
+                                                <span class="selected-value">Loading templates...</span>
+                                                <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </div>
+                                            <ul class="dropdown-list">
+                                                <li data-value="fallback">Loading...</li>
+                                            </ul>
+                                            <input type="hidden" id="selected-template" name="template" value="">
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="input-group mt-4">
+                                <div class="input-group mt-4" style="z-index: 10;">
                                     <input type="text" id="custom-id" placeholder=" ">
-                                    <label for="custom-id">Custom Link ID (e.g., harsha-vardhini)</label>
+                                    <label for="custom-id" class="float-label">Custom Link ID (e.g., harsha-vardhini)</label>
                                     <div class="hint-text" style="margin-top: 6px;">Your link will look like: <strong>schedy.in/your-custom-id</strong></div>
                                 </div>
                             </div>
@@ -466,11 +492,11 @@
                                 <div class="grid-2">
                                     <div class="input-group">
                                         <input type="text" id="surname-en" placeholder=" ">
-                                        <label for="surname-en">Family Surname EN</label>
+                                        <label for="surname-en" class="float-label">Family Surname EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="surname-te" placeholder=" ">
-                                        <label for="surname-te">Family Surname తె</label>
+                                        <label for="surname-te" class="float-label">Family Surname తె</label>
                                         <div class="hint-text telugu-font" style="margin-top: 6px;">Appears as "[Surname] వారి పెండ్లిపిలుపు"</div>
                                     </div>
                                 </div>
@@ -478,11 +504,11 @@
                                 <div class="grid-2 mt-4">
                                     <div class="input-group">
                                         <input type="date" id="wedding-date" placeholder=" ">
-                                        <label for="wedding-date">Wedding Date</label>
+                                        <label for="wedding-date" class="float-label">Wedding Date</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="time" id="muhurtham-time" placeholder=" ">
-                                        <label for="muhurtham-time">Muhurtham Time</label>
+                                        <label for="muhurtham-time" class="float-label">Muhurtham Time</label>
                                     </div>
                                 </div>
                             </div>
@@ -498,11 +524,11 @@
                                 <div class="grid-2">
                                     <div class="input-group">
                                         <input type="text" id="groom-en" placeholder=" ">
-                                        <label for="groom-en">Groom's Name EN</label>
+                                        <label for="groom-en" class="float-label">Groom's Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="groom-te" placeholder=" ">
-                                        <label for="groom-te">Groom's Name తె</label>
+                                        <label for="groom-te" class="float-label">Groom's Name తె</label>
                                         <div class="hint-text" style="margin-top: 6px;">Auto-transliterated · edit if needed</div>
                                     </div>
                                 </div>
@@ -511,15 +537,15 @@
                                 <div class="grid-3">
                                     <div class="input-group">
                                         <input type="text" id="groom-father-en" placeholder=" ">
-                                        <label for="groom-father-en">Name EN</label>
+                                        <label for="groom-father-en" class="float-label">Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="groom-father-te" placeholder=" ">
-                                        <label for="groom-father-te">Name తె</label>
+                                        <label for="groom-father-te" class="float-label">Name తె</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="tel" id="groom-father-phone" placeholder=" ">
-                                        <label for="groom-father-phone">Phone</label>
+                                        <label for="groom-father-phone" class="float-label">Phone</label>
                                     </div>
                                 </div>
 
@@ -527,15 +553,15 @@
                                 <div class="grid-3">
                                     <div class="input-group">
                                         <input type="text" id="groom-mother-en" placeholder=" ">
-                                        <label for="groom-mother-en">Name EN</label>
+                                        <label for="groom-mother-en" class="float-label">Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="groom-mother-te" placeholder=" ">
-                                        <label for="groom-mother-te">Name తె</label>
+                                        <label for="groom-mother-te" class="float-label">Name తె</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="tel" id="groom-mother-phone" placeholder=" ">
-                                        <label for="groom-mother-phone">Phone</label>
+                                        <label for="groom-mother-phone" class="float-label">Phone</label>
                                     </div>
                                 </div>
                                 
@@ -554,11 +580,11 @@
                                 <div class="grid-2">
                                     <div class="input-group">
                                         <input type="text" id="bride-en" placeholder=" ">
-                                        <label for="bride-en">Bride's Name EN</label>
+                                        <label for="bride-en" class="float-label">Bride's Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="bride-te" placeholder=" ">
-                                        <label for="bride-te">Bride's Name తె</label>
+                                        <label for="bride-te" class="float-label">Bride's Name తె</label>
                                         <div class="hint-text" style="margin-top: 6px;">Auto-transliterated · edit if needed</div>
                                     </div>
                                 </div>
@@ -567,15 +593,15 @@
                                 <div class="grid-3">
                                     <div class="input-group">
                                         <input type="text" id="bride-father-en" placeholder=" ">
-                                        <label for="bride-father-en">Name EN</label>
+                                        <label for="bride-father-en" class="float-label">Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="bride-father-te" placeholder=" ">
-                                        <label for="bride-father-te">Name తె</label>
+                                        <label for="bride-father-te" class="float-label">Name తె</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="tel" id="bride-father-phone" placeholder=" ">
-                                        <label for="bride-father-phone">Phone</label>
+                                        <label for="bride-father-phone" class="float-label">Phone</label>
                                     </div>
                                 </div>
 
@@ -583,15 +609,15 @@
                                 <div class="grid-3">
                                     <div class="input-group">
                                         <input type="text" id="bride-mother-en" placeholder=" ">
-                                        <label for="bride-mother-en">Name EN</label>
+                                        <label for="bride-mother-en" class="float-label">Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="bride-mother-te" placeholder=" ">
-                                        <label for="bride-mother-te">Name తె</label>
+                                        <label for="bride-mother-te" class="float-label">Name తె</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="tel" id="bride-mother-phone" placeholder=" ">
-                                        <label for="bride-mother-phone">Phone</label>
+                                        <label for="bride-mother-phone" class="float-label">Phone</label>
                                     </div>
                                 </div>
 
@@ -614,15 +640,15 @@
                                 <div class="grid-3">
                                     <div class="input-group">
                                         <input type="date" id="event-reception-date" placeholder=" ">
-                                        <label for="event-reception-date">Date</label>
+                                        <label for="event-reception-date" class="float-label">Date</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="time" id="event-reception-time" placeholder=" ">
-                                        <label for="event-reception-time">Start Time</label>
+                                        <label for="event-reception-time" class="float-label">Start Time</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="event-reception-day" placeholder=" ">
-                                        <label for="event-reception-day">Day తె</label>
+                                        <label for="event-reception-day" class="float-label">Day తె</label>
                                     </div>
                                 </div>
 
@@ -636,22 +662,22 @@
                                     <div class="grid-2">
                                         <div class="input-group">
                                             <input type="text" id="reception-venue-en" placeholder=" ">
-                                            <label for="reception-venue-en">Venue Name EN</label>
+                                            <label for="reception-venue-en" class="float-label">Venue Name EN</label>
                                         </div>
                                         <div class="input-group">
                                             <input type="text" id="reception-venue-te" placeholder=" ">
-                                            <label for="reception-venue-te">Venue Name తె</label>
+                                            <label for="reception-venue-te" class="float-label">Venue Name తె</label>
                                             <div class="hint-text" style="margin-top: 6px;">Auto-transliterated</div>
                                         </div>
                                         
                                         <div class="input-group full-width">
                                             <textarea id="reception-venue-address" placeholder=" "></textarea>
-                                            <label for="reception-venue-address">Venue Address తె (use &lt;br&gt; for line break)</label>
+                                            <label for="reception-venue-address" class="float-label">Venue Address తె (use &lt;br&gt; for line break)</label>
                                         </div>
                                         
                                         <div class="input-group full-width">
                                             <input type="url" id="reception-venue-maps" placeholder=" ">
-                                            <label for="reception-venue-maps">Google Maps Link</label>
+                                            <label for="reception-venue-maps" class="float-label">Google Maps Link</label>
                                         </div>
                                     </div>
                                 </div>
@@ -669,21 +695,21 @@
                                 <div class="grid-2">
                                     <div class="input-group">
                                         <input type="text" id="venue-en" placeholder=" ">
-                                        <label for="venue-en">Venue Name EN</label>
+                                        <label for="venue-en" class="float-label">Venue Name EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="venue-te" placeholder=" ">
-                                        <label for="venue-te">Venue Name తె</label>
+                                        <label for="venue-te" class="float-label">Venue Name తె</label>
                                     </div>
                                     
                                     <div class="input-group full-width">
                                         <textarea id="venue-address" placeholder=" "></textarea>
-                                        <label for="venue-address">Venue Address తె (use &lt;br&gt; for line break)</label>
+                                        <label for="venue-address" class="float-label">Venue Address తె (use &lt;br&gt; for line break)</label>
                                     </div>
                                     
                                     <div class="input-group full-width">
                                         <input type="url" id="venue-maps" placeholder=" ">
-                                        <label for="venue-maps">Google Maps Link</label>
+                                        <label for="venue-maps" class="float-label">Google Maps Link</label>
                                     </div>
                                 </div>
                             </div>
@@ -716,11 +742,11 @@
                                 <div class="grid-2 mb-4" style="border-bottom: 1px dashed var(--border-color); padding-bottom: 1.5rem;">
                                     <div class="input-group">
                                         <input type="text" id="compliment-title-en" placeholder=" " value="With Best Compliments From">
-                                        <label for="compliment-title-en">Compliment Text EN</label>
+                                        <label for="compliment-title-en" class="float-label">Compliment Text EN</label>
                                     </div>
                                     <div class="input-group">
                                         <input type="text" id="compliment-title-te" placeholder=" " value="తమరి రాకను కోరే">
-                                        <label for="compliment-title-te">Compliment Text తె</label>
+                                        <label for="compliment-title-te" class="float-label">Compliment Text తె</label>
                                     </div>
                                 </div>
 
@@ -728,11 +754,11 @@
                                     <div class="grid-2" style="margin-bottom: 0;">
                                         <div class="input-group">
                                             <input type="text" id="comp-1-en" placeholder=" ">
-                                            <label for="comp-1-en">Name(s) EN</label>
+                                            <label for="comp-1-en" class="float-label">Name(s) EN</label>
                                         </div>
                                         <div class="input-group">
                                             <input type="text" id="comp-1-te" placeholder=" ">
-                                            <label for="comp-1-te">Name(s) తె</label>
+                                            <label for="comp-1-te" class="float-label">Name(s) తె</label>
                                         </div>
                                     </div>
                                 </div>
@@ -756,7 +782,6 @@
                     </div>
                 </div>
 
-                <!-- Sticky Mobile Form Action Bar -->
                 <div class="sticky-action-bar mobile-only">
                     <button type="button" id="btn-toggle-view" class="btn-half btn-outline-mobile">PREVIEW</button>
                     <button type="button" id="btn-create-mobile" class="btn-half btn-solid-mobile">CREATE</button>
@@ -766,7 +791,6 @@
         </div>
     </div>
 
-    <!-- Profile Popup Menu -->
     <div class="profile-popup" id="profile-popup">
         <div class="popup-header">
             <div class="account-avatar">
@@ -810,19 +834,18 @@
                 return;
             }
 
-            // Route unauthorized users away immediately
             if (profile.status === 'pending') {
                 window.location.replace('pending.html');
             } else if (profile.status === 'declined') {
                 window.location.replace('declined.html');
             } else if (profile.status === 'approved' || profile.status === 'admin') {
-                // Allowed! Initialize UI with User Data
+                // Allowed!
                 document.getElementById('auth-guard-overlay').style.opacity = '0';
                 setTimeout(() => document.getElementById('auth-guard-overlay').remove(), 300);
                 
                 updateProfileUI(user);
                 initSidebarNavigation();
-                initAppLogic(); // Start the rest of the page logic
+                initAppLogic(); 
             } else {
                 window.location.replace('login.html');
             }
@@ -838,10 +861,8 @@
             document.getElementById('popup-user-email').textContent = email;
         }
 
-        // Execute Auth Guard
         checkAuthAndRole();
 
-        // Logout Action
         document.getElementById('btn-logout').addEventListener('click', async (e) => {
             e.preventDefault();
             await supabaseClient.auth.signOut();
@@ -856,7 +877,6 @@
             const sidebar = document.getElementById('sidebar');
             const mOverlay = document.getElementById('sidebar-overlay');
             
-            // Desktop Sidebar Toggle
             const toggleBtn = document.getElementById('sidebar-toggle-btn');
             if(toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
@@ -864,7 +884,6 @@
                 });
             }
 
-            // Mobile Drawer Toggle
             const mOpen = document.getElementById('m-open-drawer');
             const mClose = document.getElementById('m-close-drawer');
             
@@ -881,7 +900,6 @@
             if(mClose) mClose.onclick = closeMobileDrawer;
             if(mOverlay) mOverlay.onclick = closeMobileDrawer;
 
-            // Profile Popup Interaction
             const pPopup = document.getElementById('profile-popup');
             const profileTrigger = document.getElementById('profile-trigger');
 
@@ -906,11 +924,132 @@
             });
         }
 
-
         // ==========================================
         // 3. MAIN FORM & PREVIEW LOGIC
         // ==========================================
         function initAppLogic() {
+            
+            // --- DROPDOWN UI HELPERS ---
+            function setupDropdown(dropdownId) {
+                const header = document.querySelector(`#${dropdownId} .dropdown-header`);
+                const list = document.querySelector(`#${dropdownId} .dropdown-list`);
+                if(!header || !list) return;
+
+                header.addEventListener('click', (e) => {
+                    document.querySelectorAll('.dropdown-list.show').forEach(openL => {
+                        if (openL !== list) {
+                            openL.classList.remove('show');
+                            openL.previousElementSibling.classList.remove('active');
+                        }
+                    });
+                    list.classList.toggle('show');
+                    header.classList.toggle('active');
+                    e.stopPropagation();
+                });
+            }
+
+            setupDropdown('category-filter-dropdown');
+            setupDropdown('template-dropdown');
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-list').forEach(l => l.classList.remove('show'));
+                document.querySelectorAll('.dropdown-header').forEach(h => h.classList.remove('active'));
+            });
+
+            // --- DATA FETCHING & FILTERING ---
+            window.categoriesData = [];
+            window.templatesData = [];
+
+            async function fetchCategoriesAndTemplates() {
+                // 1. Fetch Categories
+                const { data: catData } = await supabaseClient.from('template_categories').select('*').order('name');
+                const catList = document.querySelector('#category-filter-dropdown .dropdown-list');
+                catList.innerHTML = '<li data-value="ALL">All Categories</li>';
+                
+                if (catData) {
+                    window.categoriesData = catData;
+                    catData.forEach(c => {
+                        const li = document.createElement('li');
+                        li.dataset.value = c.id;
+                        li.textContent = c.name;
+                        catList.appendChild(li);
+                    });
+                }
+
+                // Bind Category Selection Logic
+                catList.querySelectorAll('li').forEach(li => {
+                    li.addEventListener('click', (e) => {
+                        const val = e.target.dataset.value;
+                        document.getElementById('selected-category-filter').value = val;
+                        document.querySelector('#category-filter-dropdown .selected-value').textContent = e.target.textContent;
+                        document.querySelector('#category-filter-dropdown .dropdown-list').classList.remove('show');
+                        document.querySelector('#category-filter-dropdown .dropdown-header').classList.remove('active');
+                        e.stopPropagation();
+                        
+                        renderTemplateDropdown(val);
+                    });
+                });
+
+                // 2. Fetch Templates
+                const { data: tplData } = await supabaseClient.from('templates').select('id, name, html_code, category_id').order('name');
+                if (tplData) {
+                    window.templatesData = tplData;
+                }
+                
+                renderTemplateDropdown('ALL');
+            }
+
+            let currentTemplateHTML = '';
+            
+            function renderTemplateDropdown(categoryId) {
+                const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
+                const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                const hiddenInput = document.getElementById('selected-template');
+                
+                dropdownList.innerHTML = '';
+                
+                const filteredTemplates = categoryId === 'ALL' 
+                    ? window.templatesData 
+                    : window.templatesData.filter(t => t.category_id === categoryId);
+
+                if (filteredTemplates.length > 0) {
+                    
+                    // If the current template isn't in the new filter, clear the selection
+                    if (!filteredTemplates.find(t => t.id === hiddenInput.value)) {
+                        selectedValue.textContent = 'Choose a template...';
+                        hiddenInput.value = '';
+                        currentTemplateHTML = '';
+                        document.getElementById('preview-frame').srcdoc = `<div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'><h2 style='color:#2B1664;'>No Template Selected</h2><p>Select a template from the dropdown to see your live preview.</p></div>`;
+                    }
+
+                    filteredTemplates.forEach(t => {
+                        const li = document.createElement('li');
+                        li.dataset.value = t.id;
+                        li.textContent = t.name;
+                        
+                        li.addEventListener('click', (e) => {
+                            selectedValue.textContent = e.target.textContent;
+                            hiddenInput.value = e.target.dataset.value;
+                            dropdownList.classList.remove('show');
+                            document.querySelector('#template-dropdown .dropdown-header').classList.remove('active');
+                            e.stopPropagation();
+
+                            const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
+                            if (selectedTemplate) {
+                                currentTemplateHTML = selectedTemplate.html_code;
+                                document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
+                            }
+                        });
+                        dropdownList.appendChild(li);
+                    });
+                } else {
+                    selectedValue.textContent = 'No templates in this category.';
+                    hiddenInput.value = '';
+                }
+            }
+
+            fetchCategoriesAndTemplates();
+
             // --- MOBILE TOGGLE LOGIC ---
             const toggleBtn = document.getElementById('btn-toggle-view');
             const createBtnMobile = document.getElementById('btn-create-mobile');
@@ -934,7 +1073,6 @@
                 document.getElementById('invitation-form').dispatchEvent(event);
             });
 
-            let currentTemplateHTML = '';
             let previewDebounceTimer;
             let activeInputId = null;
 
@@ -964,7 +1102,8 @@
             function gatherData() {
                 const details = {};
                 document.querySelectorAll('input, textarea').forEach(input => {
-                    if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
+                    // Ignore dropdown control inputs and specific core inputs
+                    if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'selected-category-filter' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
                         if (input.type === 'checkbox') {
                             details[input.id] = input.checked;
                         } else if (input.value.trim() !== '') { 
@@ -1155,44 +1294,6 @@
                 previewDebounceTimer = setTimeout(updatePreview, 300);
             });
 
-            window.templatesData = [];
-            async function fetchTemplates() {
-                const { data, error } = await supabaseClient.from('templates').select('id, name, html_code');
-                const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
-                const selectedValue = document.querySelector('#template-dropdown .selected-value');
-                const hiddenInput = document.getElementById('selected-template');
-                const header = document.querySelector('#template-dropdown .dropdown-header');
-
-                dropdownList.innerHTML = ''; 
-                
-                if (data && data.length > 0) {
-                    window.templatesData = data;
-                    selectedValue.textContent = 'Choose a template...';
-                    data.forEach(t => {
-                        const li = document.createElement('li');
-                        li.dataset.value = t.id;
-                        li.textContent = t.name;
-                        
-                        li.addEventListener('click', (e) => {
-                            selectedValue.textContent = e.target.textContent;
-                            hiddenInput.value = e.target.dataset.value;
-                            dropdownList.classList.remove('show');
-                            header.classList.remove('active');
-                            e.stopPropagation();
-
-                            const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
-                            if (selectedTemplate) {
-                                currentTemplateHTML = selectedTemplate.html_code;
-                                document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
-                            }
-                        });
-                        dropdownList.appendChild(li);
-                    });
-                } else {
-                    selectedValue.textContent = 'No templates found in Supabase!';
-                }
-            }
-            fetchTemplates();
 
             document.getElementById('invitation-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -1261,20 +1362,6 @@
             const maxEvents = 4;
             let complimentCount = 1;
             const maxCompliments = 5;
-
-            const dropdownHeader = document.querySelector('#template-dropdown .dropdown-header');
-            const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
-
-            dropdownHeader.addEventListener('click', (e) => {
-                dropdownList.classList.toggle('show');
-                dropdownHeader.classList.toggle('active');
-                e.stopPropagation();
-            });
-
-            document.addEventListener('click', () => {
-                dropdownList.classList.remove('show');
-                dropdownHeader.classList.remove('active');
-            });
 
             async function transliterateToTelugu(text) {
                 if (!text.trim()) return '';
@@ -1397,15 +1484,15 @@
                         <div class="grid-3">
                             <div class="input-group">
                                 <input type="text" id="${idPrefix}-en" placeholder=" ">
-                                <label for="${idPrefix}-en">Name EN</label>
+                                <label for="${idPrefix}-en" class="float-label">Name EN</label>
                             </div>
                             <div class="input-group">
                                 <input type="text" id="${idPrefix}-te" placeholder=" ">
-                                <label for="${idPrefix}-te">Name తె</label>
+                                <label for="${idPrefix}-te" class="float-label">Name తె</label>
                             </div>
                             <div class="input-group">
                                 <input type="tel" id="${idPrefix}-phone" placeholder=" ">
-                                <label for="${idPrefix}-phone">Phone</label>
+                                <label for="${idPrefix}-phone" class="float-label">Phone</label>
                             </div>
                         </div>
                     </div>
@@ -1436,39 +1523,39 @@
                         <div class="grid-2">
                             <div class="input-group">
                                 <input type="text" id="${eventId}-name-en" placeholder=" ">
-                                <label for="${eventId}-name-en">Event Name EN</label>
+                                <label for="${eventId}-name-en" class="float-label">Event Name EN</label>
                             </div>
                             <div class="input-group">
                                 <input type="text" id="${eventId}-name-te" placeholder=" ">
-                                <label for="${eventId}-name-te">Event Name తె</label>
+                                <label for="${eventId}-name-te" class="float-label">Event Name తె</label>
                             </div>
                         </div>
                         <div class="grid-3">
                             <div class="input-group">
                                 <input type="date" id="${eventId}-date" placeholder=" ">
-                                <label for="${eventId}-date">Date</label>
+                                <label for="${eventId}-date" class="float-label">Date</label>
                             </div>
                             <div class="input-group">
                                 <input type="time" id="${eventId}-time" placeholder=" ">
-                                <label for="${eventId}-time">Start Time</label>
+                                <label for="${eventId}-time" class="float-label">Start Time</label>
                             </div>
                             <div class="input-group">
                                 <input type="text" id="${eventId}-day" placeholder=" ">
-                                <label for="${eventId}-day">Day తె</label>
+                                <label for="${eventId}-day" class="float-label">Day తె</label>
                             </div>
                         </div>
                         <div class="grid-2">
                             <div class="input-group">
                                 <input type="text" id="${eventId}-venue-en" placeholder=" ">
-                                <label for="${eventId}-venue-en">Venue Name EN</label>
+                                <label for="${eventId}-venue-en" class="float-label">Venue Name EN</label>
                             </div>
                             <div class="input-group">
                                 <input type="text" id="${eventId}-venue-te" placeholder=" ">
-                                <label for="${eventId}-venue-te">Venue Name తె</label>
+                                <label for="${eventId}-venue-te" class="float-label">Venue Name తె</label>
                             </div>
                             <div class="input-group full-width">
                                 <input type="url" id="${eventId}-maps" placeholder=" ">
-                                <label for="${eventId}-maps">Google Maps Link</label>
+                                <label for="${eventId}-maps" class="float-label">Google Maps Link</label>
                             </div>
                         </div>
                     </div>
@@ -1491,11 +1578,11 @@
                     <div class="grid-2" style="position: relative; animation: fadeIn 0.3s ease-out; margin-bottom: 0;">
                         <div class="input-group">
                             <input type="text" id="${compId}-en" placeholder=" ">
-                            <label for="${compId}-en">Name(s) EN</label>
+                            <label for="${compId}-en" class="float-label">Name(s) EN</label>
                         </div>
                         <div class="input-group" style="position: relative;">
                             <input type="text" id="${compId}-te" placeholder=" " style="padding-right: 40px;">
-                            <label for="${compId}-te">Name(s) తె</label>
+                            <label for="${compId}-te" class="float-label">Name(s) తె</label>
                             <button type="button" class="btn-delete" style="position: absolute; right: 10px; top: 16px;" onclick="removeComplimentRow(this)" title="Remove">X</button>
                         </div>
                     </div>
@@ -1563,16 +1650,28 @@
                         }
                     }
 
-                    const hiddenInput = document.getElementById('selected-template');
-                    const selectedValue = document.querySelector('#template-dropdown .selected-value');
-                    const option = document.querySelector(`.dropdown-list li[data-value="${data.template_id}"]`);
-                    if (option) {
-                        hiddenInput.value = data.template_id;
-                        selectedValue.textContent = option.textContent;
-                    }
-
+                    // Auto-select Category and Template
                     const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
                     if (selectedTemplateData) {
+                        // 1. Set Category Dropdown
+                        if (selectedTemplateData.category_id) {
+                            const catOption = document.querySelector(`#category-filter-dropdown .dropdown-list li[data-value="${selectedTemplateData.category_id}"]`);
+                            if (catOption) {
+                                document.getElementById('selected-category-filter').value = selectedTemplateData.category_id;
+                                document.querySelector('#category-filter-dropdown .selected-value').textContent = catOption.textContent;
+                                renderTemplateDropdown(selectedTemplateData.category_id);
+                            }
+                        }
+
+                        // 2. Set Template Dropdown
+                        const hiddenInput = document.getElementById('selected-template');
+                        const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                        const option = document.querySelector(`#template-dropdown .dropdown-list li[data-value="${data.template_id}"]`);
+                        if (option) {
+                            hiddenInput.value = data.template_id;
+                            selectedValue.textContent = option.textContent;
+                        }
+
                         currentTemplateHTML = selectedTemplateData.html_code;
                         document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
                     }
