@@ -1,94 +1,459 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Invitation System</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Schedy - Welcome</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        body { font-family: 'IBM Plex Sans', sans-serif; background: #F4F4F9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .auth-card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; border: 1px solid #e2e8f0; }
-        h2 { color: #2B1664; margin-top: 0; font-weight: 700; }
-        .input-group { margin-bottom: 1rem; text-align: left; }
-        input { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; box-sizing: border-box; font-family: inherit; transition: 0.3s; }
-        input:focus { outline: none; border-color: #673DE6; box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
+        /* --- DESIGN SYSTEM TOKENS --- */
+        :root {
+            --primary-dark: #012726;
+            --primary-hover: #023d3c;
+            --accent-green: #33C375;
+            --accent-hover: #29a862;
+            --pure-white: #FFFFFF;
+            --bg-light: #f8fafc;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --ease-cubic: cubic-bezier(0.25, 0.8, 0.25, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --btn-shadow: 0 4px 12px rgba(1, 39, 38, 0.15);
+        }
+
+        /* --- RESET & BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; overflow: hidden; }
+        body { 
+            font-family: 'IBM Plex Sans', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            background-color: var(--pure-white);
+        }
+
+        /* --- DESKTOP INFO PANEL (LEFT SECTION) --- */
+        .info-panel {
+            display: none;
+            background-color: #030A21;
+            position: relative;
+        }
         
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; font-family: inherit; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary { background: #673DE6; color: white; }
-        .btn-primary:hover { background: #5028c2; }
-        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #64748b; }
-        .btn-outline:hover { border-color: #673DE6; color: #673DE6; }
+        .info-panel-content {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .left-logo-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--pure-white);
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .left-text {
+            font-size: 40px;
+            font-weight: 500;
+            color: var(--pure-white);
+            line-height: 1.3;
+            margin: 0;
+            max-width: 500px;
+        }
         
-        .btn-google { background: white; border: 1px solid #e2e8f0; color: #334155; margin-top: 0; }
-        .btn-google:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .watermark-img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            max-width: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        /* --- MAIN FORM AREA (RIGHT SECTION) --- */
+        .form-panel-wrapper {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+            background: var(--pure-white);
+        }
+
+        /* --- AUTH SECTION --- */
+        #auth-section {
+            display: flex;
+            flex-direction: column;
+            padding: 4rem 2rem;
+            width: 100%;
+            max-width: 440px;
+            margin: auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .auth-logo { text-align: center; margin-bottom: 2.5rem; }
+        .auth-logo-text { font-size: 1.8rem; font-weight: 700; color: var(--primary-dark); letter-spacing: 1.5px; }
+
+        .form-toggle {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .toggle-btn.active {
+            background-color: var(--pure-white);
+            color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Grid trick to prevent container height jumping */
+        .form-container { 
+            display: grid; 
+            align-items: start;
+        }
+        .form-container form { 
+            grid-area: 1 / 1; 
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .form-container form.active { 
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .form-header { margin-bottom: 2rem; text-align: center; }
+        .form-header h2 { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+        .form-header p { color: var(--text-sub); font-size: 0.95rem; }
+
+        /* --- PREMIUM FLOATING INPUTS --- */
+        .input-group { position: relative; margin-bottom: 1.5rem; padding-top: 8px; }
+        .input-group input {
+            width: 100%;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
         
-        .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: #94a3b8; font-size: 14px; font-weight: 500; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; }
-        .divider span { padding: 0 10px; }
+        .input-group input:hover { border-color: var(--text-sub); }
         
-        .message { margin-top: 15px; font-size: 14px; color: #ef4444; line-height: 1.4; font-weight: 500; }
+        .input-group input:focus { 
+            border-color: var(--accent-green); 
+            box-shadow: 0 0 0 3px rgba(51, 195, 117, 0.25); 
+        }
+
+        /* Password Input Adjustments */
+        .password-input { padding-right: 45px !important; }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            padding: 0;
+            z-index: 5;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-toggle:hover { color: var(--primary-dark); }
+
+        /* Autofill fix */
+        .input-group input:-webkit-autofill,
+        .input-group input:-webkit-autofill:hover, 
+        .input-group input:-webkit-autofill:focus, 
+        .input-group input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px var(--pure-white) inset !important;
+            -webkit-text-fill-color: var(--text-main) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        .input-group label {
+            position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500;
+            pointer-events: none; transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0;
+        }
+        
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-green);
+            background: var(--pure-white); padding: 0 5px;
+        }
+
+        .form-options { display: flex; justify-content: flex-end; margin-top: -0.5rem; margin-bottom: 1.5rem; }
+        .forgot-password { font-size: 0.875rem; color: var(--text-main); font-weight: 600; text-decoration: none; cursor: pointer; }
+
+        .btn-submit {
+            width: 100%; padding: 1.125rem; font-size: 1rem; font-weight: 700; font-family: inherit;
+            color: var(--pure-white); background: linear-gradient(135deg, #0f2d2c, #012726); border: none;
+            border-radius: 16px; cursor: pointer; transition: all 0.3s var(--ease-out-back); box-shadow: var(--btn-shadow);
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(1, 39, 38, 0.2); }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .divider { display: flex; align-items: center; text-align: center; color: var(--text-sub); margin: 2rem 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .divider:not(:empty):before { margin-right: 1.25rem; }
+        .divider:not(:empty):after { margin-left: 1.25rem; }
+
+        .btn-google {
+            width: 100%; padding: 1rem; font-size: 0.95rem; font-weight: 700; font-family: inherit; color: var(--text-main);
+            background-color: var(--pure-white); border: 1.5px solid var(--border-color); border-radius: 16px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease;
+        }
+        .btn-google:hover { background-color: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+        .google-icon { width: 22px; height: 22px; }
+
+        .agreement-text { font-size: 0.75rem; color: var(--text-sub); text-align: center; margin-top: 1.5rem; line-height: 1.5; }
+        .switch-form-text { text-align: center; margin-top: 1.5rem; font-size: 0.95rem; color: var(--text-sub); }
+        .switch-form-text a { color: var(--primary-dark); font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: border-color 0.3s; }
+        .switch-form-text a:hover { border-color: var(--accent-green); }
+
+        /* --- FEEDBACK --- */
+        #loader { display: none; position: fixed; inset: 0; background: rgba(1, 39, 38, 0.6); backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite; }
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 16px 32px; border-radius: 14px; color: white; font-weight: 600; box-shadow: var(--shadow-premium); transition: bottom 0.5s var(--ease-out-back); z-index: 10000; text-align: center; }
+        #toast.show { bottom: 30px; }
+        #toast.success { background-color: #10b981; }
+        #toast.error { background-color: #ef4444; }
+        #toast.info { background-color: #3b82f6; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- RESPONSIVE --- */
+        @media (min-width: 992px) {
+            .info-panel { display: flex; flex: 0 0 50%; max-width: 50%; width: 50%; }
+            .form-panel-wrapper { flex: 0 0 50%; max-width: 50%; width: 50%; justify-content: center; padding: 4rem; }
+            #auth-section { padding: 0; max-width: 400px; }
+            .auth-logo { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="auth-card">
-        <h2>Welcome to Schedy</h2>
-        <p style="color: #64748b; margin-bottom: 24px;">Please login or sign up to continue.</p>
-        
-        <div id="auth-ui">
-            <button class="btn btn-google" onclick="handleGoogleLogin()">
-                <svg width="20" height="20" viewBox="0 0 48 48">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.7 17.74 9.5 24 9.5z"></path>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                </svg>
-                Continue with Google
-            </button>
-
-            <div class="divider">
-                <span>OR EMAIL</span>
+    <div class="app-container">
+        <div class="info-panel">
+            <div class="info-panel-content">
+                <div class="left-logo-text">✦ SCHEDY</div>
+                <h2 class="left-text">Create and manage beautiful digital wedding invitations effortlessly.</h2>
             </div>
-
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email Address" required>
-            </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Password" required>
-            </div>
-
-            <button class="btn btn-primary" onclick="handleLogin()">Login</button>
-            <button class="btn btn-outline" onclick="handleSignup()">Sign Up</button>
+            <img src="https://applications.growthschool.io/static/media/arrow-watermark.3b6a61eba496df5516a4fda1917be812.svg" class="watermark-img" alt="Watermark">
         </div>
 
-        <div id="auth-message" class="message"></div>
+        <div class="form-panel-wrapper">
+            
+            <div id="auth-section">
+                <div class="auth-logo">
+                    <div class="auth-logo-text">✦ SCHEDY</div>
+                </div>
+
+                <div class="form-toggle">
+                    <button id="show-login-btn" class="toggle-btn active">Sign In</button>
+                    <button id="show-signup-btn" class="toggle-btn">Sign Up</button>
+                </div>
+
+                <div class="form-container">
+                    <form id="login-form" class="active">
+                        <div class="form-header">
+                            <h2>Welcome Back</h2>
+                            <p>Sign in to your account to continue</p>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" id="login-email" placeholder=" " required>
+                            <label for="login-email">Email Address</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="login-password" class="password-input" placeholder=" " required>
+                            <label for="login-password">Password</label>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('login-password', 'login-toggle-icon')">
+                                <span class="material-symbols-outlined" id="login-toggle-icon">visibility_off</span>
+                            </button>
+                        </div>
+                        <div class="form-options">
+                            <a class="forgot-password" id="forgot-password-link">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn-submit">Sign In</button>
+                        
+                        <div class="divider">OR</div>
+                        
+                        <button type="button" class="btn-google google-signin-btn">
+                            <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        
+                        <p class="switch-form-text">
+                            Don't have an account? <a class="switch-to-signup">Create one</a>
+                        </p>
+                    </form>
+
+                    <form id="signup-form">
+                        <div class="form-header">
+                            <h2>Create Account</h2>
+                            <p>Register for access to the platform</p>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="signup-username" placeholder=" " required>
+                            <label for="signup-username">Full Name</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" id="signup-email" placeholder=" " required>
+                            <label for="signup-email">Email Address</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="signup-password" class="password-input" placeholder=" " required minlength="6">
+                            <label for="signup-password">Create Password</label>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('signup-password', 'signup-toggle-icon')">
+                                <span class="material-symbols-outlined" id="signup-toggle-icon">visibility_off</span>
+                            </button>
+                        </div>
+                        <button type="submit" class="btn-submit">Register</button>
+                        
+                        <div class="divider">OR</div>
+                        
+                        <button type="button" class="btn-google google-signin-btn">
+                            <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        
+                        <p class="switch-form-text">
+                            Already have an account? <a class="switch-to-login">Sign In</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div id="toast"></div>
+    <div id="loader"><div class="spinner"></div></div>
+
     <script>
-        const supabaseClient = supabase.createClient(
+        // ==========================================
+        // 1. SUPABASE INITIALIZATION
+        // ==========================================
+        const supabaseClient = window.supabase.createClient(
             'https://jihtqbzrqymdkypicajz.supabase.co', 
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
         );
-        
-        const msgEl = document.getElementById('auth-message');
-        const authUi = document.getElementById('auth-ui');
-        let isRouting = false; // Lock to prevent double-execution
 
-        // 1. Immediately catch Google OAuth redirects on page load to prevent UI flashing
+        // ==========================================
+        // 2. UI UTILITIES
+        // ==========================================
+        const showLoader = () => document.getElementById('loader').style.display = 'flex';
+        const hideLoader = () => document.getElementById('loader').style.display = 'none';
+        const showToast = (message, type = 'success') => { 
+            const t = document.getElementById('toast'); 
+            t.textContent = message; 
+            t.className = `show ${type}`; 
+            setTimeout(() => { t.className = t.className.replace('show', ''); }, 4000); 
+        };
+
+        window.togglePasswordVisibility = function(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text'; icon.textContent = 'visibility';
+            } else {
+                input.type = 'password'; icon.textContent = 'visibility_off';
+            }
+        };
+
+        // Form Toggling
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        const showSignupBtn = document.getElementById('show-signup-btn');
+
+        const goToLogin = () => {
+            signupForm.classList.remove('active'); showSignupBtn.classList.remove('active');
+            loginForm.classList.add('active'); showLoginBtn.classList.add('active');
+        };
+        const goToSignup = () => {
+            loginForm.classList.remove('active'); showLoginBtn.classList.remove('active');
+            signupForm.classList.add('active'); showSignupBtn.classList.add('active');
+        };
+
+        showLoginBtn.addEventListener('click', goToLogin);
+        showSignupBtn.addEventListener('click', goToSignup);
+        document.querySelectorAll('.switch-to-login').forEach(el => el.addEventListener('click', goToLogin));
+        document.querySelectorAll('.switch-to-signup').forEach(el => el.addEventListener('click', goToSignup));
+
+        // ==========================================
+        // 3. ROUTING & AUTHENTICATION LOGIC
+        // ==========================================
+        let isRouting = false;
+
+        // Catch Google Auth Redirect to prevent UI flashes
         if (window.location.hash && window.location.hash.includes('access_token')) {
-            authUi.style.display = 'none';
-            msgEl.textContent = "Authenticating with Google, please wait...";
-            msgEl.style.color = "#673DE6";
+            showLoader();
         }
 
         function performRouting(status) {
-            // Clean the #access_token hash from the URL
-            if (window.location.hash) {
-                history.replaceState(null, null, window.location.pathname);
-            }
-
-            // Use window.location.replace so users can't hit the "Back" button to return to login
+            if (window.location.hash) history.replaceState(null, null, window.location.pathname);
             if (status === 'admin') window.location.replace('admin.html');
             else if (status === 'approved') window.location.replace('templates.html');
             else if (status === 'declined') window.location.replace('declined.html');
@@ -98,132 +463,110 @@
         async function routeUser(user) {
             if (isRouting) return; 
             isRouting = true;
+            let retries = 5; let profileData = null;
 
-            let retries = 5;
-            let profileData = null;
-
-            // Polling Engine: Wait for Supabase trigger to finish writing the profile
+            // Polling Engine for Database Triggers
             while (retries > 0) {
-                const { data, error } = await supabaseClient
-                    .from('app_user_roles')
-                    .select('status')
-                    .eq('id', user.id)
-                    .maybeSingle(); 
-
-                if (data) {
-                    profileData = data;
-                    break;
-                }
-
-                authUi.style.display = 'none'; // Hide form while setting up
-                msgEl.textContent = "Setting up your profile, please wait...";
-                msgEl.style.color = "#64748b";
-                await new Promise(resolve => setTimeout(resolve, 1000)); // wait 1s
+                const { data } = await supabaseClient.from('app_user_roles').select('status').eq('id', user.id).maybeSingle(); 
+                if (data) { profileData = data; break; }
+                await new Promise(resolve => setTimeout(resolve, 800));
                 retries--;
             }
 
             if (profileData) {
                 performRouting(profileData.status);
             } else {
-                // Fallback: Manually insert if the database trigger failed
+                // Fallback Creation
                 const { data: fallbackData } = await supabaseClient
                     .from('app_user_roles')
                     .upsert([{ id: user.id, email: user.email, status: 'pending' }])
                     .select()
                     .maybeSingle();
 
-                if (fallbackData) {
-                    performRouting(fallbackData.status);
-                } else {
-                    authUi.style.display = 'block'; // Show form again on error
-                    msgEl.textContent = "Error setting up profile. Please refresh.";
-                    msgEl.style.color = "#ef4444";
+                if (fallbackData) performRouting(fallbackData.status);
+                else {
+                    hideLoader();
+                    showToast("Error setting up profile. Please refresh.", "error");
                     isRouting = false;
                 }
             }
         }
 
-        // Master Listener: Catches users returning from Google instantly
+        // Master Listener
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                routeUser(session.user);
-            }
+            if (session && session.user) routeUser(session.user);
         });
 
-        // Instant check for returning users who didn't explicitly log out
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session && session.user) routeUser(session.user);
         });
 
-        async function handleGoogleLogin() {
-            msgEl.textContent = "Redirecting to Google...";
-            msgEl.style.color = "#64748b";
-            
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    // THE FIX: Explicitly force Google to return exactly to the login page
-                    redirectTo: window.location.origin + window.location.pathname
-                }
+        // Google Sign-in
+        document.querySelectorAll('.google-signin-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                showLoader();
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: window.location.origin + window.location.pathname }
+                });
+                if (error) { hideLoader(); showToast(error.message, "error"); }
             });
-            
-            if (error) { 
-                msgEl.textContent = error.message; 
-                msgEl.style.color = "#ef4444"; 
-            }
-        }
+        });
 
-        async function handleLogin() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                msgEl.textContent = "Please enter both email and password.";
-                msgEl.style.color = "#ef4444";
-                return;
-            }
-
-            msgEl.textContent = "Logging in...";
-            msgEl.style.color = "#64748b";
+        // Email Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoader();
+            const email = loginForm['login-email'].value.trim();
+            const password = loginForm['login-password'].value;
 
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) { hideLoader(); showToast(error.message, "error"); }
+        });
+
+        // Email Signup
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoader();
+            const username = signupForm['signup-username'].value.trim();
+            const email = signupForm['signup-email'].value.trim();
+            const password = signupForm['signup-password'].value;
+
+            const { data, error } = await supabaseClient.auth.signUp({ 
+                email, password, options: { data: { full_name: username } }
+            });
             
             if (error) {
-                msgEl.textContent = error.message;
-                msgEl.style.color = "#ef4444";
-            }
-            // Success is handled by onAuthStateChange!
-        }
-
-        async function handleSignup() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                msgEl.textContent = "Please enter both email and password to sign up.";
-                msgEl.style.color = "#ef4444";
-                return;
-            }
-
-            msgEl.textContent = "Creating account...";
-            msgEl.style.color = "#64748b";
-
-            const { data, error } = await supabaseClient.auth.signUp({ email, password });
-            
-            if (error) {
-                msgEl.textContent = error.message;
-                msgEl.style.color = "#ef4444";
+                hideLoader();
+                showToast(error.message, "error");
             } else {
                 if (data.session === null) {
-                    msgEl.textContent = "Signup successful! Please check your email to verify your account.";
-                    msgEl.style.color = "#10b981";
+                    hideLoader();
+                    showToast("Signup successful! Please check your email to verify your account.", "success");
+                    signupForm.reset();
+                    setTimeout(goToLogin, 2000);
                 } else {
-                    msgEl.textContent = "Signup successful! Logging in...";
-                    msgEl.style.color = "#10b981";
-                    // Success routing handled by onAuthStateChange
+                    showToast("Creating your account...", "info");
                 }
             }
-        }
+        });
+
+        // Forgot Password
+        document.getElementById('forgot-password-link').addEventListener('click', async () => {
+            const email = loginForm['login-email'].value.trim();
+            if (!email) {
+                showToast("Please enter your email address first", "error");
+                loginForm['login-email'].focus();
+                return;
+            }
+            showLoader();
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/reset-password.html',
+            });
+            hideLoader();
+            if (error) showToast(error.message, "error");
+            else showToast("Password reset link sent to your email!", "success");
+        });
     </script>
 </body>
 </html>
