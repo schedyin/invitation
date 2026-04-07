@@ -246,26 +246,42 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
+        /* --- UPDATED TEMPLATE CARDS FOR IMAGES --- */
         .template-card {
             background: var(--pure-white);
             border-radius: 16px;
-            padding: 1.5rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
             transition: transform 0.3s, box-shadow 0.3s;
             font-family: var(--font-main);
+            overflow: hidden;
         }
 
         .template-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 1rem;
         }
 
         .card-category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); font-weight: 700; }
@@ -480,7 +496,7 @@
                             </div>
                             <ul class="dropdown-list">
                                 <li data-value="ALL" onclick="selectFilterCategory('ALL', 'All Categories', event)">All Categories</li>
-                                </ul>
+                            </ul>
                             <input type="hidden" id="category-filter" value="ALL">
                         </div>
                     </div>
@@ -520,6 +536,11 @@
                                 <div class="input-group" style="flex-shrink: 0;">
                                     <input type="text" id="template-name" placeholder=" ">
                                     <label for="template-name">Template Name (e.g. Traditional Telugu Gold)</label>
+                                </div>
+                                
+                                <div class="input-group" style="flex-shrink: 0;">
+                                    <input type="url" id="template-preview" placeholder=" ">
+                                    <label for="template-preview">Preview Image URL (Optional cover image)</label>
                                 </div>
 
                                 <div class="input-group editor-group">
@@ -571,7 +592,7 @@
                 </div>
             </div>
 
-            <div id="import-preview-section" style="display: none; text-align: left; margin-top: 1rem; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            <div id="import-preview-section" style="display: none; text-align: left; margin-top: 1rem; flex: 1; flex-direction: column; overflow: hidden;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
                     <h4 style="font-family: var(--font-main); font-size: 1.1rem; margin:0;">Ready to Sync (<span id="import-preview-count">0</span>)</h4>
                     <button class="btn-submit" id="btn-sync" style="width: auto; padding: 8px 16px; margin: 0;" onclick="syncToSupabase()">Sync to Database</button>
@@ -745,9 +766,10 @@
         }
 
         async function fetchTemplatesData() {
+            // NEW: Added preview_image_url to the select query
             const { data: tplData, error } = await supabaseClient
                 .from('templates')
-                .select('id, name, html_code, category_id')
+                .select('id, name, html_code, category_id, preview_image_url')
                 .order('name');
             
             if (error) {
@@ -777,14 +799,21 @@
                 const catName = categoriesMap[t.category_id] || 'Uncategorized';
                 const card = document.createElement('div');
                 card.className = 'template-card';
+                
+                // NEW: Display the image, with a nice generic placeholder fallback if it's missing
+                const imgUrl = t.preview_image_url || 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=400&q=80';
+                
                 card.innerHTML = `
-                    <div>
-                        <div class="card-category">${catName}</div>
-                        <div class="card-title">${t.name}</div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn btn-edit" onclick="openEditor('${t.id}')">Edit</button>
-                        <button class="btn btn-delete" onclick="deleteTemplate('${t.id}', '${t.name.replace(/'/g, "\\'")}')">Delete</button>
+                    <img src="${imgUrl}" class="card-img" alt="${t.name}">
+                    <div class="card-body">
+                        <div>
+                            <div class="card-category">${catName}</div>
+                            <div class="card-title">${t.name}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-edit" onclick="openEditor('${t.id}')">Edit</button>
+                            <button class="btn btn-delete" onclick="deleteTemplate('${t.id}', '${t.name.replace(/'/g, "\\'")}')">Delete</button>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -929,6 +958,8 @@
             editingTemplateId = id;
             
             document.getElementById('template-name').value = t.name;
+            // NEW: Load the preview image URL into the editor input
+            document.getElementById('template-preview').value = t.preview_image_url || '';
             textarea.value = t.html_code;
             
             if (t.category_id && categoriesMap[t.category_id]) {
@@ -960,6 +991,8 @@
 
         window.updateTemplate = async function() {
             const name = document.getElementById('template-name').value.trim();
+            // NEW: Grab the preview image URL from the input
+            const preview_image_url = document.getElementById('template-preview').value.trim();
             const html_code = textarea.value.trim();
             const category_id = catHidden.value;
 
@@ -972,9 +1005,10 @@
             btnSaveDesktop.textContent = "Saving..."; saveBtnMobile.textContent = "SAVING...";
             btnSaveDesktop.disabled = true; saveBtnMobile.disabled = true;
 
+            // NEW: Pass preview_image_url to the Supabase update
             const { error } = await supabaseClient
                 .from('templates')
-                .update({ name, html_code, category_id })
+                .update({ name, html_code, category_id, preview_image_url })
                 .eq('id', editingTemplateId);
             
             btnSaveDesktop.textContent = "Save Updates"; saveBtnMobile.textContent = "SAVE";
@@ -1125,9 +1159,12 @@
 
             stagedTemplates.forEach(t => {
                 grid.innerHTML += `
-                    <div class="template-card" style="padding: 1rem;">
-                        <div class="card-category">${t.category_name || 'Uncategorized'}</div>
-                        <div class="card-title" style="font-size: 1rem; margin-top: 4px;">${t.name}</div>
+                    <div class="template-card" style="padding: 0;">
+                        <img src="${t.preview_image || 'https://via.placeholder.com/300x200?text=No+Preview'}" class="card-img" alt="Preview">
+                        <div class="card-body" style="padding: 1rem;">
+                            <div class="card-category">${t.category_name || 'Uncategorized'}</div>
+                            <div class="card-title" style="font-size: 1rem; margin-top: 4px;">${t.name}</div>
+                        </div>
                     </div>
                 `;
             });
@@ -1163,9 +1200,11 @@
                     }
 
                     // 3. Insert Template (Avoid duplicates by name roughly, or just insert)
+                    // NEW: Ensure preview_image_url maps from item.preview_image correctly
                     const { error: insertTplError } = await supabaseClient.from('templates').insert([{
                         name: item.name,
                         html_code: item.html_code,
+                        preview_image_url: item.preview_image,
                         category_id: categoryId
                     }]);
                     
