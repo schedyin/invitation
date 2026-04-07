@@ -688,7 +688,7 @@
             PERFECT STACKING SECTION
         ══════════════════════════════ */
         .stacking-section-bg {
-            background-color: #ffffff; 
+            background-color: var(--page-bg); 
             width: 100%; 
             font-family: 'IBM Plex Sans', sans-serif;
             position: relative;
@@ -791,11 +791,6 @@
             height: 100vh; /* Massive shield to cover anything underneath */
             background: #ffffff;
             z-index: -1;
-        }
-
-        /* Last card margin ensures we can scroll through it before the next section hits */
-        .stack-wrapper .feature-card:last-child {
-            margin-bottom: 10vh; 
         }
 
         /* Content inside each card */
