@@ -784,15 +784,24 @@
 }
 
 /* Create a white shield that extends below the card */
-.stack-wrapper .feature-card::after {
+/* Only apply the shield to cards that have a 'next' card coming up */
+.stack-wrapper .feature-card:not(:last-child)::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    height: 100vh; /* Covers the rest of the screen as you scroll */
+    /* This height should match your margin-bottom (250px) 
+       to cover the gap until the next card hits the sticky top */
+    height: 250px; 
     background: #ffffff;
     z-index: -1;
+}
+
+/* Ensure the last card behaves like a normal element at the end */
+.stack-wrapper .feature-card:last-child {
+    margin-bottom: 0;
+    position: relative; /* It can still be sticky, but doesn't need the shield */
 }
 
         /* Content inside each card */
