@@ -246,54 +246,67 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 1.5rem;
         }
 
-        /* --- UPDATED TEMPLATE CARDS FOR IMAGES --- */
+        /* --- PREMIUM IMAGE-LED TEMPLATE CARDS --- */
         .template-card {
-            background: var(--pure-white);
+            position: relative;
+            background: var(--bg-light);
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             font-family: var(--font-main);
             overflow: hidden;
+            aspect-ratio: 4 / 5; /* Forces the 4:5 Image Ratio */
         }
 
         .template-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
         }
 
         .card-img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 180px;
+            height: 100%;
             object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-light);
+            z-index: 1;
         }
 
-        .card-body {
-            padding: 1.5rem;
+        /* The blurred dark overlay at the bottom */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 1.25rem 1.25rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
-        .card-category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); font-weight: 700; }
-        .card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
+        .card-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: #a78bfa; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .card-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.3; }
 
-        .card-actions { display: flex; gap: 0.75rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+        .card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 
-        .btn { flex: 1; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; border: none; transition: all 0.2s; }
-        .btn-edit { background: rgba(103, 61, 230, 0.1); color: var(--accent-color); }
-        .btn-edit:hover { background: var(--accent-color); color: var(--pure-white); }
-        .btn-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-        .btn-delete:hover { background: #ef4444; color: var(--pure-white); }
+        .btn { flex: 1; padding: 0.6rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-align: center; border: none; transition: all 0.2s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        
+        .btn-edit { background: rgba(255, 255, 255, 0.15); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); }
+        .btn-edit:hover { background: rgba(255, 255, 255, 0.3); }
+        
+        .btn-delete { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
 
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-sub); font-size: 1.2rem; background: var(--pure-white); border-radius: 16px; border: 1px dashed var(--border-color); }
 
@@ -496,7 +509,7 @@
                             </div>
                             <ul class="dropdown-list">
                                 <li data-value="ALL" onclick="selectFilterCategory('ALL', 'All Categories', event)">All Categories</li>
-                            </ul>
+                                </ul>
                             <input type="hidden" id="category-filter" value="ALL">
                         </div>
                     </div>
@@ -592,7 +605,7 @@
                 </div>
             </div>
 
-            <div id="import-preview-section" style="display: none; text-align: left; margin-top: 1rem; flex: 1; flex-direction: column; overflow: hidden;">
+            <div id="import-preview-section" style="display: none; text-align: left; margin-top: 1rem; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
                     <h4 style="font-family: var(--font-main); font-size: 1.1rem; margin:0;">Ready to Sync (<span id="import-preview-count">0</span>)</h4>
                     <button class="btn-submit" id="btn-sync" style="width: auto; padding: 8px 16px; margin: 0;" onclick="syncToSupabase()">Sync to Database</button>
@@ -766,7 +779,6 @@
         }
 
         async function fetchTemplatesData() {
-            // NEW: Added preview_image_url to the select query
             const { data: tplData, error } = await supabaseClient
                 .from('templates')
                 .select('id, name, html_code, category_id, preview_image_url')
@@ -800,12 +812,11 @@
                 const card = document.createElement('div');
                 card.className = 'template-card';
                 
-                // NEW: Display the image, with a nice generic placeholder fallback if it's missing
                 const imgUrl = t.preview_image_url || 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=400&q=80';
                 
                 card.innerHTML = `
                     <img src="${imgUrl}" class="card-img" alt="${t.name}">
-                    <div class="card-body">
+                    <div class="card-overlay">
                         <div>
                             <div class="card-category">${catName}</div>
                             <div class="card-title">${t.name}</div>
@@ -958,7 +969,6 @@
             editingTemplateId = id;
             
             document.getElementById('template-name').value = t.name;
-            // NEW: Load the preview image URL into the editor input
             document.getElementById('template-preview').value = t.preview_image_url || '';
             textarea.value = t.html_code;
             
@@ -991,7 +1001,6 @@
 
         window.updateTemplate = async function() {
             const name = document.getElementById('template-name').value.trim();
-            // NEW: Grab the preview image URL from the input
             const preview_image_url = document.getElementById('template-preview').value.trim();
             const html_code = textarea.value.trim();
             const category_id = catHidden.value;
@@ -1005,7 +1014,6 @@
             btnSaveDesktop.textContent = "Saving..."; saveBtnMobile.textContent = "SAVING...";
             btnSaveDesktop.disabled = true; saveBtnMobile.disabled = true;
 
-            // NEW: Pass preview_image_url to the Supabase update
             const { error } = await supabaseClient
                 .from('templates')
                 .update({ name, html_code, category_id, preview_image_url })
@@ -1161,7 +1169,7 @@
                 grid.innerHTML += `
                     <div class="template-card" style="padding: 0;">
                         <img src="${t.preview_image || 'https://via.placeholder.com/300x200?text=No+Preview'}" class="card-img" alt="Preview">
-                        <div class="card-body" style="padding: 1rem;">
+                        <div class="card-overlay" style="padding: 1rem;">
                             <div class="card-category">${t.category_name || 'Uncategorized'}</div>
                             <div class="card-title" style="font-size: 1rem; margin-top: 4px;">${t.name}</div>
                         </div>
@@ -1199,8 +1207,7 @@
                         categoryId = newCat.id;
                     }
 
-                    // 3. Insert Template (Avoid duplicates by name roughly, or just insert)
-                    // NEW: Ensure preview_image_url maps from item.preview_image correctly
+                    // 3. Insert Template 
                     const { error: insertTplError } = await supabaseClient.from('templates').insert([{
                         name: item.name,
                         html_code: item.html_code,
