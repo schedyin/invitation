@@ -764,45 +764,43 @@
             background: #38a862; /* Hover */
         }
 
-/* 1. Ensure the parent container clips any "overflowing" white shields */
+/* 1. Ensure the right panel doesn't leak content into the next section */
 .stack-wrapper .right-panel {
     flex: 1;
     max-width: 600px;
     margin-left: auto;
     padding-top: 20px;
-    /* This is the key: it stops the last card's shield from 
-       bleeding into the 'How It Works' section */
+    /* This clips the "shield" of the last card so it stays inside this section */
     overflow: hidden; 
 }
 
+/* 2. The Card: Add a solid background and a "shield" extension */
 .stack-wrapper .feature-card {
     position: sticky;
     top: var(--sticky-top-stack);
-    background-color: #fff; 
+    background-color: #ffffff; /* Solid white background */
     width: 100%;
     border-top: 1px solid var(--border-color-stack);
-    /* Keep consistent spacing for all cards */
     margin-bottom: 250px; 
+    z-index: 1;
 }
 
-/* 2. Every card gets a shield so it covers the one before it */
+/* 3. The "Shield": This covers the long text of previous cards as you scroll */
 .stack-wrapper .feature-card::after {
     content: '';
     position: absolute;
-    top: 100%;
+    top: 100%; /* Starts at the bottom of the current card */
     left: 0;
     width: 100%;
-    /* Use a height tall enough to cover the 'gap' (250px) plus 
-       any potential extra long text from the previous card */
+    /* 500px is enough to cover any long text from the card underneath */
     height: 500px; 
     background: #ffffff;
-    z-index: -1;
+    z-index: -1; /* Sits behind the CURRENT card but above the PREVIOUS card */
 }
 
-/* 3. The very last card needs a margin-bottom to allow the 
-      next section to "catch up" and start scrolling */
+/* 4. The Last Card: Ensure it has space to be seen before the next section arrives */
 .stack-wrapper .feature-card:last-child {
-    margin-bottom: 100vh; /* This creates the "scroll room" to see the last card */
+    margin-bottom: 10vh; /* Reduced margin so it doesn't feel like a huge empty gap */
 }
 
         /* Content inside each card */
