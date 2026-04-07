@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
         /* --- DASHBOARD & FORM COMBINED CSS VARIABLES --- */
@@ -180,6 +181,29 @@
             width: 100%;
         }
 
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #7c53f0, var(--accent-color));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
+            transition: transform 0.2s;
+            font-family: var(--font-alt);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-create:hover { transform: translateY(-2px); }
+
         .controls-bar {
             display: flex;
             gap: 16px;
@@ -244,236 +268,68 @@
             box-shadow: 0 12px 25px rgba(0,0,0,0.06);
         }
 
-        .card-category {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-color);
-            font-weight: 700;
-        }
+        .card-category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); font-weight: 700; }
+        .card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
+        .card-actions { display: flex; gap: 0.75rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-color); }
 
-        .card-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .btn {
-            flex: 1;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-align: center;
-            border: none;
-            transition: all 0.2s;
-        }
-
+        .btn { flex: 1; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; border: none; transition: all 0.2s; }
         .btn-edit { background: rgba(103, 61, 230, 0.1); color: var(--accent-color); }
         .btn-edit:hover { background: var(--accent-color); color: var(--pure-white); }
-
         .btn-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
         .btn-delete:hover { background: #ef4444; color: var(--pure-white); }
 
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 4rem;
-            color: var(--text-sub);
-            font-size: 1.2rem;
-            background: var(--pure-white);
-            border-radius: 16px;
-            border: 1px dashed var(--border-color);
-        }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-sub); font-size: 1.2rem; background: var(--pure-white); border-radius: 16px; border: 1px dashed var(--border-color); }
 
         /* =========================================
            EDITOR VIEW STYLES
         ========================================= */
-        #editor-wrapper {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-        }
+        #editor-wrapper { display: none; width: 100%; height: 100%; flex-direction: column; }
 
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .btn-back {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.2s;
-        }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        .btn-back { background: transparent; border: none; color: var(--text-sub); font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
         .btn-back:hover { color: var(--text-main); }
 
-        /* Exact Creator Layout Styles */
-        .layout-split {
-            display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-            align-items: flex-start;
-            gap: 2rem;
-            width: 100%;
-            /* Lock height to strictly fit within the content area (100vh - 80px topbar - 48px padding - 60px back nav) */
-            height: calc(100vh - 188px);
-        }
-
-        .form-side {
-            flex: 1;
-            max-width: 800px;
-            width: 100%;
-            height: 100%; 
-            padding-bottom: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Desktop Sticky Preview */
-        .preview-side {
-            width: 375px; 
-            height: 100%; 
-            background: #E5E7EB;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: var(--shadow-premium);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            flex-shrink: 0;
-            z-index: 10;
-            position: sticky;
-            top: 0;
-        }
-
-        .preview-header { 
-            background: #0f172a;
-            color: #94a3b8;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        
+        .layout-split { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; gap: 2rem; width: 100%; height: calc(100vh - 188px); }
+        .form-side { flex: 1; max-width: 800px; width: 100%; height: 100%; padding-bottom: 0; display: flex; flex-direction: column; }
+        .preview-side { width: 375px; height: 100%; background: #E5E7EB; border: 1px solid var(--border-color); border-radius: 20px; box-shadow: var(--shadow-premium); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; z-index: 10; position: sticky; top: 0; }
+        .preview-header { background: #0f172a; color: #94a3b8; text-align: center; padding: 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
         .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; flex: 1; }
 
-        /* UI Components for Editor */
-        .form-section { 
-            background: var(--pure-white);
-            padding: 2.5rem 3rem; border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color); 
-            font-family: var(--font-main);
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            height: 100%;
-            max-height: 100%;
-            overflow: hidden;
-        }
-
+        .form-section { background: var(--pure-white); padding: 2.5rem 3rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); font-family: var(--font-main); display: flex; flex-direction: column; flex: 1; height: 100%; max-height: 100%; overflow: hidden; }
         .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; flex-shrink: 0; }
+        .editor-group { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 0; }
         
-        .editor-group { 
-            flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 0;
-        }
-        
-        .input-group input, .input-group textarea {
-            width: 100%; background-color: transparent; border: 1px solid var(--border-color);
-            border-radius: 12px; font-size: 16px; padding: 14px;
-            font-family: inherit; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
-        }
+        .input-group input, .input-group textarea { width: 100%; background-color: transparent; border: 1px solid var(--border-color); border-radius: 12px; font-size: 16px; padding: 14px; font-family: inherit; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
         .input-group input { font-weight: 600; }
-        
-        .input-group textarea { 
-            resize: none; 
-            flex: 1; 
-            height: 100%; 
-            min-height: 0; 
-            font-family: 'Fira Code', monospace; 
-            font-size: 14px; line-height: 1.5; background: #f8fafc; overflow-y: auto; 
-        }
+        .input-group textarea { resize: none; flex: 1; height: 100%; min-height: 0; font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.5; background: #f8fafc; overflow-y: auto; }
         
         .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
         .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); background: #fff; }
         
-        .input-group label {
-            position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500; pointer-events: none;
-            transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0;
-        }
+        .input-group label { position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500; pointer-events: none; transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0; }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
-        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label {
-            top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-color); background: var(--pure-white); padding: 0 5px;
-        }
+        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label { top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-color); background: var(--pure-white); padding: 0 5px; }
 
-        .btn-submit {
-            width: 100%; padding: 1.125rem; font-size: 1.1rem; font-weight: 700; font-family: inherit; color: var(--pure-white);
-            background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; border-radius: 16px; cursor: pointer;
-            transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); flex-shrink: 0;
-        }
+        .btn-submit { width: 100%; padding: 1.125rem; font-size: 1.1rem; font-weight: 700; font-family: inherit; color: var(--pure-white); background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); flex-shrink: 0; }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(103, 61, 230, 0.3); }
 
-        /* Mobile Action Bar */
         .sticky-action-bar { display: none; }
 
         @media (max-width: 1150px) {
             .layout-split { flex-direction: column; align-items: center; gap: 0; height: auto; }
             .form-side { width: 100%; padding-bottom: 100px; height: auto; }
-            
-            .form-section {
-                background: transparent !important; border: none !important;
-                padding: 0 !important; border-radius: 0 !important;
-                height: auto !important; max-height: none !important; overflow: visible !important;
-            }
-
+            .form-section { background: transparent !important; border: none !important; padding: 0 !important; border-radius: 0 !important; height: auto !important; max-height: none !important; overflow: visible !important; }
             .editor-group { display: block !important; }
             .input-group textarea { flex: none !important; height: 60vh !important; min-height: 400px; -webkit-overflow-scrolling: touch; }
-
-            .preview-side { 
-                position: fixed; top: 72px; left: 0; right: 0; width: 100%;
-                height: calc(100vh - 72px - 85px); border-radius: 0; border: none; z-index: 998; 
-            }
+            .preview-side { position: fixed; top: 72px; left: 0; right: 0; width: 100%; height: calc(100vh - 72px - 85px); border-radius: 0; border: none; z-index: 998; }
             .preview-header { display: none; }
-            
-            .sticky-action-bar.mobile-only {
-                display: none; /* Changed: keep hidden by default, JS controls it */
-                position: fixed; bottom: 0; left: 0; right: 0;
-                background: var(--pure-white); padding: 1rem; border-top: 1px solid var(--border-color);
-                z-index: 1000; gap: 1rem; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            }
+            .sticky-action-bar.mobile-only { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--pure-white); padding: 1rem; border-top: 1px solid var(--border-color); z-index: 1000; gap: 1rem; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
             .mobile-hidden { display: none !important; }
-            
-            /* Hide top nav on mobile to rely on the sticky bar */
             #editor-wrapper .top-nav { margin-bottom: 0; border-bottom: none; }
         }
 
-        .btn-half {
-            flex: 1; padding: 1rem; border-radius: 12px; font-weight: 700;
-            font-size: 1rem; cursor: pointer; text-align: center;
-            font-family: inherit; transition: all 0.3s var(--ease-cubic);
-        }
+        .btn-half { flex: 1; padding: 1rem; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center; font-family: inherit; transition: all 0.3s var(--ease-cubic); }
         .btn-outline-mobile { background: transparent; border: 1.5px solid var(--accent-color); color: var(--accent-color); }
         .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
 
@@ -491,6 +347,27 @@
         .create-new-cat { border-top: 1px solid var(--border-color); color: var(--accent-color) !important; font-weight: 600 !important; display: flex; align-items: center; gap: 8px; }
         .create-new-cat:hover { background: rgba(103, 61, 230, 0.05) !important; }
 
+        /* --- IMPORT MODAL & OVERLAY --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index: 5000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .modal-card {
+            background: white; padding: 2rem; border-radius: 24px; max-width: 800px; width: 90%; max-height: 90vh;
+            display: flex; flex-direction: column;
+            transform: scale(0.9); transition: transform 0.4s var(--ease-out-back);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .modal-overlay.show .modal-card { transform: scale(1); }
+        
+        .upload-zone { 
+            background: var(--bg-light); padding: 3rem; border-radius: var(--radius-lg); 
+            border: 2px dashed var(--border-color); text-align: center; margin-top: 1rem; transition: 0.3s; 
+        }
+        
         /* Auth Guard Overlay */
         #auth-guard-overlay {
             position: fixed; inset: 0; background: var(--pure-white); z-index: 99999;
@@ -499,18 +376,20 @@
         .spinner { width: 40px; height: 40px; border: 3px solid rgba(103, 61, 230, 0.2); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Toast */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 14px 28px; border-radius: 12px; color: white; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 6000; text-align: center; }
+        #toast.show { bottom: 40px; }
+        #toast.success { background: #10b981; }
+        #toast.error { background: #ef4444; }
     </style>
 </head>
 
 <body>
     
-    <!-- Auth Guard Loader -->
     <div id="auth-guard-overlay"><div class="spinner"></div></div>
 
-    <!-- App Container -->
     <div class="app-layout">
         
-        <!-- Mobile Header (Hidden on Desktop) -->
         <header class="m-header mobile-only">
             <button class="m-menu-btn" id="m-open-drawer">
                 <div class="m-menu-lines"><span></span></div>
@@ -521,10 +400,8 @@
             <div style="width:40px;"></div>
         </header>
 
-        <!-- Sidebar Overlay (Mobile) -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
         
-        <!-- Unified Sidebar (Desktop & Mobile) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="#" class="brand-logo" style="text-decoration: none;">
@@ -533,13 +410,11 @@
                 
                 <span class="mini-logo">✦</span>
                 
-                <!-- Desktop Collapse Button -->
                 <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
                     <svg class="btn-close-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
                     <svg class="btn-open-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
                 </button>
 
-                <!-- Mobile Close Button -->
                 <button class="m-drawer-close mobile-only" id="m-close-drawer">
                     <div class="m-drawer-close-icon"></div>
                 </button>
@@ -555,7 +430,6 @@
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></span>
                         <span class="nav-label">All Invitations</span>
                     </a>
-                    <!-- HIGHLIGHTED MENU ITEM -->
                     <a href="./templates.html" class="nav-item active">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg></span>
                         <span class="nav-label">Manage Templates</span>
@@ -567,7 +441,6 @@
                 </nav>
             </div>
 
-            <!-- Profile Account Section in Sidebar -->
             <div class="account-section" id="profile-trigger">
                 <div class="account-card">
                     <div class="account-avatar">
@@ -581,22 +454,25 @@
             </div>
         </aside>
 
-        <!-- Main Dashboard Content Shell -->
         <div class="main-content">
             <header class="topbar desktop-only" id="page-title">Manage Templates</header>
             
             <main class="content-area">
                 
-                <!-- =========================================
-                     DASHBOARD VIEW (Grid & Filters)
-                ========================================= -->
                 <div id="dashboard-view">
+                    
+                    <div class="header-actions">
+                        <button class="btn-create" onclick="openImportModal()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: text-bottom;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Import Templates
+                        </button>
+                    </div>
+
                     <div class="controls-bar">
                         <div class="search-box">
                             <input type="text" id="search-input" placeholder="Search templates by name..." oninput="filterTemplates()">
                         </div>
                         
-                        <!-- Custom Dropdown for Dashboard Filters -->
                         <div class="filter-box custom-dropdown" id="filter-dropdown">
                             <div class="dropdown-header">
                                 <span class="selected-value">All Categories</span>
@@ -604,8 +480,7 @@
                             </div>
                             <ul class="dropdown-list">
                                 <li data-value="ALL" onclick="selectFilterCategory('ALL', 'All Categories', event)">All Categories</li>
-                                <!-- Populated dynamically -->
-                            </ul>
+                                </ul>
                             <input type="hidden" id="category-filter" value="ALL">
                         </div>
                     </div>
@@ -615,9 +490,6 @@
                     </div>
                 </div>
 
-                <!-- =========================================
-                     EDITOR VIEW (Hidden by default)
-                ========================================= -->
                 <div id="editor-wrapper">
                     <div class="top-nav">
                         <button class="btn-back" onclick="closeEditor()">
@@ -627,12 +499,9 @@
                         <h2 style="font-size: 1.2rem; color: var(--primary-dark); margin: 0;" class="desktop-only">Editing Template</h2>
                     </div>
 
-                    <!-- Exact Creator Layout Split -->
                     <div class="layout-split">
                         <div class="form-side" id="editor-view">
                             <div class="form-section">
-                                
-                                <!-- Side-by-Side Category and Save Button -->
                                 <div style="display: flex; gap: 16px; align-items: center; z-index: 20; position: relative; margin-bottom: 1rem; flex-shrink: 0;">
                                     <div class="input-group" style="flex: 1; margin-bottom: 0; padding-top: 0;">
                                         <div class="custom-dropdown" id="category-dropdown">
@@ -641,8 +510,7 @@
                                                 <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                             </div>
                                             <ul class="dropdown-list">
-                                                <!-- Populated by JS -->
-                                            </ul>
+                                                </ul>
                                             <input type="hidden" id="selected-category" value="">
                                         </div>
                                     </div>
@@ -668,7 +536,6 @@
                     </div>
                 </div>
 
-                <!-- Sticky Mobile Form Action Bar (Editor Only) -->
                 <div class="sticky-action-bar mobile-only" id="mobile-editor-actions">
                     <button type="button" id="btn-toggle-view" class="btn-half btn-outline-mobile">PREVIEW</button>
                     <button type="button" id="btn-save-mobile" class="btn-half btn-solid-mobile" onclick="updateTemplate()">SAVE</button>
@@ -678,7 +545,44 @@
         </div>
     </div>
 
-    <!-- Profile Popup Menu -->
+    <div id="import-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="top-nav" style="margin-bottom: 0; padding-bottom: 1rem;">
+                <h3 style="margin:0; font-family: var(--font-main); color: var(--text-main); font-size: 1.4rem;">Import Templates</h3>
+                <button class="btn-back" onclick="closeImportModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <div id="import-upload-zone" class="upload-zone">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <h3 id="import-filename" style="font-family: var(--font-main); margin-bottom: 0.5rem; color: var(--text-main);">Select Encrypted File</h3>
+                <p style="color: var(--text-sub); margin-bottom: 1rem; font-size: 0.9rem;">Upload your secure bundle (.sk, .txt, .json)</p>
+                
+                <input type="file" id="import-file-input" style="display:none" accept=".sk,.txt,.json">
+                <button class="btn-submit" id="import-browse-btn" style="width: auto; padding: 10px 24px;" onclick="document.getElementById('import-file-input').click()">Browse Files</button>
+
+                <div id="import-password-group" style="display: none; margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; text-align: left;">
+                    <div class="input-group" style="margin-bottom: 1rem;">
+                        <input type="password" id="import-decrypt-pass" placeholder=" ">
+                        <label for="import-decrypt-pass">Decryption Password</label>
+                    </div>
+                    <button class="btn-submit" style="padding: 12px;" onclick="decryptFile()">Unlock & Preview</button>
+                </div>
+            </div>
+
+            <div id="import-preview-section" style="display: none; text-align: left; margin-top: 1rem; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <h4 style="font-family: var(--font-main); font-size: 1.1rem; margin:0;">Ready to Sync (<span id="import-preview-count">0</span>)</h4>
+                    <button class="btn-submit" id="btn-sync" style="width: auto; padding: 8px 16px; margin: 0;" onclick="syncToSupabase()">Sync to Database</button>
+                </div>
+                
+                <div class="template-grid" id="import-preview-grid" style="overflow-y: auto; padding-right: 10px; max-height: 400px;">
+                    </div>
+            </div>
+        </div>
+    </div>
+
     <div class="profile-popup" id="profile-popup">
         <div class="popup-header">
             <div class="account-avatar">
@@ -693,6 +597,8 @@
             <li><button type="button" id="btn-logout" style="color:#dc2626"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; vertical-align:text-bottom;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>Logout</button></li>
         </ul>
     </div>
+
+    <div id="toast"></div>
 
     <script>
         // ==========================================
@@ -721,7 +627,6 @@
             } else if (profile.status === 'declined') {
                 window.location.replace('declined.html');
             } else if (profile.status === 'approved' || profile.status === 'admin') {
-                // Allowed!
                 document.getElementById('auth-guard-overlay').style.opacity = '0';
                 setTimeout(() => document.getElementById('auth-guard-overlay').remove(), 300);
                 
@@ -751,6 +656,13 @@
             window.location.replace('login.html');
         });
 
+        // UI UTILS
+        const showToast = (message, type = 'success') => { 
+            const t = document.getElementById('toast'); 
+            t.textContent = message; t.className = `show ${type}`; 
+            setTimeout(() => { t.className = t.className.replace('show', ''); }, 3000); 
+        };
+
         // ==========================================
         // --- DASHBOARD UI INITIALIZATION LOGIC ---
         // ==========================================
@@ -758,7 +670,6 @@
             const sidebar = document.getElementById('sidebar');
             const mOverlay = document.getElementById('sidebar-overlay');
             
-            // Desktop Sidebar Toggle
             const toggleBtn = document.getElementById('sidebar-toggle-btn');
             if(toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
@@ -766,7 +677,6 @@
                 });
             }
 
-            // Mobile Drawer Toggle
             const mOpen = document.getElementById('m-open-drawer');
             const mClose = document.getElementById('m-close-drawer');
             
@@ -783,7 +693,6 @@
             if(mClose) mClose.onclick = closeMobileDrawer;
             if(mOverlay) mOverlay.onclick = closeMobileDrawer;
 
-            // Profile Popup Interaction
             const pPopup = document.getElementById('profile-popup');
             const profileTrigger = document.getElementById('profile-trigger');
 
@@ -820,7 +729,6 @@
             const { data: catData } = await supabaseClient.from('template_categories').select('*').order('name');
             if (!catData) return;
 
-            // Update Filter Dropdown UI
             const filterList = document.querySelector('#filter-dropdown .dropdown-list');
             filterList.innerHTML = '<li data-value="ALL" onclick="selectFilterCategory(\'ALL\', \'All Categories\', event)">All Categories</li>';
             
@@ -833,7 +741,6 @@
                 filterList.appendChild(li);
             });
 
-            // Update Editor Dropdown UI cleanly
             populateEditorCategories(catData);
         }
 
@@ -849,7 +756,7 @@
             }
 
             allTemplates = tplData || [];
-            filterTemplates(); // Refresh UI
+            filterTemplates(); 
         }
 
         async function loadDashboard() {
@@ -908,7 +815,6 @@
             }
         };
 
-        // --- CUSTOM DROPDOWNS LOGIC (Generic Handling) ---
         function setupDropdown(dropdownId) {
             const header = document.querySelector(`#${dropdownId} .dropdown-header`);
             const list = document.querySelector(`#${dropdownId} .dropdown-list`);
@@ -916,7 +822,6 @@
             if(!header || !list) return;
 
             header.addEventListener('click', (e) => {
-                // Close any other open dropdowns first
                 document.querySelectorAll('.dropdown-list.show').forEach(openL => {
                     if (openL !== list) {
                         openL.classList.remove('show');
@@ -935,11 +840,9 @@
             document.querySelectorAll('.dropdown-header').forEach(h => h.classList.remove('active'));
         });
 
-        // Initialize dropdowns
         setupDropdown('filter-dropdown');
         setupDropdown('category-dropdown');
 
-        // Filter Dropdown Selection
         window.selectFilterCategory = function(id, name, event) {
             event.stopPropagation();
             const hidden = document.getElementById('category-filter');
@@ -952,7 +855,7 @@
             list.classList.remove('show');
             header.classList.remove('active');
             
-            filterTemplates(); // Trigger update
+            filterTemplates(); 
         };
 
         // --- EDITOR LOGIC ---
@@ -969,7 +872,7 @@
         const catList = document.querySelector('#category-dropdown .dropdown-list');
 
         function populateEditorCategories(catData) {
-            catList.innerHTML = ''; // Clean old entries
+            catList.innerHTML = ''; 
             catData.forEach(cat => {
                 const li = document.createElement('li');
                 li.dataset.value = cat.id;
@@ -1014,7 +917,7 @@
                 else alert("Error: " + error.message);
             } else {
                 categoriesMap[data.id] = data.name;
-                await fetchCategoriesData(); // Refresh the lists
+                await fetchCategoriesData(); 
                 selectEditorCategory(data.id, data.name);
             }
         }
@@ -1025,7 +928,6 @@
 
             editingTemplateId = id;
             
-            // Populate Fields
             document.getElementById('template-name').value = t.name;
             textarea.value = t.html_code;
             
@@ -1038,20 +940,15 @@
                 catSelectedValue.style.fontWeight = '400';
             }
 
-            // UI Switch to Editor
             dashboardView.style.display = 'none';
             editorWrapper.style.display = 'flex';
             if(pageTitle) pageTitle.textContent = "Edit Template";
             
-            // Show mobile actions if applicable
             document.getElementById('mobile-editor-actions').style.display = window.innerWidth <= 1150 ? 'flex' : 'none';
-
-            // Render Preview immediately
             renderPreview(t.html_code);
         };
 
         window.closeEditor = function() {
-            // UI Switch to Dashboard
             editorWrapper.style.display = 'none';
             dashboardView.style.display = 'block';
             if(pageTitle) pageTitle.textContent = "Manage Templates";
@@ -1085,13 +982,13 @@
 
             if (error) alert('Error: ' + error.message);
             else {
-                alert('✅ Template updated successfully!');
+                showToast('Template updated successfully!', 'success');
                 closeEditor();
-                fetchTemplatesData(); // Refresh the grid
+                fetchTemplatesData(); 
             }
         };
 
-        // --- PREVIEW ENGINE (Safe CSS Extractor included) ---
+        // --- PREVIEW ENGINE ---
         let previewTimeout;
         textarea.addEventListener('input', (e) => {
             clearTimeout(previewTimeout);
@@ -1138,19 +1035,16 @@
         
         toggleBtnView.addEventListener('click', () => {
             if (previewViewContainer.classList.contains('mobile-hidden')) {
-                // Switch to Preview
                 editorViewContainer.classList.add('mobile-hidden');
                 previewViewContainer.classList.remove('mobile-hidden');
                 toggleBtnView.textContent = 'EDIT CODE';
             } else {
-                // Switch to Editor
                 previewViewContainer.classList.add('mobile-hidden');
                 editorViewContainer.classList.remove('mobile-hidden');
                 toggleBtnView.textContent = 'PREVIEW';
             }
         });
 
-        // Textarea Tab Key
         textarea.addEventListener('keydown', function(e) {
             if (e.key == 'Tab') {
                 e.preventDefault();
@@ -1159,6 +1053,138 @@
                 this.selectionStart = this.selectionEnd = start + 1;
             }
         });
+
+        // ==========================================
+        // --- IMPORT TEMPLATES LOGIC ---
+        // ==========================================
+        let encryptedData = "";
+        let stagedTemplates = [];
+
+        window.openImportModal = function() {
+            document.getElementById('import-modal').classList.add('show');
+            resetImportModal();
+        };
+
+        window.closeImportModal = function() {
+            document.getElementById('import-modal').classList.remove('show');
+        };
+
+        function resetImportModal() {
+            encryptedData = "";
+            stagedTemplates = [];
+            document.getElementById('import-file-input').value = "";
+            document.getElementById('import-upload-zone').style.display = 'block';
+            document.getElementById('import-preview-section').style.display = 'none';
+            document.getElementById('import-password-group').style.display = 'none';
+            document.getElementById('import-decrypt-pass').value = "";
+            document.getElementById('import-filename').textContent = "Select Encrypted File";
+            document.getElementById('import-browse-btn').style.display = 'inline-block';
+        }
+
+        // Handle File Selection
+        document.getElementById('import-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                encryptedData = event.target.result;
+                document.getElementById('import-password-group').style.display = 'block';
+                document.getElementById('import-filename').textContent = file.name;
+                document.getElementById('import-browse-btn').style.display = 'none';
+            };
+            reader.readAsText(file);
+        });
+
+        // Decrypt Logic
+        window.decryptFile = function() {
+            const password = document.getElementById('import-decrypt-pass').value;
+            if(!password) return showToast("Please enter a password.", "error");
+
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedData, password);
+                const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+                
+                if(!decryptedText) throw new Error("Bad Password");
+
+                stagedTemplates = JSON.parse(decryptedText);
+                renderImportPreview();
+            } catch (err) {
+                showToast("Decryption failed. Incorrect password or corrupted file.", "error");
+            }
+        };
+
+        // Render Grid in Modal
+        function renderImportPreview() {
+            document.getElementById('import-upload-zone').style.display = 'none';
+            document.getElementById('import-preview-section').style.display = 'flex';
+            document.getElementById('import-preview-count').textContent = stagedTemplates.length;
+
+            const grid = document.getElementById('import-preview-grid');
+            grid.innerHTML = '';
+
+            stagedTemplates.forEach(t => {
+                grid.innerHTML += `
+                    <div class="template-card" style="padding: 1rem;">
+                        <div class="card-category">${t.category_name || 'Uncategorized'}</div>
+                        <div class="card-title" style="font-size: 1rem; margin-top: 4px;">${t.name}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Supabase Upload Logic
+        window.syncToSupabase = async function() {
+            const btn = document.getElementById('btn-sync');
+            btn.disabled = true;
+            btn.textContent = "Syncing...";
+
+            try {
+                for (const item of stagedTemplates) {
+                    // 1. Check if Category exists
+                    const { data: catData, error: catError } = await supabaseClient
+                        .from('template_categories')
+                        .select('id')
+                        .eq('name', item.category_name || 'General')
+                        .maybeSingle();
+
+                    let categoryId = catData?.id;
+
+                    // 2. Create Category if missing
+                    if (!categoryId) {
+                        const { data: newCat, error: insertCatError } = await supabaseClient
+                            .from('template_categories')
+                            .insert({ name: item.category_name || 'General' })
+                            .select()
+                            .single();
+                        
+                        if (insertCatError) throw insertCatError;
+                        categoryId = newCat.id;
+                    }
+
+                    // 3. Insert Template (Avoid duplicates by name roughly, or just insert)
+                    const { error: insertTplError } = await supabaseClient.from('templates').insert([{
+                        name: item.name,
+                        html_code: item.html_code,
+                        category_id: categoryId
+                    }]);
+                    
+                    // We ignore unique constraint errors to let other templates continue syncing
+                    if (insertTplError && insertTplError.code !== '23505') throw insertTplError; 
+                }
+
+                showToast("All templates synced successfully!", "success");
+                closeImportModal();
+                await loadDashboard(); // Refresh the templates grid
+                
+            } catch (error) {
+                console.error(error);
+                showToast("An error occurred during sync: " + error.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Sync to Database";
+            }
+        };
     </script>
 </body>
 </html>
