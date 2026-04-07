@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedy - Hero</title>
     
-    <!-- Fonts for Navbar and Hero -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Outfit:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -772,17 +770,17 @@
             padding-top: 20px;
         }
 
-/* Change this: */
-.stack-wrapper .feature-card {
-    position: sticky;
-    top: var(--sticky-top-stack);
-    background-color: #fff;
-    width: 100%;
-    border-top: 1px solid var(--border-color-stack);
-    margin-bottom: 0px; /* Change this to something smaller, e.g., 50px */
-    padding-bottom: 50px;
-    box-shadow: none; 
-}
+        /* Change this: */
+        .stack-wrapper .feature-card {
+            position: sticky;
+            top: var(--sticky-top-stack);
+            background-color: #fff;
+            width: 100%;
+            border-top: 1px solid var(--border-color-stack);
+            margin-bottom: 0px; /* Change this to something smaller, e.g., 50px */
+            padding-bottom: 50px;
+            box-shadow: none; 
+        }
 
         /* Content inside each card */
         .stack-wrapper .card-inner {
@@ -802,10 +800,11 @@
             justify-content: center;
         }
 
-        .stack-wrapper .icon-box svg {
-            width: 64px;
-            height: 64px;
-            color: var(--accent-green-stack);
+        /* UPDATED: Changed from targeting svg to img */
+        .stack-wrapper .icon-box img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
         }
 
         .stack-wrapper .text-box {
@@ -1571,13 +1570,13 @@
                 max-width: 100%;
             }
 
-/* Change this: */
-.stack-wrapper .feature-card {
-    top: calc(var(--header-height) + 300px); 
-    margin-bottom: 0px; /* Change this to something smaller, e.g., 40px */
-    padding-bottom: 50px;
-    z-index: 10;
-}
+            /* Change this: */
+            .stack-wrapper .feature-card {
+                top: calc(var(--header-height) + 300px); 
+                margin-bottom: 0px; /* Change this to something smaller, e.g., 40px */
+                padding-bottom: 50px;
+                z-index: 10;
+            }
 
             .stack-wrapper .card-inner {
                 gap: 15px;
@@ -1585,7 +1584,9 @@
             }
 
             .stack-wrapper .icon-box { width: 70px; height: 70px; }
-            .stack-wrapper .icon-box svg { width: 48px; height: 48px; }
+            /* UPDATED: Changed from targeting svg to img */
+            .stack-wrapper .icon-box img { width: 52px; height: 52px; }
+            
             .stack-wrapper .stack-desc { font-size: 20px; }
 
             /* HIW Mobile Adjustments */
@@ -1607,9 +1608,9 @@
             .carousel-section {
                 order: 1;
                 margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
-                margin-bottom: 0;                           /* No overlap with text */
+                margin-bottom: 0;                            /* No overlap with text */
                 position: relative;
-                z-index: 1;                                 /* Behind the text */
+                z-index: 1;                                  /* Behind the text */
                 
                 /* Remove 20px left/right padding - counteract .main-wrapper padding */
                 margin-left: -20px;
@@ -1820,11 +1821,7 @@
 </head>
 <body>
 
-    <!-- ══════════════════════════════
-         LANDING PAGE CONTAINER
-    ══════════════════════════════ -->
     <div id="landing-page">
-        <!-- ═══════════════ NAVBAR ═══════════════ -->
         <header class="header" id="mainHeader">
             <div class="header-container">
                 <div class="nav-left">
@@ -1838,7 +1835,6 @@
                 </div>
                 <div class="nav-right">
                     <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
-                        <!-- Inline Hamburger SVG -->
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -1851,7 +1847,6 @@
             </div>
         </header>
 
-        <!-- Mobile Drawer -->
         <div id="mobileMenu">
             <a href="#" class="mobile-nav-link">Upskill your Team</a>
             <a href="#" class="mobile-nav-link">About</a>
@@ -1862,10 +1857,8 @@
         </div>
         <div id="menuOverlay"></div>
 
-        <!-- ═══════════════ HERO SECTION ═══════════════ -->
         <div class="hero-wrapper">
             
-            <!-- Hero Text -->
             <div class="hero-text-content">
                 <span class="hero-eyebrow">Make Every Event Memorable</span>
                 <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
@@ -1879,36 +1872,29 @@
                 </a>
             </div>
 
-            <!-- 3D Carousel -->
             <div class="carousel-section">
                 <div class="carousel-container">
                     <div class="carousel">
-                        <!-- Image Pair 1 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/73/ca/07/73ca07f8a74c1336e85d3354f4a494f3.jpg" alt="Serene Skincare Product Display" class="img-front">
                             <img src="https://i.pinimg.com/736x/99/57/3d/99573dc8cfdeaaecd7ae8d680ed41515.jpg" alt="Skincare Close-Up" class="img-back">
                         </div>
-                        <!-- Image Pair 2 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/cb/a2/f3/cba2f3e9fab306da395e5d46db5367ed.jpg" alt="Serene Minimalist Interior" class="img-front">
                             <img src="https://i.pinimg.com/736x/db/6f/ab/db6fab9b13a8d971cf62a3aa80e2fa70.jpg" alt="Elegant Glass Dropper Bottles" class="img-back">
                         </div>
-                        <!-- Image Pair 3 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/71/f9/8f/71f98f8e9b65c20a4d275901a6ecdac0.jpg" alt="Modern Minimalist Kitchen" class="img-front">
                             <img src="https://i.pinimg.com/736x/7f/f7/e5/7ff7e595cb59ccd6826c386f92e764f7.jpg" alt="Contemplative Man in Hat" class="img-back">
                         </div>
-                        <!-- Image Pair 4 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/20/fa/4e/20fa4ec7d56edd83924ea5810afc0407.jpg" alt="Minimalist Fashion Look" class="img-front">
                             <img src="https://i.pinimg.com/736x/73/53/47/735347345dbbbddc1306d2d19edfcddd.jpg" alt="Minimalist Interior with Staircase" class="img-back">
                         </div>
-                        <!-- Image Pair 5 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/a9/af/98/a9af983ec8885d0c1aec4cdec98556ee.jpg" alt="Minimalist Perfume Scene" class="img-front">
                             <img src="https://i.pinimg.com/736x/20/b3/25/20b3257bbd87b1bb0937b553762f5db8.jpg" alt="Minimalist Skincare Arrangement" class="img-back">
                         </div>
-                        <!-- Image Pair 6 -->
                         <div class="image-container">
                             <img src="https://i.pinimg.com/736x/5f/7c/ba/5f7cba530e2a39a4841c7b96cbd639d6.jpg" alt="Woman Running Outdoors" class="img-front">
                             <img src="https://i.pinimg.com/736x/40/22/f9/4022f94197478b756293581c39c9be2d.jpg" alt="Stylish Sunglasses Display" class="img-back">
@@ -1933,14 +1919,10 @@
             </div>
         </div>
 
-        <!-- ══════════════════════════════
-             PRODUCT SHOWCASE SECTION
-        ══════════════════════════════ -->
         <header class="page-header">
             <h2>Crafted for your special day.<br>Simple to customize.</h2>
             <p>Pick a design. Add your details. Share in seconds.</p>
             
-            <!-- Desktop Categories -->
             <div class="categories">
                 <button class="cat-btn active">All Events</button>
                 <button class="cat-btn">Wedding</button>
@@ -1950,7 +1932,6 @@
                 <button class="cat-btn">Others</button>
             </div>
 
-            <!-- Mobile Custom Dropdown -->
             <div class="mobile-dropdown-container" id="mobileDropdown">
                 <div class="dropdown-trigger" id="dropdownTrigger">
                     <span id="selected-category">All Events</span>
@@ -1967,9 +1948,7 @@
             </div>
         </header>
 
-        <!-- Product Grid -->
         <div class="cards-container">
-            <!-- Card 1: Hindu -->
             <div class="card">
                 <div class="card-top" style="background-color: #fff4e5;">
                     <img 
@@ -1997,7 +1976,6 @@
                 </div>
             </div>
 
-            <!-- Card 2: Christian -->
             <div class="card">
                 <div class="card-top" style="background-color: #eef2ff;">
                     <img 
@@ -2025,7 +2003,6 @@
                 </div>
             </div>
 
-            <!-- Card 3: Muslim -->
             <div class="card">
                 <div class="card-top" style="background-color: #ecfdf5;">
                     <img 
@@ -2053,7 +2030,6 @@
                 </div>
             </div>
 
-            <!-- Card 4: Others -->
             <div class="card">
                 <div class="card-top" style="background-color: #f5f3ff;">
                     <img 
@@ -2089,25 +2065,20 @@
             </button>
         </div>
 
-        <!-- ══════════════════════════════
-             PERFECT STACKING SECTION
-        ══════════════════════════════ -->
         <div class="stacking-section-bg">
             <div class="stack-wrapper">
-                <!-- Sticky Heading Panel -->
                 <div class="left-panel">
                     <h2>Upgrade Student Outcomes Fast</h2>
                     <p>We integrate seamlessly to help your students build real skills, strong projects, and better outcomes.</p>
                     <a href="#" class="btn-stack">Start Collaboration</a>
                 </div>
 
-                <!-- Stacking Cards Panel -->
                 <div class="right-panel">
                     
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                <img src="https://framerusercontent.com/images/i3wuRW6TVZhoDwpc9wrBf7WwXDU.png?scale-down-to=512&width=1024&height=1024" alt="Industry Mentors">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">1. Industry Mentors Guide Every Step</span>
@@ -2119,7 +2090,7 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                                <img src="https://framerusercontent.com/images/c3CpPBrJqewkXEW8A0c8mDzu5ak.png?scale-down-to=512&width=1024&height=1024" alt="Real Projects">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">2. Real Projects Students Can Present Confidently</span>
@@ -2131,7 +2102,7 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <img src="https://framerusercontent.com/images/VOuy0HkiwNCwjmO9JLJ3g9RTPk8.png?scale-down-to=512&width=1024&height=1024" alt="Structured Execution">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">3. Structured Execution With Clear Timelines</span>
@@ -2143,7 +2114,7 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
+                                <img src="https://framerusercontent.com/images/w7qDFUxzVmCvSIbk22WjQRcOBY.png?scale-down-to=512&width=1024&height=1024" alt="Performance Tracking">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">4. Performance Tracking & Measurable Progress</span>
@@ -2155,7 +2126,7 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
+                                <img src="https://framerusercontent.com/images/6WYYw2qeYsbIJHmSdvbUyjw8UQ.png?scale-down-to=512&width=1024&height=1024" alt="Engagement Through Competition">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">5. Engagement Through Competition & Rewards</span>
@@ -2167,7 +2138,7 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4-8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+                                <img src="https://framerusercontent.com/images/AdB0Rm5oFVYPn7bZwuxQwRkT1fk.png?scale-down-to=512&width=1024&height=1024" alt="End-to-End Program Management">
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">6. End-to-End Program Management</span>
@@ -2180,9 +2151,6 @@
             </div>
         </div>
 
-        <!-- ══════════════════════════════
-             HOW IT WORKS SECTION
-        ══════════════════════════════ -->
         <section class="hiw-section">
             <div class="sec-label"><span class="sec-label-line"></span> Quick Setup <span class="sec-label-line"></span></div>
             <h2 class="hiw-title">Launch Your Wedding Website in 10 Minutes</h2>
@@ -2190,18 +2158,14 @@
             
             <div class="hiw-grid">
                 
-                <!-- Card 1 -->
                 <div class="hiw-card">
                     <div class="hiw-visual">
-                        <!-- Left partial phone -->
                         <div class="art-phone" style="position: absolute; left: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop');"></div>
                         
-                        <!-- Main Center Phone -->
                         <div class="art-phone" style="z-index: 2; background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop');">
                             <div class="art-island"></div>
                         </div>
                         
-                        <!-- Right partial phone -->
                         <div class="art-phone" style="position: absolute; right: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop');"></div>
                     </div>
                     <div class="hiw-content">
@@ -2210,13 +2174,11 @@
                     </div>
                 </div>
 
-                <!-- Card 2 -->
                 <div class="hiw-card">
                     <div class="hiw-visual">
                         <div class="art-tablet" style="background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=600&auto=format&fit=crop');">
                             <div class="art-tablet-edit-btn">Edit</div>
                             
-                            <!-- Panel Mockup -->
                             <div class="art-panel">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-dark-teal);">
                                     <strong style="font-size: 11px;">Names</strong> 
@@ -2247,15 +2209,11 @@
                     </div>
                 </div>
 
-                <!-- Card 3 -->
                 <div class="hiw-card">
                     <div class="hiw-visual">
                         <div class="art-chat-wrapper">
-                            <!-- Chat Message 1 -->
                             <div class="art-chat-left">Hey, is your wedding date finalised?</div>
-                            <!-- Chat Message 2 -->
                             <div class="art-chat-right">Yes! Wait, let me share the invite</div>
-                            <!-- Chat Message 3 (Card) -->
                             <div class="art-chat-card">
                                 <div class="art-chat-card-img"></div>
                                 <div class="art-chat-card-text">
@@ -2263,9 +2221,7 @@
                                     <div class="art-chat-card-sub">kanikawedsabhishek.com</div>
                                 </div>
                             </div>
-                            <!-- Chat Message 4 -->
                             <div class="art-chat-left">Wow! This is stunning! 😍<br>Who made this?</div>
-                            <!-- Chat Message 5 with reaction -->
                             <div class="art-chat-right">
                                 Bought a template from<br>yourplatform.com
                                 <div class="chat-reaction">❤️</div>
@@ -2291,18 +2247,13 @@
             </div>
         </section>
 
-        <!-- ══════════════════════════════
-             COMPARISON SECTION
-        ══════════════════════════════ -->
         <section class="comparison-section">
-            <!-- Header -->
             <div class="section-header">
                 <div class="sec-label"><span class="sec-label-line"></span> The Smart Choice <span class="sec-label-line"></span></div>
                 <h2 class="section-title">What Cards and Video Invites Can't Do<br>(But These Templates Can)</h2>
                 <p class="section-subtitle">See how your invite can go from a one-time message to a lasting experience — without the extra cost or hassle.</p>
             </div>
 
-            <!-- Table -->
             <div class="table-container">
                 <table class="comparison-table">
                     <thead>
@@ -2321,7 +2272,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1: Cost -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2336,7 +2286,6 @@
                             <td>Low</td>
                         </tr>
                         
-                        <!-- Row 2: Customization -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2351,7 +2300,6 @@
                             <td>Easy</td>
                         </tr>
                         
-                        <!-- Row 3: Interactivity -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2366,7 +2314,6 @@
                             <td>Responsive</td>
                         </tr>
 
-                        <!-- Row 4: Updating -->
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2384,7 +2331,6 @@
                 </table>
             </div>
 
-            <!-- Call to Action -->
             <a href="#" class="cta-button">
                 Choose a template
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2394,9 +2340,6 @@
             </a>
         </section>
 
-        <!-- ══════════════════════════════
-             FAQ SECTION
-        ══════════════════════════════ -->
         <section class="faq-section">
             <div class="section-header">
                 <div class="sec-label"><span class="sec-label-line"></span> Got Questions? <span class="sec-label-line"></span></div>
@@ -2404,7 +2347,6 @@
             </div>
             
             <div class="faq-container">
-                <!-- FAQ Item 1 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>How long does it take to create my website?</span>
@@ -2417,7 +2359,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 2 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Can I update details after publishing?</span>
@@ -2430,7 +2371,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 3 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Are the templates mobile-friendly?</span>
@@ -2443,7 +2383,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ Item 4 -->
                 <div class="faq-item">
                     <button class="faq-question">
                         <span>Can I connect my own domain name?</span>
@@ -2458,9 +2397,6 @@
             </div>
         </section>
 
-        <!-- ══════════════════════════════
-             FOOTER SECTION
-        ══════════════════════════════ -->
         <footer class="footer">
             <div class="footer-container">
                 <div class="footer-top">
@@ -2526,15 +2462,11 @@
         </footer>
     </div>
 
-    <!-- ══════════════════════════════
-         INVITATION VIEWER CONTAINER
-    ══════════════════════════════ -->
     <div id="invitation-viewer">
         <div id="loader">Loading invitation...</div>
         <div id="invitation-container"></div>
     </div>
 
-    <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
         // Supabase Client Initialization
         const supabaseClient = supabase.createClient(
