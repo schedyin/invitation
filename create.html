@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Create Invitation - Dashboard</title>
+    <title>Create Invitation - Schedy</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,7 +63,7 @@
             font-family: var(--font-alt);
             font-weight: 500;
             color: var(--text-main);
-            overflow: hidden; /* Prevent body scroll, handled by content area */
+            overflow: hidden; 
             -webkit-font-smoothing: antialiased;
             line-height: 1.6;
         }
@@ -76,9 +76,8 @@
         .sidebar, .m-header, .profile-popup { font-family: var(--font-nav); }
 
         .brand-logo { display: flex; align-items: center; text-decoration: none; transition: all 0.3s; }
-        .brand-logo img { height: 36px; width: auto; display: block; }
-        .mini-logo { display: none; align-items: center; justify-content: center; }
-        .mini-logo img { height: 36px; width: auto; display: block; }
+        .brand-text { font-size: 1.4rem; font-weight: 800; color: #111827; letter-spacing: 1px; font-family: var(--font-main); }
+        .mini-logo { display: none; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: var(--text-color); }
 
         .icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
         .icon svg { width: 22px; height: 22px; stroke: var(--icon-color); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -89,7 +88,7 @@
         .nav-item.active .icon svg { stroke: #000000; }
 
         .account-card { display: flex; align-items: center; gap: 12px; }
-        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); }
+        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-sub); }
         .account-text { display: flex; flex-direction: column; overflow: hidden; transition: opacity 0.2s; }
         .account-name { font-size: 15px; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; color: var(--text-color); }
         .account-email { font-size: 13px; color: var(--text-sub); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
@@ -136,7 +135,7 @@
             .mobile-only { display: none !important; }
             .m-header { display: none; }
             .sidebar-overlay { display: none; }
-            .brand-logo img, .mini-logo img { height: 45px; }
+            .brand-text { font-size: 1.5rem; color: var(--text-color); }
             
             .main-content { margin-top: 0; }
             
@@ -185,7 +184,6 @@
             margin: 0 auto;
             align-items: flex-start;
             gap: 2rem;
-            /* Removed height: 100%; - Allows the parent flex-box to stretch down, creating a track for position: sticky to work properly */
         }
 
         .form-side {
@@ -198,7 +196,7 @@
         /* Desktop Sticky Preview */
         .preview-side {
             width: 375px; 
-            height: calc(100vh - 80px - 48px); /* Height minus topbar and container padding */
+            height: calc(100vh - 80px - 48px);
             position: sticky;
             top: 0;
             background: #E5E7EB;
@@ -215,7 +213,6 @@
         .preview-header { display: none; }
         .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; }
 
-        /* Mobile specific overrides for Form Layout */
         .sticky-action-bar { display: none; }
 
         @media (max-width: 1150px) {
@@ -224,28 +221,20 @@
             
             .preview-side { 
                 position: fixed;
-                top: 72px; /* Starts below mobile header */
+                top: 72px; 
                 left: 0;
                 right: 0;
                 width: 100%;
-                height: calc(100vh - 72px - 85px); /* Full height minus headers and bottom bar */
+                height: calc(100vh - 72px - 85px); 
                 border-radius: 0;
                 border: none;
                 z-index: 998; 
             }
             
             .sticky-action-bar.mobile-only {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: var(--pure-white);
-                padding: 1rem;
-                border-top: 1px solid var(--border-color);
-                z-index: 1000;
-                gap: 1rem;
-                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+                display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+                background: var(--pure-white); padding: 1rem; border-top: 1px solid var(--border-color);
+                z-index: 1000; gap: 1rem; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
             }
             .form-side .btn-submit { display: none; }
             .mobile-hidden { display: none !important; }
@@ -253,11 +242,8 @@
 
         /* --- FORM STYLES --- */
         .form-section { 
-            margin-bottom: 2rem; 
-            background: var(--pure-white);
-            padding: 2.5rem 3rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color); 
+            margin-bottom: 2rem; background: var(--pure-white); padding: 2.5rem 3rem;
+            border-radius: var(--radius-lg); border: 1px solid var(--border-color); 
             font-family: var(--font-main);
         }
 
@@ -309,14 +295,13 @@
         .btn-outline-mobile { background: transparent; border: 1.5px solid var(--accent-color); color: var(--accent-color); }
         .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
 
-
         .custom-dropdown { position: relative; width: 100%; }
         .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 500; color: var(--text-main); font-size: 16px; }
         .dropdown-header:hover { border-color: var(--text-sub); }
         .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
         .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
         .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent-color); }
-        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; }
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; max-height: 250px; overflow-y: auto;}
         .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-list li { padding: 14px 15px; cursor: pointer; transition: background 0.2s; font-weight: 500; font-size: 16px;}
         .dropdown-list li:hover { background: var(--bg-light); color: var(--accent-color); }
@@ -338,6 +323,14 @@
             font-family: 'Noto Sans Telugu', 'IBM Plex Sans', sans-serif !important;
         }
 
+        /* Screen Loader overlay before auth passes */
+        #auth-guard-overlay {
+            position: fixed; inset: 0; background: var(--pure-white); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;
+        }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(103, 61, 230, 0.2); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         @media (max-width: 768px) {
             .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 0.5rem; }
             .form-section { padding: 1.5rem; }
@@ -347,6 +340,10 @@
 </head>
 
 <body>
+    
+    <!-- Auth Guard Loader (prevents screen flash before redirect) -->
+    <div id="auth-guard-overlay"><div class="spinner"></div></div>
+
     <!-- App Container -->
     <div class="app-layout">
         
@@ -355,8 +352,8 @@
             <button class="m-menu-btn" id="m-open-drawer">
                 <div class="m-menu-lines"><span></span></div>
             </button>
-            <a href="#" class="brand-logo">
-                <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+            <a href="#" class="brand-logo" style="text-decoration: none;">
+                <div class="brand-text">✦ SCHEDY</div>
             </a>
             <div style="width:40px;"></div>
         </header>
@@ -367,13 +364,11 @@
         <!-- Unified Sidebar (Desktop & Mobile) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <a href="#" class="brand-logo">
-                    <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
+                <a href="#" class="brand-logo" style="text-decoration: none;">
+                    <div class="brand-text" style="color: var(--text-color);">✦ SCHEDY</div>
                 </a>
                 
-                <span class="mini-logo">
-                    <img src="https://ksupvc.wixo.in/logo-square.png" alt="S">
-                </span>
+                <span class="mini-logo">✦</span>
                 
                 <!-- Desktop Collapse Button -->
                 <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
@@ -389,10 +384,6 @@
             
             <div class="sidebar-inner">
                 <nav class="nav-menu">
-                    <a href="./dashboard.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg></span>
-                        <span class="nav-label">Dashboard</span>
-                    </a>
                     <!-- HIGHLIGHTED MENU ITEM -->
                     <a href="./create.html" class="nav-item active">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
@@ -402,14 +393,9 @@
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></span>
                         <span class="nav-label">All Invitations</span>
                     </a>
-                    <!-- NEW DESKTOP LEFT MENU NAVBAR ITEM -->
                     <a href="./templates.html" class="nav-item">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg></span>
                         <span class="nav-label">Manage Templates</span>
-                    </a>
-                    <a href="./customize.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"/><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/></svg></span>
-                        <span class="nav-label">Customize Site</span>
                     </a>
                     <a href="./support.html" class="nav-item">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
@@ -421,10 +407,12 @@
             <!-- Profile Account Section in Sidebar -->
             <div class="account-section" id="profile-trigger">
                 <div class="account-card">
-                    <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+                    <div class="account-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
                     <div class="account-text">
-                        <div class="account-name">John Doe</div>
-                        <div class="account-email">admin@syncskill.com</div>
+                        <div class="account-name" id="sidebar-user-name">Loading...</div>
+                        <div class="account-email" id="sidebar-user-email">Please wait</div>
                     </div>
                 </div>
             </div>
@@ -781,27 +769,89 @@
     <!-- Profile Popup Menu -->
     <div class="profile-popup" id="profile-popup">
         <div class="popup-header">
-            <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
+            <div class="account-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
             <div class="account-text">
-                <div class="account-name">John Doe</div>
-                <div class="account-email">admin@syncskill.com</div>
+                <div class="account-name" id="popup-user-name">Loading...</div>
+                <div class="account-email" id="popup-user-email">Please wait</div>
             </div>
         </div>
         <ul class="popup-list">
-            <li><a href="#"><span>Profile</span></a></li>
-            <li><a href="#"><span>Settings</span></a></li>
-            <li><a href="#" style="color:#dc2626"><span>Logout</span></a></li>
+            <li><a href="#" id="btn-logout" style="color:#dc2626"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; vertical-align:text-bottom;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>Logout</span></a></li>
         </ul>
     </div>
 
     <script>
         // ==========================================
-        // --- DASHBOARD UI INITIALIZATION LOGIC ---
+        // 1. SUPABASE INITIALIZATION & SECURITY ROUTER
         // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            initSidebarNavigation();
+        const supabaseClient = supabase.createClient(
+            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
+        );
+
+        async function checkAuthAndRole() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            const user = session.user;
+            const { data: profile, error } = await supabaseClient
+                .from('app_user_roles')
+                .select('status')
+                .eq('id', user.id)
+                .single();
+
+            if (error || !profile) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            // Route unauthorized users away immediately
+            if (profile.status === 'pending') {
+                window.location.replace('pending.html');
+            } else if (profile.status === 'declined') {
+                window.location.replace('declined.html');
+            } else if (profile.status === 'approved' || profile.status === 'admin') {
+                // Allowed! Initialize UI with User Data
+                document.getElementById('auth-guard-overlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('auth-guard-overlay').remove(), 300);
+                
+                updateProfileUI(user);
+                initSidebarNavigation();
+                initAppLogic(); // Start the rest of the page logic
+            } else {
+                window.location.replace('login.html');
+            }
+        }
+
+        function updateProfileUI(user) {
+            const name = user.user_metadata?.full_name || user.email.split('@')[0];
+            const email = user.email;
+
+            document.getElementById('sidebar-user-name').textContent = name;
+            document.getElementById('sidebar-user-email').textContent = email;
+            document.getElementById('popup-user-name').textContent = name;
+            document.getElementById('popup-user-email').textContent = email;
+        }
+
+        // Execute Auth Guard
+        checkAuthAndRole();
+
+        // Logout Action
+        document.getElementById('btn-logout').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabaseClient.auth.signOut();
+            window.location.replace('login.html');
         });
 
+
+        // ==========================================
+        // 2. DASHBOARD UI INITIALIZATION
+        // ==========================================
         function initSidebarNavigation() {
             const sidebar = document.getElementById('sidebar');
             const mOverlay = document.getElementById('sidebar-overlay');
@@ -858,690 +908,680 @@
 
 
         // ==========================================
-        // --- FORM PREVIEW & LOGIC SCRIPTS ---
+        // 3. MAIN FORM & PREVIEW LOGIC
         // ==========================================
-
-        // --- MOBILE TOGGLE LOGIC ---
-        const toggleBtn = document.getElementById('btn-toggle-view');
-        const createBtnMobile = document.getElementById('btn-create-mobile');
-        const formSide = document.querySelector('.form-side');
-        const previewSide = document.querySelector('.preview-side');
-        
-        toggleBtn.addEventListener('click', () => {
-            if (previewSide.classList.contains('mobile-hidden')) {
-                formSide.classList.add('mobile-hidden');
-                previewSide.classList.remove('mobile-hidden');
-                toggleBtn.textContent = 'EDIT';
-            } else {
-                previewSide.classList.add('mobile-hidden');
-                formSide.classList.remove('mobile-hidden');
-                toggleBtn.textContent = 'PREVIEW';
-            }
-        });
-
-        createBtnMobile.addEventListener('click', () => {
-            const event = new Event('submit', { cancelable: true, bubbles: true });
-            document.getElementById('invitation-form').dispatchEvent(event);
-        });
-
-        // --- SUPABASE INTEGRATION ---
-        const supabaseClient = supabase.createClient(
-            'https://jihtqbzrqymdkypicajz.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
-        );
-
-        let currentTemplateHTML = '';
-        let previewDebounceTimer;
-        let activeInputId = null;
-
-        document.getElementById('invitation-form').addEventListener('focusin', (e) => {
-            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                activeInputId = e.target.id;
-                updatePreview(); 
-            }
-        });
-        
-        function formatTeluguDate(dateStr) {
-            if (!dateStr || !dateStr.includes('-')) return dateStr;
-            const parts = dateStr.split('-');
-            if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            return dateStr;
-        }
-
-        function formatTeluguTime(timeStr) {
-            if (!timeStr || !timeStr.includes(':')) return timeStr;
-            let [hh, mm] = timeStr.split(':');
-            let hour = parseInt(hh, 10);
-            let period = hour >= 0 && hour < 12 ? 'ఉదయం' : hour >= 12 && hour < 16 ? 'మధ్యాహ్నం' : hour >= 16 && hour < 20 ? 'సాయంత్రం' : 'రాత్రి';
-            let hour12 = hour % 12 || 12;
-            return mm === '00' ? `${period} ${hour12}:00 గంటలకు` : `${period} ${hour12}:${mm} నిమిషాలకు`;
-        }
-
-        function gatherData() {
-            const details = {};
-            document.querySelectorAll('input, textarea').forEach(input => {
-                if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
-                    if (input.type === 'checkbox') {
-                        details[input.id] = input.checked;
-                    } else if (input.value.trim() !== '') { 
-                        details[input.id] = input.value.trim();
-                    }
+        function initAppLogic() {
+            // --- MOBILE TOGGLE LOGIC ---
+            const toggleBtn = document.getElementById('btn-toggle-view');
+            const createBtnMobile = document.getElementById('btn-create-mobile');
+            const formSide = document.querySelector('.form-side');
+            const previewSide = document.querySelector('.preview-side');
+            
+            toggleBtn.addEventListener('click', () => {
+                if (previewSide.classList.contains('mobile-hidden')) {
+                    formSide.classList.add('mobile-hidden');
+                    previewSide.classList.remove('mobile-hidden');
+                    toggleBtn.textContent = 'EDIT';
+                } else {
+                    previewSide.classList.add('mobile-hidden');
+                    formSide.classList.remove('mobile-hidden');
+                    toggleBtn.textContent = 'PREVIEW';
                 }
             });
 
-            const weddingDate = document.getElementById('wedding-date').value;
-            const muhurthamTime = document.getElementById('muhurtham-time').value;
-            let eventWeddingDay = '';
+            createBtnMobile.addEventListener('click', () => {
+                const event = new Event('submit', { cancelable: true, bubbles: true });
+                document.getElementById('invitation-form').dispatchEvent(event);
+            });
+
+            let currentTemplateHTML = '';
+            let previewDebounceTimer;
+            let activeInputId = null;
+
+            document.getElementById('invitation-form').addEventListener('focusin', (e) => {
+                if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    activeInputId = e.target.id;
+                    updatePreview(); 
+                }
+            });
             
-            if (weddingDate) {
-                const dateObj = new Date(weddingDate);
-                const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
-                eventWeddingDay = teluguDays[dateObj.getDay()];
+            function formatTeluguDate(dateStr) {
+                if (!dateStr || !dateStr.includes('-')) return dateStr;
+                const parts = dateStr.split('-');
+                if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                return dateStr;
             }
 
-            if (weddingDate) details['event-wedding-date'] = weddingDate;
-            if (muhurthamTime) details['event-wedding-time'] = muhurthamTime;
-            if (eventWeddingDay) details['event-wedding-day'] = eventWeddingDay;
-
-            if (details['same-venue']) {
-                delete details['reception-venue-en'];
-                delete details['reception-venue-te'];
-                delete details['reception-venue-address'];
-                delete details['reception-venue-maps'];
+            function formatTeluguTime(timeStr) {
+                if (!timeStr || !timeStr.includes(':')) return timeStr;
+                let [hh, mm] = timeStr.split(':');
+                let hour = parseInt(hh, 10);
+                let period = hour >= 0 && hour < 12 ? 'ఉదయం' : hour >= 12 && hour < 16 ? 'మధ్యాహ్నం' : hour >= 16 && hour < 20 ? 'సాయంత్రం' : 'రాత్రి';
+                let hour12 = hour % 12 || 12;
+                return mm === '00' ? `${period} ${hour12}:00 గంటలకు` : `${period} ${hour12}:${mm} నిమిషాలకు`;
             }
 
-            const bride_name = document.getElementById('bride-en').value || document.getElementById('bride-te').value || '';
-            const groom_name = document.getElementById('groom-en').value || document.getElementById('groom-te').value || '';
-
-            return {
-                core: {
-                    template_id: document.getElementById('selected-template').value,
-                    custom_id: document.getElementById('custom-id').value.trim().toLowerCase().replace(/\s+/g, '-'),
-                    bride_name,
-                    groom_name,
-                    event_date: weddingDate
-                },
-                allData: {
-                    bride_name,
-                    groom_name,
-                    event_date: weddingDate,
-                    'event-wedding-date': weddingDate,
-                    'event-wedding-time': muhurthamTime,
-                    'event-wedding-day': eventWeddingDay,
-                    ...details
-                },
-                detailsToSave: details
-            };
-        }
-
-        function compileTemplateHTML(allData) {
-            if (!currentTemplateHTML) return '';
-            let html = currentTemplateHTML;
-
-            let prevHtml;
-            do {
-                prevHtml = html;
-                html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}((?:(?!{{#if).)*?){{\/if}}/gs, (match, key, content) => {
-                    return (allData[key] && allData[key].toString().trim() !== '') ? content : ''; 
+            function gatherData() {
+                const details = {};
+                document.querySelectorAll('input, textarea').forEach(input => {
+                    if(input.id && input.id !== 'custom-id' && input.id !== 'selected-template' && input.id !== 'wedding-date' && input.id !== 'muhurtham-time') {
+                        if (input.type === 'checkbox') {
+                            details[input.id] = input.checked;
+                        } else if (input.value.trim() !== '') { 
+                            details[input.id] = input.value.trim();
+                        }
+                    }
                 });
-            } while (html !== prevHtml);
 
-            for (const [key, value] of Object.entries(allData)) {
-                let finalValue = value;
-                if (typeof finalValue === 'string') {
-                    if (key.includes('date')) finalValue = formatTeluguDate(finalValue);
-                    if (key.includes('time')) finalValue = formatTeluguTime(finalValue);
-                    
-                    finalValue = finalValue.replace(/\n/g, '<br>');
-                    finalValue = finalValue.replace(/<(?!br\s*\/?\>)/gi, '&lt;');
-                    html = html.replace(new RegExp(`{{${key}}}`, 'g'), () => finalValue);
+                const weddingDate = document.getElementById('wedding-date').value;
+                const muhurthamTime = document.getElementById('muhurtham-time').value;
+                let eventWeddingDay = '';
+                
+                if (weddingDate) {
+                    const dateObj = new Date(weddingDate);
+                    const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
+                    eventWeddingDay = teluguDays[dateObj.getDay()];
+                }
+
+                if (weddingDate) details['event-wedding-date'] = weddingDate;
+                if (muhurthamTime) details['event-wedding-time'] = muhurthamTime;
+                if (eventWeddingDay) details['event-wedding-day'] = eventWeddingDay;
+
+                if (details['same-venue']) {
+                    delete details['reception-venue-en'];
+                    delete details['reception-venue-te'];
+                    delete details['reception-venue-address'];
+                    delete details['reception-venue-maps'];
+                }
+
+                const bride_name = document.getElementById('bride-en').value || document.getElementById('bride-te').value || '';
+                const groom_name = document.getElementById('groom-en').value || document.getElementById('groom-te').value || '';
+
+                return {
+                    core: {
+                        template_id: document.getElementById('selected-template').value,
+                        custom_id: document.getElementById('custom-id').value.trim().toLowerCase().replace(/\s+/g, '-'),
+                        bride_name,
+                        groom_name,
+                        event_date: weddingDate
+                    },
+                    allData: {
+                        bride_name,
+                        groom_name,
+                        event_date: weddingDate,
+                        'event-wedding-date': weddingDate,
+                        'event-wedding-time': muhurthamTime,
+                        'event-wedding-day': eventWeddingDay,
+                        ...details
+                    },
+                    detailsToSave: details
+                };
+            }
+
+            function compileTemplateHTML(allData) {
+                if (!currentTemplateHTML) return '';
+                let html = currentTemplateHTML;
+
+                let prevHtml;
+                do {
+                    prevHtml = html;
+                    html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}((?:(?!{{#if).)*?){{\/if}}/gs, (match, key, content) => {
+                        return (allData[key] && allData[key].toString().trim() !== '') ? content : ''; 
+                    });
+                } while (html !== prevHtml);
+
+                for (const [key, value] of Object.entries(allData)) {
+                    let finalValue = value;
+                    if (typeof finalValue === 'string') {
+                        if (key.includes('date')) finalValue = formatTeluguDate(finalValue);
+                        if (key.includes('time')) finalValue = formatTeluguTime(finalValue);
+                        
+                        finalValue = finalValue.replace(/\n/g, '<br>');
+                        finalValue = finalValue.replace(/<(?!br\s*\/?\>)/gi, '&lt;');
+                        html = html.replace(new RegExp(`{{${key}}}`, 'g'), () => finalValue);
+                    }
+                }
+
+                html = html.replace(/{{[^{}]+}}/g, '');
+                if(allData.event_date) {
+                    const formattedDate = new Date(allData.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    html = html.replace(/{{event_date}}/g, formattedDate);
+                }
+
+                return html;
+            }
+
+            function generateIframeContent(html) {
+                return `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }
+                            .hidden { opacity: 1 !important; transform: none !important; }
+                            .invite-divider.hidden { display: flex !important; }
+                            .invite-names.hidden { display: block !important; }
+                            #invitation-container ~ * { display: none !important; }
+                            body > :not(#invitation-container):not(script) { display: none !important; }
+                        </style>
+                        <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
+                    </head>
+                    <body>
+                        <div id="invitation-container">${html}</div>
+                        <script>
+                            const container = document.getElementById('invitation-container');
+                            const scripts = Array.from(container.getElementsByTagName('script'));
+                            for (let i = 0; i < scripts.length; i++) {
+                                const newScript = document.createElement('script');
+                                if (scripts[i].src) newScript.src = scripts[i].src;
+                                else newScript.textContent = scripts[i].innerHTML;
+                                document.body.appendChild(newScript);
+                            }
+
+                            window.addEventListener('message', (event) => {
+                                if (event.data.type === 'update') {
+                                    const newDOM = document.createElement('div');
+                                    newDOM.id = 'invitation-container';
+                                    newDOM.innerHTML = event.data.html;
+                                    
+                                    morphdom(document.getElementById('invitation-container'), newDOM, { 
+                                        childrenOnly: true,
+                                        getNodeKey: function(node) {
+                                            if (node.nodeType === 1) {
+                                                if (node.id) return node.id;
+                                                if (node.getAttribute('data-scroll-target')) return node.getAttribute('data-scroll-target');
+                                            }
+                                            return null;
+                                        }
+                                    });
+
+                                    const clones = document.querySelectorAll('#invitation-container');
+                                    if (clones.length > 1) {
+                                        for (let i = 1; i < clones.length; i++) {
+                                            clones[i].remove();
+                                        }
+                                    }
+
+                                    if (event.data.target) {
+                                        setTimeout(() => {
+                                            let targetId = event.data.target;
+                                            
+                                            if (targetId.endsWith('-en')) targetId = targetId.replace('-en', '-te');
+                                            if (targetId === 'wedding-date') targetId = 'event-wedding-date';
+                                            if (targetId === 'muhurtham-time') targetId = 'event-wedding-time';
+                                            
+                                            if (targetId === 'venue-te' || targetId === 'venue-address' || targetId === 'venue-maps') {
+                                                targetId = 'main-venue-section';
+                                            }
+
+                                            if (targetId.includes('maps') || targetId.includes('address')) {
+                                                if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
+                                                else targetId = targetId.replace('-maps', '-name-te'); 
+                                            }
+                                            if (targetId.includes('compliment-title')) targetId = 'comp-1-te';
+
+                                            const scrollAnchor = document.querySelector('[data-scroll-target="' + targetId + '"]');
+                                            if (scrollAnchor) {
+                                                scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                scrollAnchor.style.transition = 'background-color 0.5s';
+                                                scrollAnchor.style.backgroundColor = 'rgba(217,169,66,0.3)';
+                                                setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 800);
+                                            }
+                                        }, 50);
+                                    }
+                                }
+                            });
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+            }
+
+            function updatePreview() {
+                if (!currentTemplateHTML) return;
+                const dataObj = gatherData();
+                const compiledHtml = compileTemplateHTML(dataObj.allData);
+                const iframe = document.getElementById('preview-frame');
+                
+                if (iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({ type: 'update', html: compiledHtml, target: activeInputId }, '*');
                 }
             }
 
-            html = html.replace(/{{[^{}]+}}/g, '');
-            if(allData.event_date) {
-                const formattedDate = new Date(allData.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                html = html.replace(/{{event_date}}/g, formattedDate);
-            }
+            document.getElementById('invitation-form').addEventListener('input', () => {
+                clearTimeout(previewDebounceTimer);
+                previewDebounceTimer = setTimeout(updatePreview, 300);
+            });
 
-            return html;
-        }
+            window.templatesData = [];
+            async function fetchTemplates() {
+                const { data, error } = await supabaseClient.from('templates').select('id, name, html_code');
+                const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
+                const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                const hiddenInput = document.getElementById('selected-template');
+                const header = document.querySelector('#template-dropdown .dropdown-header');
 
-        function generateIframeContent(html) {
-            return `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body { margin: 0; padding: 0; background-color: #E5E7EB; overflow-x: hidden; }
-                        .hidden { opacity: 1 !important; transform: none !important; }
-                        .invite-divider.hidden { display: flex !important; }
-                        .invite-names.hidden { display: block !important; }
-                        #invitation-container ~ * { display: none !important; }
-                        body > :not(#invitation-container):not(script) { display: none !important; }
-                    </style>
-                    <script src="https://cdn.jsdelivr.net/npm/morphdom@2.6.1/dist/morphdom-umd.min.js"><\/script>
-                </head>
-                <body>
-                    <div id="invitation-container">${html}</div>
-                    <script>
-                        const container = document.getElementById('invitation-container');
-                        const scripts = Array.from(container.getElementsByTagName('script'));
-                        for (let i = 0; i < scripts.length; i++) {
-                            const newScript = document.createElement('script');
-                            if (scripts[i].src) newScript.src = scripts[i].src;
-                            else newScript.textContent = scripts[i].innerHTML;
-                            document.body.appendChild(newScript);
-                        }
+                dropdownList.innerHTML = ''; 
+                
+                if (data && data.length > 0) {
+                    window.templatesData = data;
+                    selectedValue.textContent = 'Choose a template...';
+                    data.forEach(t => {
+                        const li = document.createElement('li');
+                        li.dataset.value = t.id;
+                        li.textContent = t.name;
+                        
+                        li.addEventListener('click', (e) => {
+                            selectedValue.textContent = e.target.textContent;
+                            hiddenInput.value = e.target.dataset.value;
+                            dropdownList.classList.remove('show');
+                            header.classList.remove('active');
+                            e.stopPropagation();
 
-                        window.addEventListener('message', (event) => {
-                            if (event.data.type === 'update') {
-                                const newDOM = document.createElement('div');
-                                newDOM.id = 'invitation-container';
-                                newDOM.innerHTML = event.data.html;
-                                
-                                morphdom(document.getElementById('invitation-container'), newDOM, { 
-                                    childrenOnly: true,
-                                    getNodeKey: function(node) {
-                                        if (node.nodeType === 1) {
-                                            if (node.id) return node.id;
-                                            if (node.getAttribute('data-scroll-target')) return node.getAttribute('data-scroll-target');
-                                        }
-                                        return null;
-                                    }
-                                });
-
-                                const clones = document.querySelectorAll('#invitation-container');
-                                if (clones.length > 1) {
-                                    for (let i = 1; i < clones.length; i++) {
-                                        clones[i].remove();
-                                    }
-                                }
-
-                                if (event.data.target) {
-                                    setTimeout(() => {
-                                        let targetId = event.data.target;
-                                        
-                                        if (targetId.endsWith('-en')) targetId = targetId.replace('-en', '-te');
-                                        if (targetId === 'wedding-date') targetId = 'event-wedding-date';
-                                        if (targetId === 'muhurtham-time') targetId = 'event-wedding-time';
-                                        
-                                        if (targetId === 'venue-te' || targetId === 'venue-address' || targetId === 'venue-maps') {
-                                            targetId = 'main-venue-section';
-                                        }
-
-                                        if (targetId.includes('maps') || targetId.includes('address')) {
-                                            if (targetId === 'reception-venue-maps' || targetId === 'reception-venue-address') targetId = 'reception-venue-te';
-                                            else targetId = targetId.replace('-maps', '-name-te'); 
-                                        }
-                                        if (targetId.includes('compliment-title')) targetId = 'comp-1-te';
-
-                                        const scrollAnchor = document.querySelector('[data-scroll-target="' + targetId + '"]');
-                                        if (scrollAnchor) {
-                                            scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                            scrollAnchor.style.transition = 'background-color 0.5s';
-                                            scrollAnchor.style.backgroundColor = 'rgba(217,169,66,0.3)';
-                                            setTimeout(() => { scrollAnchor.style.backgroundColor = 'transparent'; }, 800);
-                                        }
-                                    }, 50);
-                                }
+                            const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
+                            if (selectedTemplate) {
+                                currentTemplateHTML = selectedTemplate.html_code;
+                                document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
                             }
                         });
-                    <\/script>
-                </body>
-                </html>
-            `;
-        }
-
-        function updatePreview() {
-            if (!currentTemplateHTML) return;
-            const dataObj = gatherData();
-            const compiledHtml = compileTemplateHTML(dataObj.allData);
-            const iframe = document.getElementById('preview-frame');
-            
-            if (iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ type: 'update', html: compiledHtml, target: activeInputId }, '*');
-            }
-        }
-
-        document.getElementById('invitation-form').addEventListener('input', () => {
-            clearTimeout(previewDebounceTimer);
-            previewDebounceTimer = setTimeout(updatePreview, 300);
-        });
-
-        window.templatesData = [];
-        async function fetchTemplates() {
-            const { data, error } = await supabaseClient.from('templates').select('id, name, html_code');
-            const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
-            const selectedValue = document.querySelector('#template-dropdown .selected-value');
-            const hiddenInput = document.getElementById('selected-template');
-            const header = document.querySelector('#template-dropdown .dropdown-header');
-
-            dropdownList.innerHTML = ''; 
-            
-            if (data && data.length > 0) {
-                window.templatesData = data;
-                selectedValue.textContent = 'Choose a template...';
-                data.forEach(t => {
-                    const li = document.createElement('li');
-                    li.dataset.value = t.id;
-                    li.textContent = t.name;
-                    
-                    li.addEventListener('click', (e) => {
-                        selectedValue.textContent = e.target.textContent;
-                        hiddenInput.value = e.target.dataset.value;
-                        dropdownList.classList.remove('show');
-                        header.classList.remove('active');
-                        e.stopPropagation();
-
-                        const selectedTemplate = window.templatesData.find(temp => temp.id === e.target.dataset.value);
-                        if (selectedTemplate) {
-                            currentTemplateHTML = selectedTemplate.html_code;
-                            document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
-                        }
+                        dropdownList.appendChild(li);
                     });
-                    dropdownList.appendChild(li);
-                });
-            } else {
-                selectedValue.textContent = 'No templates found in Supabase!';
+                } else {
+                    selectedValue.textContent = 'No templates found in Supabase!';
+                }
             }
-        }
-        fetchTemplates();
+            fetchTemplates();
 
-        document.getElementById('invitation-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const dataObj = gatherData();
+            document.getElementById('invitation-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const dataObj = gatherData();
 
-            if (!dataObj.core.template_id) return alert("Please select a template from the dropdown!");
-            if (!dataObj.core.bride_name || !dataObj.core.groom_name) return alert("Please enter both Bride and Groom names.");
-            if (!dataObj.core.event_date) return alert("Please select a wedding date.");
+                if (!dataObj.core.template_id) return alert("Please select a template from the dropdown!");
+                if (!dataObj.core.bride_name || !dataObj.core.groom_name) return alert("Please enter both Bride and Groom names.");
+                if (!dataObj.core.event_date) return alert("Please select a wedding date.");
 
-            let custom_id = dataObj.core.custom_id;
+                let custom_id = dataObj.core.custom_id;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('edit');
+                const urlParams = new URLSearchParams(window.location.search);
+                const editId = urlParams.get('edit');
 
-            if (!editId && !custom_id) {
-                 custom_id = 'invite-' + Date.now();
-            }
+                if (!editId && !custom_id) {
+                     custom_id = 'invite-' + Date.now();
+                }
 
-            if (!editId && custom_id) {
-                const { data: existing } = await supabaseClient
+                if (!editId && custom_id) {
+                    const { data: existing } = await supabaseClient
+                        .from('invitations')
+                        .select('id')
+                        .eq('id', custom_id)
+                        .single();
+
+                    if (existing) {
+                        return alert("This Link ID is already in use! Please enter a different one to avoid overwriting data.");
+                    }
+                }
+
+                const btnSubmit = document.querySelector('.btn-submit');
+                const originalText = btnSubmit.textContent;
+                btnSubmit.textContent = 'Generating Database Link...';
+                btnSubmit.disabled = true;
+
+                const { data, error } = await supabaseClient
                     .from('invitations')
-                    .select('id')
-                    .eq('id', custom_id)
+                    .upsert([{ 
+                        id: custom_id || editId, 
+                        bride_name: dataObj.core.bride_name, 
+                        groom_name: dataObj.core.groom_name, 
+                        event_date: dataObj.core.event_date, 
+                        template_id: dataObj.core.template_id, 
+                        details: dataObj.detailsToSave 
+                    }])
+                    .select()
                     .single();
 
-                if (existing) {
-                    return alert("This Link ID is already in use! Please enter a different one to avoid overwriting data.");
-                }
-            }
-
-            const btnSubmit = document.querySelector('.btn-submit');
-            const originalText = btnSubmit.textContent;
-            btnSubmit.textContent = 'Generating Database Link...';
-            btnSubmit.disabled = true;
-
-            const { data, error } = await supabaseClient
-                .from('invitations')
-                .upsert([{ 
-                    id: custom_id || editId, 
-                    bride_name: dataObj.core.bride_name, 
-                    groom_name: dataObj.core.groom_name, 
-                    event_date: dataObj.core.event_date, 
-                    template_id: dataObj.core.template_id, 
-                    details: dataObj.detailsToSave 
-                }])
-                .select()
-                .single();
-
-            if (error) {
-                alert('Database Error: ' + error.message);
-            } else {
-                const linkBox = document.getElementById('result-link');
-                const url = `${window.location.origin}/${data.id}`;
-                linkBox.style.display = 'block';
-                linkBox.innerHTML = `<strong>Success! Share this link:</strong><br><a href="${url}" target="_blank">${url}</a>`;
-                linkBox.scrollIntoView({ behavior: 'smooth' });
-            }
-
-            btnSubmit.textContent = originalText;
-            btnSubmit.disabled = false;
-        });
-
-        // ==========================================
-        // --- DYNAMIC FIELDS & UTILS ---
-        // ==========================================
-        const maxContacts = 2;
-        const contactsCount = { groom: 0, bride: 0 };
-        let eventCount = 0;
-        const maxEvents = 4;
-        let complimentCount = 1;
-        const maxCompliments = 5;
-
-        const dropdownHeader = document.querySelector('#template-dropdown .dropdown-header');
-        const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
-
-        dropdownHeader.addEventListener('click', (e) => {
-            dropdownList.classList.toggle('show');
-            dropdownHeader.classList.toggle('active');
-            e.stopPropagation();
-        });
-
-        document.addEventListener('click', () => {
-            dropdownList.classList.remove('show');
-            dropdownHeader.classList.remove('active');
-        });
-
-        async function transliterateToTelugu(text) {
-            if (!text.trim()) return '';
-            const words = text.split(/(\s+)/);
-            const transliteratedWords = await Promise.all(words.map(async (word) => {
-                if (!word.trim()) return word; 
-                try {
-                    const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(word)}&itc=te-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8`);
-                    const data = await response.json();
-                    if (data[0] === 'SUCCESS' && data[1] && data[1][0] && data[1][0][1] && data[1][0][1][0]) {
-                        return data[1][0][1][0];
-                    }
-                } catch (e) { console.error("Transliteration error:", e); }
-                return word; 
-            }));
-            return transliteratedWords.join('');
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => { clearTimeout(timeout); func(...args); };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        const setupTransliteration = (enInputId, teInputId) => {
-            const enInput = document.getElementById(enInputId);
-            const teInput = document.getElementById(teInputId);
-            if (!enInput || !teInput) return;
-
-            enInput.addEventListener('input', debounce(async (e) => {
-                const text = e.target.value;
-                if(text) teInput.value = await transliterateToTelugu(text);
-                else teInput.value = '';
-                teInput.dispatchEvent(new Event('input', { bubbles: true })); 
-            }, 400));
-        };
-
-        const staticFields = [
-            ['surname-en', 'surname-te'], ['groom-en', 'groom-te'], ['groom-father-en', 'groom-father-te'],
-            ['groom-mother-en', 'groom-mother-te'], ['bride-en', 'bride-te'], ['bride-father-en', 'bride-father-te'],
-            ['bride-mother-en', 'bride-mother-te'], ['venue-en', 'venue-te'], ['reception-venue-en', 'reception-venue-te'],
-            ['compliment-title-en', 'compliment-title-te'], ['comp-1-en', 'comp-1-te'] 
-        ];
-
-        staticFields.forEach(([en, te]) => setupTransliteration(en, te));
-
-        const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
-        
-        const handleDateChange = (dateInputId, dayInputId) => {
-            const dateInput = document.getElementById(dateInputId);
-            const dayInput = document.getElementById(dayInputId);
-            if (!dateInput || !dayInput) return;
-            dateInput.addEventListener('change', (e) => {
-                if (e.target.value) {
-                    const parts = e.target.value.split('-');
-                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    dayInput.value = teluguDays[date.getDay()];
+                if (error) {
+                    alert('Database Error: ' + error.message);
                 } else {
-                    dayInput.value = '';
+                    const linkBox = document.getElementById('result-link');
+                    const url = `${window.location.origin}/${data.id}`;
+                    linkBox.style.display = 'block';
+                    linkBox.innerHTML = `<strong>Success! Share this link:</strong><br><a href="${url}" target="_blank">${url}</a>`;
+                    linkBox.scrollIntoView({ behavior: 'smooth' });
                 }
-                dayInput.dispatchEvent(new Event('input', { bubbles: true })); 
+
+                btnSubmit.textContent = originalText;
+                btnSubmit.disabled = false;
             });
-        };
 
-        handleDateChange('event-reception-date', 'event-reception-day');
-        
-        const sameVenueCheckbox = document.getElementById('same-venue');
-        const receptionVenueContainer = document.getElementById('reception-venue-container');
-        sameVenueCheckbox.addEventListener('change', (e) => {
-            receptionVenueContainer.style.display = e.target.checked ? 'none' : 'block';
-            updatePreview(); 
-        });
+            const maxContacts = 2;
+            const contactsCount = { groom: 0, bride: 0 };
+            let eventCount = 0;
+            const maxEvents = 4;
+            let complimentCount = 1;
+            const maxCompliments = 5;
 
-        window.removeDynamicBlock = function(btn, type, side = null) {
-            btn.closest('.dynamic-block').remove();
-            if (type === 'contact') {
-                contactsCount[side]--;
-                document.getElementById(`btn-add-${side}`).style.display = 'block';
-                const blocks = document.querySelectorAll(`#${side}-contacts-container .dynamic-block`);
-                blocks.forEach((block, idx) => {
-                    const headerText = block.querySelector('.dynamic-header-text');
-                    if(headerText) headerText.textContent = `Additional Contact ${idx + 1}`;
-                });
-            } else if (type === 'event') {
-                eventCount--;
-                document.getElementById('btn-add-event').style.display = 'block';
-                const blocks = document.querySelectorAll(`#additional-events-container .dynamic-block`);
-                blocks.forEach((block, idx) => {
-                    const headerText = block.querySelector('.dynamic-header-text');
-                    if(headerText) headerText.textContent = `Event ${idx + 1}`;
-                });
+            const dropdownHeader = document.querySelector('#template-dropdown .dropdown-header');
+            const dropdownList = document.querySelector('#template-dropdown .dropdown-list');
+
+            dropdownHeader.addEventListener('click', (e) => {
+                dropdownList.classList.toggle('show');
+                dropdownHeader.classList.toggle('active');
+                e.stopPropagation();
+            });
+
+            document.addEventListener('click', () => {
+                dropdownList.classList.remove('show');
+                dropdownHeader.classList.remove('active');
+            });
+
+            async function transliterateToTelugu(text) {
+                if (!text.trim()) return '';
+                const words = text.split(/(\s+)/);
+                const transliteratedWords = await Promise.all(words.map(async (word) => {
+                    if (!word.trim()) return word; 
+                    try {
+                        const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(word)}&itc=te-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8`);
+                        const data = await response.json();
+                        if (data[0] === 'SUCCESS' && data[1] && data[1][0] && data[1][0][1] && data[1][0][1][0]) {
+                            return data[1][0][1][0];
+                        }
+                    } catch (e) { console.error("Transliteration error:", e); }
+                    return word; 
+                }));
+                return transliteratedWords.join('');
             }
-            updatePreview(); 
-        };
 
-        window.removeComplimentRow = function(btn) {
-            btn.closest('.grid-2').remove();
-            complimentCount--;
-            document.getElementById('btn-add-compliment').style.display = 'block';
-            updatePreview(); 
-        };
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => { clearTimeout(timeout); func(...args); };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
 
-        function addContact(side) {
-            if (contactsCount[side] >= maxContacts) return;
-            contactsCount[side]++;
-            const displayIndex = contactsCount[side];
-            const idPrefix = `${side}-extra-${displayIndex}`; 
+            const setupTransliteration = (enInputId, teInputId) => {
+                const enInput = document.getElementById(enInputId);
+                const teInput = document.getElementById(teInputId);
+                if (!enInput || !teInput) return;
 
-            const html = `
-                <div class="dynamic-block contact-block">
-                    <div class="dynamic-header">
-                        <div class="sub-heading dynamic-header-text">Additional Contact ${displayIndex}</div>
-                        <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'contact', '${side}')">
-                            Remove
-                        </button>
-                    </div>
-                    <div class="grid-3">
-                        <div class="input-group">
-                            <input type="text" id="${idPrefix}-en" placeholder=" ">
-                            <label for="${idPrefix}-en">Name EN</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="${idPrefix}-te" placeholder=" ">
-                            <label for="${idPrefix}-te">Name తె</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="tel" id="${idPrefix}-phone" placeholder=" ">
-                            <label for="${idPrefix}-phone">Phone</label>
-                        </div>
-                    </div>
-                </div>
-            `;
+                enInput.addEventListener('input', debounce(async (e) => {
+                    const text = e.target.value;
+                    if(text) teInput.value = await transliterateToTelugu(text);
+                    else teInput.value = '';
+                    teInput.dispatchEvent(new Event('input', { bubbles: true })); 
+                }, 400));
+            };
+
+            const staticFields = [
+                ['surname-en', 'surname-te'], ['groom-en', 'groom-te'], ['groom-father-en', 'groom-father-te'],
+                ['groom-mother-en', 'groom-mother-te'], ['bride-en', 'bride-te'], ['bride-father-en', 'bride-father-te'],
+                ['bride-mother-en', 'bride-mother-te'], ['venue-en', 'venue-te'], ['reception-venue-en', 'reception-venue-te'],
+                ['compliment-title-en', 'compliment-title-te'], ['comp-1-en', 'comp-1-te'] 
+            ];
+
+            staticFields.forEach(([en, te]) => setupTransliteration(en, te));
+
+            const teluguDays = ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'];
             
-            document.getElementById(`${side}-contacts-container`).insertAdjacentHTML('beforeend', html);
-            setupTransliteration(`${idPrefix}-en`, `${idPrefix}-te`);
+            const handleDateChange = (dateInputId, dayInputId) => {
+                const dateInput = document.getElementById(dateInputId);
+                const dayInput = document.getElementById(dayInputId);
+                if (!dateInput || !dayInput) return;
+                dateInput.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        const parts = e.target.value.split('-');
+                        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                        dayInput.value = teluguDays[date.getDay()];
+                    } else {
+                        dayInput.value = '';
+                    }
+                    dayInput.dispatchEvent(new Event('input', { bubbles: true })); 
+                });
+            };
 
-            if (contactsCount[side] >= maxContacts) document.getElementById(`btn-add-${side}`).style.display = 'none';
-        }
-
-        document.getElementById('btn-add-groom').addEventListener('click', () => addContact('groom'));
-        document.getElementById('btn-add-bride').addEventListener('click', () => addContact('bride'));
-
-        document.getElementById('btn-add-event').addEventListener('click', () => {
-            if (eventCount >= maxEvents) return;
-            eventCount++;
-            const eventId = `event-${eventCount}`; 
-
-            const html = `
-                <div class="dynamic-block">
-                    <div class="dynamic-header">
-                        <div class="sub-heading dynamic-header-text">Event ${eventCount}</div>
-                        <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'event')">
-                            Remove Event
-                        </button>
-                    </div>
-                    <div class="grid-2">
-                        <div class="input-group">
-                            <input type="text" id="${eventId}-name-en" placeholder=" ">
-                            <label for="${eventId}-name-en">Event Name EN</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="${eventId}-name-te" placeholder=" ">
-                            <label for="${eventId}-name-te">Event Name తె</label>
-                        </div>
-                    </div>
-                    <div class="grid-3">
-                        <div class="input-group">
-                            <input type="date" id="${eventId}-date" placeholder=" ">
-                            <label for="${eventId}-date">Date</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="time" id="${eventId}-time" placeholder=" ">
-                            <label for="${eventId}-time">Start Time</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="${eventId}-day" placeholder=" ">
-                            <label for="${eventId}-day">Day తె</label>
-                        </div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="input-group">
-                            <input type="text" id="${eventId}-venue-en" placeholder=" ">
-                            <label for="${eventId}-venue-en">Venue Name EN</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="${eventId}-venue-te" placeholder=" ">
-                            <label for="${eventId}-venue-te">Venue Name తె</label>
-                        </div>
-                        <div class="input-group full-width">
-                            <input type="url" id="${eventId}-maps" placeholder=" ">
-                            <label for="${eventId}-maps">Google Maps Link</label>
-                        </div>
-                    </div>
-                </div>
-            `;
+            handleDateChange('event-reception-date', 'event-reception-day');
             
-            document.getElementById('additional-events-container').insertAdjacentHTML('beforeend', html);
-            setupTransliteration(`${eventId}-name-en`, `${eventId}-name-te`);
-            setupTransliteration(`${eventId}-venue-en`, `${eventId}-venue-te`);
-            handleDateChange(`${eventId}-date`, `${eventId}-day`);
-
-            if (eventCount >= maxEvents) document.getElementById('btn-add-event').style.display = 'none';
-        });
-
-        document.getElementById('btn-add-compliment').addEventListener('click', () => {
-            if (complimentCount >= maxCompliments) return;
-            complimentCount++;
-            const compId = `comp-${complimentCount}`;
-
-            const html = `
-                <div class="grid-2" style="position: relative; animation: fadeIn 0.3s ease-out; margin-bottom: 0;">
-                    <div class="input-group">
-                        <input type="text" id="${compId}-en" placeholder=" ">
-                        <label for="${compId}-en">Name(s) EN</label>
-                    </div>
-                    <div class="input-group" style="position: relative;">
-                        <input type="text" id="${compId}-te" placeholder=" " style="padding-right: 40px;">
-                        <label for="${compId}-te">Name(s) తె</label>
-                        <button type="button" class="btn-delete" style="position: absolute; right: 10px; top: 16px;" onclick="removeComplimentRow(this)" title="Remove">X</button>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('compliments-container').insertAdjacentHTML('beforeend', html);
-            setupTransliteration(`${compId}-en`, `${compId}-te`);
-
-            if (complimentCount >= maxCompliments) document.getElementById('btn-add-compliment').style.display = 'none';
-        });
-
-        // ==========================================
-        // --- EDIT MODE LOGIC ---
-        // ==========================================
-        async function checkEditMode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('edit');
-
-            if (!editId) return;
-
-            document.querySelector('.btn-submit').textContent = 'Update Invitation';
-            
-            const { data, error } = await supabaseClient
-                .from('invitations')
-                .select('*')
-                .eq('id', editId)
-                .single();
-
-            if (error || !data) return alert('Could not load invitation data for editing.');
-
-            document.getElementById('custom-id').value = data.id;
-            document.getElementById('custom-id').setAttribute('readonly', true); 
-            document.getElementById('custom-id').style.backgroundColor = '#f1f5f9';
-            
-            const details = data.details || {};
-            let maxGroom = 0, maxBride = 0, maxEvents = 0, maxComps = 1;
-            
-            Object.keys(details).forEach(key => {
-                if (key.startsWith('groom-extra-')) maxGroom = Math.max(maxGroom, parseInt(key.split('-')[2]));
-                if (key.startsWith('bride-extra-')) maxBride = Math.max(maxBride, parseInt(key.split('-')[2]));
-                if (key.startsWith('event-') && !key.includes('wedding') && !key.includes('reception')) {
-                    const parts = key.split('-');
-                    if(!isNaN(parts[1])) maxEvents = Math.max(maxEvents, parseInt(parts[1]));
-                }
-                if (key.startsWith('comp-')) maxComps = Math.max(maxComps, parseInt(key.split('-')[1]));
+            const sameVenueCheckbox = document.getElementById('same-venue');
+            const receptionVenueContainer = document.getElementById('reception-venue-container');
+            sameVenueCheckbox.addEventListener('change', (e) => {
+                receptionVenueContainer.style.display = e.target.checked ? 'none' : 'block';
+                updatePreview(); 
             });
 
-            for(let i=0; i < maxGroom; i++) document.getElementById('btn-add-groom').click();
-            for(let i=0; i < maxBride; i++) document.getElementById('btn-add-bride').click();
-            for(let i=0; i < maxEvents; i++) document.getElementById('btn-add-event').click();
-            for(let i=1; i < maxComps; i++) document.getElementById('btn-add-compliment').click();
+            window.removeDynamicBlock = function(btn, type, side = null) {
+                btn.closest('.dynamic-block').remove();
+                if (type === 'contact') {
+                    contactsCount[side]--;
+                    document.getElementById(`btn-add-${side}`).style.display = 'block';
+                    const blocks = document.querySelectorAll(`#${side}-contacts-container .dynamic-block`);
+                    blocks.forEach((block, idx) => {
+                        const headerText = block.querySelector('.dynamic-header-text');
+                        if(headerText) headerText.textContent = `Additional Contact ${idx + 1}`;
+                    });
+                } else if (type === 'event') {
+                    eventCount--;
+                    document.getElementById('btn-add-event').style.display = 'block';
+                    const blocks = document.querySelectorAll(`#additional-events-container .dynamic-block`);
+                    blocks.forEach((block, idx) => {
+                        const headerText = block.querySelector('.dynamic-header-text');
+                        if(headerText) headerText.textContent = `Event ${idx + 1}`;
+                    });
+                }
+                updatePreview(); 
+            };
 
-            setTimeout(() => {
-                if(document.getElementById('bride-en') && data.bride_name) document.getElementById('bride-en').value = data.bride_name;
-                if(document.getElementById('groom-en') && data.groom_name) document.getElementById('groom-en').value = data.groom_name;
-                if(document.getElementById('wedding-date') && data.event_date) document.getElementById('wedding-date').value = data.event_date;
+            window.removeComplimentRow = function(btn) {
+                btn.closest('.grid-2').remove();
+                complimentCount--;
+                document.getElementById('btn-add-compliment').style.display = 'block';
+                updatePreview(); 
+            };
 
-                for (const [key, value] of Object.entries(details)) {
-                    const input = document.getElementById(key);
-                    if (input) {
-                        if (input.type === 'checkbox') {
-                            input.checked = value;
-                            input.dispatchEvent(new Event('change'));
-                        } else {
-                            input.value = value;
+            function addContact(side) {
+                if (contactsCount[side] >= maxContacts) return;
+                contactsCount[side]++;
+                const displayIndex = contactsCount[side];
+                const idPrefix = `${side}-extra-${displayIndex}`; 
+
+                const html = `
+                    <div class="dynamic-block contact-block">
+                        <div class="dynamic-header">
+                            <div class="sub-heading dynamic-header-text">Additional Contact ${displayIndex}</div>
+                            <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'contact', '${side}')">
+                                Remove
+                            </button>
+                        </div>
+                        <div class="grid-3">
+                            <div class="input-group">
+                                <input type="text" id="${idPrefix}-en" placeholder=" ">
+                                <label for="${idPrefix}-en">Name EN</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="${idPrefix}-te" placeholder=" ">
+                                <label for="${idPrefix}-te">Name తె</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="tel" id="${idPrefix}-phone" placeholder=" ">
+                                <label for="${idPrefix}-phone">Phone</label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById(`${side}-contacts-container`).insertAdjacentHTML('beforeend', html);
+                setupTransliteration(`${idPrefix}-en`, `${idPrefix}-te`);
+
+                if (contactsCount[side] >= maxContacts) document.getElementById(`btn-add-${side}`).style.display = 'none';
+            }
+
+            document.getElementById('btn-add-groom').addEventListener('click', () => addContact('groom'));
+            document.getElementById('btn-add-bride').addEventListener('click', () => addContact('bride'));
+
+            document.getElementById('btn-add-event').addEventListener('click', () => {
+                if (eventCount >= maxEvents) return;
+                eventCount++;
+                const eventId = `event-${eventCount}`; 
+
+                const html = `
+                    <div class="dynamic-block">
+                        <div class="dynamic-header">
+                            <div class="sub-heading dynamic-header-text">Event ${eventCount}</div>
+                            <button type="button" class="btn-delete" onclick="removeDynamicBlock(this, 'event')">
+                                Remove Event
+                            </button>
+                        </div>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <input type="text" id="${eventId}-name-en" placeholder=" ">
+                                <label for="${eventId}-name-en">Event Name EN</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="${eventId}-name-te" placeholder=" ">
+                                <label for="${eventId}-name-te">Event Name తె</label>
+                            </div>
+                        </div>
+                        <div class="grid-3">
+                            <div class="input-group">
+                                <input type="date" id="${eventId}-date" placeholder=" ">
+                                <label for="${eventId}-date">Date</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="time" id="${eventId}-time" placeholder=" ">
+                                <label for="${eventId}-time">Start Time</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="${eventId}-day" placeholder=" ">
+                                <label for="${eventId}-day">Day తె</label>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <input type="text" id="${eventId}-venue-en" placeholder=" ">
+                                <label for="${eventId}-venue-en">Venue Name EN</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="${eventId}-venue-te" placeholder=" ">
+                                <label for="${eventId}-venue-te">Venue Name తె</label>
+                            </div>
+                            <div class="input-group full-width">
+                                <input type="url" id="${eventId}-maps" placeholder=" ">
+                                <label for="${eventId}-maps">Google Maps Link</label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('additional-events-container').insertAdjacentHTML('beforeend', html);
+                setupTransliteration(`${eventId}-name-en`, `${eventId}-name-te`);
+                setupTransliteration(`${eventId}-venue-en`, `${eventId}-venue-te`);
+                handleDateChange(`${eventId}-date`, `${eventId}-day`);
+
+                if (eventCount >= maxEvents) document.getElementById('btn-add-event').style.display = 'none';
+            });
+
+            document.getElementById('btn-add-compliment').addEventListener('click', () => {
+                if (complimentCount >= maxCompliments) return;
+                complimentCount++;
+                const compId = `comp-${complimentCount}`;
+
+                const html = `
+                    <div class="grid-2" style="position: relative; animation: fadeIn 0.3s ease-out; margin-bottom: 0;">
+                        <div class="input-group">
+                            <input type="text" id="${compId}-en" placeholder=" ">
+                            <label for="${compId}-en">Name(s) EN</label>
+                        </div>
+                        <div class="input-group" style="position: relative;">
+                            <input type="text" id="${compId}-te" placeholder=" " style="padding-right: 40px;">
+                            <label for="${compId}-te">Name(s) తె</label>
+                            <button type="button" class="btn-delete" style="position: absolute; right: 10px; top: 16px;" onclick="removeComplimentRow(this)" title="Remove">X</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('compliments-container').insertAdjacentHTML('beforeend', html);
+                setupTransliteration(`${compId}-en`, `${compId}-te`);
+
+                if (complimentCount >= maxCompliments) document.getElementById('btn-add-compliment').style.display = 'none';
+            });
+
+            // EDIT MODE LOGIC
+            async function checkEditMode() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const editId = urlParams.get('edit');
+
+                if (!editId) return;
+
+                document.querySelector('.btn-submit').textContent = 'Update Invitation';
+                
+                const { data, error } = await supabaseClient
+                    .from('invitations')
+                    .select('*')
+                    .eq('id', editId)
+                    .single();
+
+                if (error || !data) return alert('Could not load invitation data for editing.');
+
+                document.getElementById('custom-id').value = data.id;
+                document.getElementById('custom-id').setAttribute('readonly', true); 
+                document.getElementById('custom-id').style.backgroundColor = '#f1f5f9';
+                
+                const details = data.details || {};
+                let maxGroom = 0, maxBride = 0, maxEvents = 0, maxComps = 1;
+                
+                Object.keys(details).forEach(key => {
+                    if (key.startsWith('groom-extra-')) maxGroom = Math.max(maxGroom, parseInt(key.split('-')[2]));
+                    if (key.startsWith('bride-extra-')) maxBride = Math.max(maxBride, parseInt(key.split('-')[2]));
+                    if (key.startsWith('event-') && !key.includes('wedding') && !key.includes('reception')) {
+                        const parts = key.split('-');
+                        if(!isNaN(parts[1])) maxEvents = Math.max(maxEvents, parseInt(parts[1]));
+                    }
+                    if (key.startsWith('comp-')) maxComps = Math.max(maxComps, parseInt(key.split('-')[1]));
+                });
+
+                for(let i=0; i < maxGroom; i++) document.getElementById('btn-add-groom').click();
+                for(let i=0; i < maxBride; i++) document.getElementById('btn-add-bride').click();
+                for(let i=0; i < maxEvents; i++) document.getElementById('btn-add-event').click();
+                for(let i=1; i < maxComps; i++) document.getElementById('btn-add-compliment').click();
+
+                setTimeout(() => {
+                    if(document.getElementById('bride-en') && data.bride_name) document.getElementById('bride-en').value = data.bride_name;
+                    if(document.getElementById('groom-en') && data.groom_name) document.getElementById('groom-en').value = data.groom_name;
+                    if(document.getElementById('wedding-date') && data.event_date) document.getElementById('wedding-date').value = data.event_date;
+
+                    for (const [key, value] of Object.entries(details)) {
+                        const input = document.getElementById(key);
+                        if (input) {
+                            if (input.type === 'checkbox') {
+                                input.checked = value;
+                                input.dispatchEvent(new Event('change'));
+                            } else {
+                                input.value = value;
+                            }
                         }
                     }
-                }
 
-                const hiddenInput = document.getElementById('selected-template');
-                const selectedValue = document.querySelector('#template-dropdown .selected-value');
-                const option = document.querySelector(`.dropdown-list li[data-value="${data.template_id}"]`);
-                if (option) {
-                    hiddenInput.value = data.template_id;
-                    selectedValue.textContent = option.textContent;
-                }
+                    const hiddenInput = document.getElementById('selected-template');
+                    const selectedValue = document.querySelector('#template-dropdown .selected-value');
+                    const option = document.querySelector(`.dropdown-list li[data-value="${data.template_id}"]`);
+                    if (option) {
+                        hiddenInput.value = data.template_id;
+                        selectedValue.textContent = option.textContent;
+                    }
 
-                const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
-                if (selectedTemplateData) {
-                    currentTemplateHTML = selectedTemplateData.html_code;
-                    document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
-                }
+                    const selectedTemplateData = window.templatesData.find(t => t.id === data.template_id);
+                    if (selectedTemplateData) {
+                        currentTemplateHTML = selectedTemplateData.html_code;
+                        document.getElementById('preview-frame').srcdoc = generateIframeContent(compileTemplateHTML(gatherData().allData));
+                    }
 
-            }, 200); 
+                }, 200); 
+            }
+
+            setTimeout(checkEditMode, 800); 
         }
-
-        setTimeout(checkEditMode, 800); 
     </script>
 </body>
 </html>
