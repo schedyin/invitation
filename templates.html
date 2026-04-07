@@ -246,7 +246,7 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
@@ -261,7 +261,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             font-family: var(--font-main);
             overflow: hidden;
-            aspect-ratio: 4 / 5; /* Forces the 4:5 Image Ratio */
+            aspect-ratio: 4 / 6; /* EXACT 4:6 RATIO */
         }
 
         .template-card:hover {
@@ -279,32 +279,74 @@
             z-index: 1;
         }
 
-        /* The blurred dark overlay at the bottom */
+        /* No background or blur, elements sit directly on the image */
         .card-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             padding: 1.5rem 1.25rem 1.25rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
             z-index: 2;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            pointer-events: none; /* Allows clicking through the overlay, if ever needed */
         }
 
-        .card-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: #a78bfa; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-        .card-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.3; }
+        .card-overlay > * {
+            pointer-events: auto; /* Ensures text and buttons remain clickable/selectable */
+        }
 
-        .card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .card-category { 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: #d8b4fe; /* Bright pastel purple to stand out */
+            font-weight: 800; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5); /* Strong shadow for readability */
+        }
+        
+        .card-title { 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            color: #ffffff; 
+            line-height: 1.3; 
+            text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6); /* Strong shadow for readability */
+        }
 
-        .btn { flex: 1; padding: 0.6rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-align: center; border: none; transition: all 0.2s; }
+        .card-actions { 
+            display: flex; 
+            gap: 0.5rem; 
+            margin-top: 0.5rem; 
+        }
+
+        /* Solid buttons for maximum visibility */
+        .btn { 
+            flex: 1; 
+            padding: 0.7rem; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 0.85rem; 
+            cursor: pointer; 
+            text-align: center; 
+            transition: all 0.2s; 
+        }
         
-        .btn-edit { background: rgba(255, 255, 255, 0.15); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); }
-        .btn-edit:hover { background: rgba(255, 255, 255, 0.3); }
+        .btn-edit { 
+            background: rgba(103, 61, 230, 0.95); 
+            color: #ffffff; 
+            border: none; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .btn-edit:hover { background: rgba(103, 61, 230, 1); transform: translateY(-2px); }
         
-        .btn-delete { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .btn-delete:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
+        .btn-delete { 
+            background: rgba(239, 68, 68, 0.95); 
+            color: #ffffff; 
+            border: none; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .btn-delete:hover { background: rgba(239, 68, 68, 1); transform: translateY(-2px); }
 
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-sub); font-size: 1.2rem; background: var(--pure-white); border-radius: 16px; border: 1px dashed var(--border-color); }
 
@@ -812,6 +854,7 @@
                 
                 const imgUrl = t.preview_image_url || 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=400&q=80';
                 
+                // NEW: Adjusted card layout to remove overlay background and position elements directly
                 card.innerHTML = `
                     <img src="${imgUrl}" class="card-img" alt="${t.name}">
                     <div class="card-overlay">
@@ -1166,7 +1209,7 @@
             stagedTemplates.forEach(t => {
                 grid.innerHTML += `
                     <div class="template-card" style="padding: 0;">
-                        <img src="${t.preview_image || 'https://via.placeholder.com/300x200?text=No+Preview'}" class="card-img" alt="Preview">
+                        <img src="${t.preview_image || 'https://via.placeholder.com/300x450?text=No+Preview'}" class="card-img" alt="Preview">
                         <div class="card-overlay" style="padding: 1rem;">
                             <div class="card-category">${t.category_name || 'Uncategorized'}</div>
                             <div class="card-title" style="font-size: 1rem; margin-top: 4px;">${t.name}</div>
