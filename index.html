@@ -764,13 +764,16 @@
             background: #38a862; /* Hover */
         }
 
-        /* RIGHT SIDE - List of Cards */
-        .stack-wrapper .right-panel {
-            flex: 1;
-            max-width: 600px;
-            margin-left: auto;
-            padding-top: 20px;
-        }
+/* 1. Ensure the parent container clips any "overflowing" white shields */
+.stack-wrapper .right-panel {
+    flex: 1;
+    max-width: 600px;
+    margin-left: auto;
+    padding-top: 20px;
+    /* This is the key: it stops the last card's shield from 
+       bleeding into the 'How It Works' section */
+    overflow: hidden; 
+}
 
 .stack-wrapper .feature-card {
     position: sticky;
@@ -778,30 +781,28 @@
     background-color: #fff; 
     width: 100%;
     border-top: 1px solid var(--border-color-stack);
+    /* Keep consistent spacing for all cards */
     margin-bottom: 250px; 
-    /* Add this to ensure it hides what's behind it */
-    min-height: 100px; 
 }
 
-/* Create a white shield that extends below the card */
-/* Only apply the shield to cards that have a 'next' card coming up */
-.stack-wrapper .feature-card:not(:last-child)::after {
+/* 2. Every card gets a shield so it covers the one before it */
+.stack-wrapper .feature-card::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    /* This height should match your margin-bottom (250px) 
-       to cover the gap until the next card hits the sticky top */
-    height: 250px; 
+    /* Use a height tall enough to cover the 'gap' (250px) plus 
+       any potential extra long text from the previous card */
+    height: 500px; 
     background: #ffffff;
     z-index: -1;
 }
 
-/* Ensure the last card behaves like a normal element at the end */
+/* 3. The very last card needs a margin-bottom to allow the 
+      next section to "catch up" and start scrolling */
 .stack-wrapper .feature-card:last-child {
-    margin-bottom: 0;
-    position: relative; /* It can still be sticky, but doesn't need the shield */
+    margin-bottom: 100vh; /* This creates the "scroll room" to see the last card */
 }
 
         /* Content inside each card */
