@@ -772,16 +772,28 @@
             padding-top: 20px;
         }
 
-        .stack-wrapper .feature-card {
-            position: sticky;
-            top: var(--sticky-top-stack);
-            background-color: #fff; /* Solid to occlude previous cards */
-            width: 100%;
-            border-top: 1px solid var(--border-color-stack);
-            /* Distance between cards as you scroll */
-            margin-bottom: 250px; 
-            box-shadow: none; 
-        }
+.stack-wrapper .feature-card {
+    position: sticky;
+    top: var(--sticky-top-stack);
+    background-color: #fff; 
+    width: 100%;
+    border-top: 1px solid var(--border-color-stack);
+    margin-bottom: 250px; 
+    /* Add this to ensure it hides what's behind it */
+    min-height: 100px; 
+}
+
+/* Create a white shield that extends below the card */
+.stack-wrapper .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Covers the rest of the screen as you scroll */
+    background: #ffffff;
+    z-index: -1;
+}
 
         /* Content inside each card */
         .stack-wrapper .card-inner {
