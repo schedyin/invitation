@@ -3,863 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms and Conditions - schedy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Schedy - Terms of Service</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- Universal box-sizing --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Root variables (Exact Match) --- */
         :root {
-            --primary-bg: #fefefe;
+            /* Navbar Variables */
+            --font-nav: 'IBM Plex Sans', sans-serif;
+            --color-dark-teal: #002726;
+            --color-teal-hover: #004D4B;
+            --color-white: #ffffff;
+            --color-accent-green: #33C375;
+            --header-height: 72px;
+            --font-weight-medium: 500;
+            
+            /* Global/Hero Variables */
+            --primary-bg: #ffffff;
             --secondary-bg: #f8f8f8;
             --accent-color: #1a1a1a;
             --text-primary: #121212;
             --text-secondary: #666666;
             --text-light: #888888;
-            --border-color: rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --radius: 12px;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+
+            /* Syncskill UI/UX Tokens */
+            --color-green-hover: #2fb168;
+            --color-green-dim: rgba(51,195,117,0.12);
+            --page-bg: #f8f9f8; 
+            --card-bg: #ffffff;
+            --text-main: #002726;
+            --text-sub: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-focus: #41B66E;
             
-            --spacing: 0.25rem;
-            --color-gray-200: oklch(92.8% 0.006 264.531);
-            --color-white: #fff;
-            --color-black: #000;
-            --color-dark-teal: #012726;
-            --color-teal-hover: #004D4B;
-            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            --font-weight-medium: 500;
-            --font-weight-normal: 400;
-            --font-weight-bold: 700;
-            --text-base: 1rem;
-            --text-base--line-height: 1.5;
-            --radius-md: 0.375rem;
-            --default-transition-duration: 0.15s;
-            --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-btn: 14px;
+            --radius-btn-sm: 8px;
+            --radius-card-outer: 24px;
+            --radius-card-inner: 14px; 
+            --radius-input: 12px;
+            
+            --font-main: 'IBM Plex Sans', sans-serif; 
+            --font-ui: 'IBM Plex Sans', sans-serif; 
+            
+            --ease-smooth: cubic-bezier(0.25,0.46,0.45,0.94);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        html, body { overflow-x: clip; scroll-behavior: smooth; }
+        
         body {
             font-family: var(--font-sans);
             line-height: 1.6;
             background-color: var(--primary-bg);
             color: var(--text-primary);
-            padding-top: 80px;
+            padding-top: var(--header-height); 
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Header Styles */
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        /* ══════════════════════════════
+            EXACT NAVBAR STYLES
+        ══════════════════════════════ */
         .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 50;
-            transition-property: all;
-            transition-duration: 0.3s;
-            transition-timing-function: var(--default-transition-timing-function);
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 9999;
+            background-color: var(--color-white);
+            border-bottom: 1px solid transparent;
+            box-shadow: none;
+            display: flex; align-items: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: var(--font-nav);
         }
-
+        .header.scrolled {
+            border-bottom-color: var(--border-subtle);
+            box-shadow: 0 4px 15px -1px rgba(0,0,0,0.05);
+        }
         .header-container {
-            width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 1400px;
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .nav {
-            padding-top: calc(var(--spacing) * 3);
-            padding-bottom: calc(var(--spacing) * 3);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: calc(var(--spacing) * 6);
-        }
-
-        .logo {
-            margin-right: calc(var(--spacing) * 6);
-            height: 40px;
-            width: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-links {
-            display: none;
-            align-items: center;
-            gap: calc(var(--spacing) * 2);
-        }
-
-        @media (min-width: 48rem) {
-            .nav-links {
-                display: flex;
-            }
-        }
-
-        .nav-link {
-            padding-left: calc(var(--spacing) * 4);
-            padding-right: calc(var(--spacing) * 4);
-            padding-top: calc(var(--spacing) * 2);
-            padding-bottom: calc(var(--spacing) * 2);
-            font-size: var(--text-base);
-            line-height: var(--text-base--line-height);
-            font-weight: var(--font-weight-medium);
-            color: var(--text-primary);
-            transition-property: color, background-color;
-            transition-duration: var(--default-transition-duration);
-            transition-timing-function: var(--default-transition-timing-function);
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        
+        .logo-text { 
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--color-dark-teal);
             text-decoration: none;
-            border-radius: var(--radius-md);
-            position: relative;
+            letter-spacing: -0.5px;
         }
 
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 8px;
-            left: 50%;
-            background-color: var(--color-dark-teal);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
+        .nav-links { display: none; gap: 8px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-link {
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
+            background: transparent;
         }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
 
-        @media (hover: hover) {
-            .nav-link:hover {
-                color: var(--color-dark-teal);
-                background-color: transparent;
-            }
-            
-            .nav-link:hover:after {
-                width: 70%;
-            }
+        .nav-right { display: flex; align-items: center; }
+        .auth-buttons { display: none; gap: 12px; }
+        @media (min-width: 768px) { .auth-buttons { display: flex; } }
+        .auth-button {
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
         }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: calc(var(--spacing) * 4);
-        }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
+        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
 
         .menu-button {
-            display: flex;
-            padding: calc(var(--spacing) * 1.5);
-            border: 1px solid var(--color-dark-teal);
-            border-radius: var(--radius-md);
-            color: var(--color-dark-teal);
-            background-color: transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: flex; padding: 8px;
+            border: 1px solid var(--border-subtle); border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
         }
+        @media (min-width: 768px) { .menu-button { display: none; } }
 
-        .menu-button:hover {
-            background-color: var(--color-dark-teal);
-            color: white;
-        }
-
-        @media (min-width: 48rem) {
-            .menu-button {
-                display: none;
-            }
-        }
-
-        .auth-buttons {
-            display: none;
-            align-items: center;
-            gap: calc(var(--spacing) * 4);
-        }
-
-        @media (min-width: 48rem) {
-            .auth-buttons {
-                display: flex;
-            }
-        }
-
-        .auth-button {
-            padding-left: calc(var(--spacing) * 5);
-            padding-right: calc(var(--spacing) * 5);
-            padding-top: calc(var(--spacing) * 2);
-            padding-bottom: calc(var(--spacing) * 2);
-            font-size: var(--text-base);
-            line-height: var(--text-base--line-height);
-            font-weight: var(--font-weight-medium);
-            border: 1px solid var(--color-dark-teal);
-            border-radius: var(--radius-md);
-            color: var(--color-dark-teal);
-            transition-property: color, background-color;
-            transition-duration: var(--default-transition-duration);
-            transition-timing-function: var(--default-transition-timing-function);
-            text-decoration: none;
-            background-color: transparent;
-        }
-
-        .auth-button.submit {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
-            border: none;
-        }
-
-        @media (hover: hover) {
-            .auth-button:hover {
-                color: var(--color-white);
-                background-color: var(--color-teal-hover);
-            }
-            .auth-button.submit:hover {
-                background-color: var(--color-teal-hover);
-            }
-        }
-
-        .mobile-auth-button {
-            display: inline-block;
-        }
-        
-        @media (min-width: 48rem) {
-            .mobile-auth-button {
-                display: none;
-            }
-        }
-
-        .divider {
-            height: 1px;
-            background-color: var(--color-gray-200);
-        }
-
-        /* Mobile Menu Styles */
         #mobileMenu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 85vw;
-            max-width: 320px;
-            height: 100vh;
-            background: #ffffff;
-            padding: 24px 16px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
-            z-index: 1002;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 9998;
+            transform: translateY(-110%);
+            transition: transform 0.3s ease-in-out;
+            padding: 24px 5%;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; gap: 20px;
+            font-family: var(--font-nav);
         }
-
-        #mobileMenu.active {
-            transform: translateX(0);
+        #mobileMenu.active { transform: translateY(0); }
+        .mobile-nav-link {
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
         }
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .mobile-auth-stack {
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
+        }
+        .mobile-auth-button {
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+            transition: background-color 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
 
         #menuOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0,0,0,0.7);
-            z-index: 1001;
-            display: none;
-            backdrop-filter: blur(5px);
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 9997; display: none;
         }
+        #menuOverlay.active { display: block; }
 
-        #menuOverlay.active {
-            display: block;
-        }
-
-        .mobile-menu-close {
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            transition: background 0.2s ease, transform 0.2s ease;
-            align-self: flex-end;
-            margin-bottom: 24px;
-            cursor: pointer;
-            z-index: 1003;
-        }
-
-        .mobile-menu-close svg {
-            width: 24px;
-            height: 24px;
-            color: #4b5563;
-        }
-
-        .mobile-menu-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 0;
-        }
-
-        .mobile-nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .mobile-nav-link {
-            display: block;
-            padding: 16px 12px;
-            font-size: 18px;
-            font-weight: 500;
-            color: #2d3436;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        .mobile-nav-link:hover {
-            background-color: #f8f9fa;
-        }
+        /* ══════════════════════════════
+            TERMS OF SERVICE SPECIFIC STYLES
+        ══════════════════════════════ */
         
-        .mobile-menu-auth {
-            flex-shrink: 0;
-            padding-top: 20px;
-            margin-top: auto;
-            padding-bottom: 80px;
-        }
-
-        .mobile-menu-auth-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .mobile-menu-auth-button {
-            padding: 14px;
+        .page-header {
+            margin-bottom: 0;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
             text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s ease;
-            font-weight: 600;
-            font-size: 16px;
+            padding: 80px 40px 20px 40px;
         }
 
-        .mobile-menu-auth-button.submit {
-            background: var(--color-dark-teal);
-            color: var(--color-white);
-        }
-        
-        .mobile-menu-auth-button.submit:hover {
-            background: var(--color-teal-hover);
-        }
-
-        /* Terms Content Styles */
-        .terms-section {
-            padding: 80px 0;
-            background-color: #f8f9fa;
-        }
-
-        .terms-container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 24px;
-            padding: 60px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        @media (max-width: 768px) {
-            .terms-container {
-                padding: 40px 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .terms-container {
-                padding: 30px 20px;
-            }
-        }
-
-        .terms-header {
-            text-align: center;
-            margin-bottom: 50px;
-            display: flex;
-            flex-direction: column;
+        .sec-label {
+            display: inline-flex;
             align-items: center;
-        }
-
-        .title-icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 20px;
-            color: var(--color-dark-teal);
-        }
-
-        .terms-title {
-            font-size: clamp(32px, 4vw, 48px);
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            color: #111827;
-        }
-
-        .last-updated {
-            color: #6b7280;
-            font-style: italic;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-
-        .terms-content h2 {
-            font-size: 24px;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.78rem;
             font-weight: 600;
-            margin: 40px 0 20px;
-            color: #111827;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 0.9rem;
+        }
+        
+        .sec-label-line {
+            width: 18px;
+            height: 1.5px;
+            background: #94a3b8;
+            display: inline-block;
         }
 
-        .terms-content p {
+        .page-header h1 {
+            font-family: var(--font-main);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
             margin-bottom: 20px;
-            color: #4b5563;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .page-header p {
+            color: var(--text-sub);
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Policy Document Content */
+        .policy-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 5% 100px 5%;
+        }
+
+        .policy-container h2 {
+            font-family: var(--font-main);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .policy-container h3 {
+            font-family: var(--font-main);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 30px;
+            margin-bottom: 16px;
+        }
+
+        .policy-container p {
+            font-size: 1.05rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .policy-container ul {
+            margin-bottom: 24px;
+            padding-left: 24px;
+            color: var(--text-sub);
+            font-size: 1.05rem;
             line-height: 1.7;
         }
 
-        .terms-content ol, .terms-content ul {
-            padding-left: 20px;
-            margin-bottom: 20px;
-        }
-
-        .terms-content li {
+        .policy-container li {
             margin-bottom: 10px;
-            color: #4b5563;
-            line-height: 1.7;
         }
 
-        .terms-content strong {
-            color: #111827;
+        .policy-container li::marker {
+            color: var(--color-accent-green);
         }
 
-        .terms-content a {
+        .policy-container a {
             color: var(--color-dark-teal);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .terms-content a:hover {
             text-decoration: underline;
+            text-decoration-color: var(--border-subtle);
+            text-underline-offset: 4px;
+            transition: text-decoration-color 0.2s ease;
         }
 
-        .contact-info {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
+        .policy-container a:hover {
+            text-decoration-color: var(--color-dark-teal);
         }
 
-        .contact-info li {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-left: 0;
-        }
-
-        .contact-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--color-dark-teal);
-            flex-shrink: 0;
-            margin-top: 4px;
-        }
-
-        /* Footer Styles */
+        /* ══════════════════════════════
+            EXACT FOOTER STYLES
+        ══════════════════════════════ */
         .footer {
-            background-color: #002726;
-            color: white;
-            padding: 60px 0 30px;
+            background-color: var(--color-dark-teal);
+            color: var(--color-white);
+            padding: 80px 5% 40px 5%;
+            font-family: var(--font-sans);
         }
 
         .footer-container {
-            width: 90%;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
-        .footer-content {
+        .footer-top {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 40px;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
         }
 
-        @media (max-width: 768px) {
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
+        .footer-brand h3 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: var(--color-white);
         }
 
-        .footer-logo-area {
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+            margin-bottom: 24px;
+        }
+
+        .social-links {
             display: flex;
-            flex-direction: column;
             gap: 16px;
         }
 
-        .footer-logo {
+        .social-link {
+            width: 40px;
             height: 40px;
-            width: auto;
-        }
-
-        .logo-tagline {
-            font-size: 0.95rem;
-            color: #d1d5db;
-            max-width: 300px;
-        }
-
-        .footer-links-container {
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
-            gap: 80px;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            transition: all 0.25s ease;
         }
 
-        @media (max-width: 768px) {
-            .footer-links-container {
-                flex-direction: column;
-                gap: 40px;
-            }
+        .social-link:hover {
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
+            transform: translateY(-2px);
         }
 
-        .footer-column h3 {
-            font-size: 1rem;
+        .footer-col h4 {
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            color: var(--color-white);
         }
 
-        .footer-column ul {
+        .footer-col ul {
             list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .footer-column ul li {
-            margin-bottom: 18px;
-        }
-
-        .footer-column ul li a {
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            color: #d1d5db;
-            font-size: 1rem;
-            transition: color 0.2s ease-in-out;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
         }
 
-        .footer-column ul li a:hover {
-            color: #33c375;
+        .footer-col a:hover {
+            color: var(--color-accent-green);
         }
 
-        .footer-copyright-bar {
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #d1d5db;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        @media (max-width: 768px) {
-            .footer-copyright-bar {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-            }
-        }
-
-        .copyright-links {
+        .footer-bottom-links {
             display: flex;
             gap: 24px;
         }
 
-        @media (max-width: 768px) {
-            .copyright-links {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 12px 20px;
-            }
-        }
-
-        .copyright-links a {
+        .footer-bottom-links a {
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            color: #d1d5db;
-            transition: color 0.2s ease-in-out;
+            transition: color 0.2s ease;
         }
 
-        .copyright-links a:hover {
-            color: #33c375;
+        .footer-bottom-links a:hover {
+            color: var(--color-white);
         }
 
-        /* Responsive Adjustments */
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1024px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+
         @media (max-width: 768px) {
-            body {
-                padding-top: 70px;
-            }
+            .page-header { padding: 60px 20px 0 20px; }
+            .page-header h1 { font-size: 2.2rem; }
             
-            .header-container {
-                padding-left: 16px;
-                padding-right: 16px;
-                width: 100%;
-            }
+            .policy-container { padding: 20px 5% 60px 5%; }
+            .policy-container h2 { font-size: 1.5rem; margin-top: 40px; }
+            .policy-container h3 { font-size: 1.2rem; }
             
-            .terms-section {
-                padding: 40px 0;
-            }
-            
-            .terms-container {
-                width: 100%;
-            }
+            .footer-top { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <header class="header">
+
+    <header class="header" id="mainHeader">
         <div class="header-container">
-            <nav class="nav">
-                <div class="nav-left">
-                    <a href="/">
-                        <img class="logo" src="https://photography-harsha.netlify.app/yellow.png" alt="schedy Logo">
-                    </a>
-                    <div class="nav-links">
-                        <a class="nav-link" href="/home">Home</a>
-                        <a class="nav-link" href="/about">About</a>
-                        <a class="nav-link" href="/services">Services</a>
-                        <a class="nav-link" href="/portfolio">Portfolio</a>
-                        <a class="nav-link" href="/contact">Contact</a>
-                    </div>
-                </div>
-                <div class="nav-right">
-                    <!-- Mobile "Book Us" Button -->
-                    <a class="auth-button submit mobile-auth-button" href="/contact">Book a Call</a>
-                    
-                    <button class="menu-button" id="mobileMenuButton">
-                        <svg width="24" height="24" viewBox="0 0 24" fill="none">
-                            <path stroke="currentColor" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                    
-                    <!-- Desktop "Book Us" Button -->
-                    <div class="auth-buttons">
-                        <a class="auth-button submit" href="/contact">Book a Call</a>
-                    </div>
-                </div>
-            </nav>
-            <!-- Mobile Menu -->
-            <div id="mobileMenu">
-                <div class="mobile-menu-close" id="mobileMenuClose">
-                    <svg viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </div>
-                <div class="mobile-menu-content">
-                    <div class="mobile-nav-links">
-                        <a href="/home" class="mobile-nav-link">Home</a>
-                        <a href="/about" class="mobile-nav-link">About</a>
-                        <a href="/services" class="mobile-nav-link">Services</a>
-                        <a href="/portfolio" class="mobile-nav-link">Portfolio</a>
-                        <a href="/contact" class="mobile-nav-link">Contact</a>
-                    </div>
-                    <div class="mobile-menu-auth">
-                        <div class="mobile-menu-auth-buttons">
-                            <a href="/contact" class="mobile-menu-auth-button submit">Book a Call</a>
-                        </div>
-                    </div>
+            <div class="nav-left">
+                <a href="/" class="logo-text" aria-label="Home">
+                    SCHEDY
+                </a>
+                <div class="nav-links">
+                    <a class="nav-link" href="about.html">About</a>
                 </div>
             </div>
-            <div id="menuOverlay"></div>
-            <div class="divider"></div>
+            <div class="nav-right">
+                <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="auth-buttons">
+                    <a class="auth-button submit" href="login.html">Login</a>
+                    <a class="auth-button" href="apply.html">Apply as Partner</a>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Terms Content -->
-    <section class="terms-section">
-        <div class="terms-container">
-            <div class="terms-header">
-                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <h1 class="terms-title">Terms and Conditions</h1>
-                <p class="last-updated">Last Updated: 18-08-2025</p>
-            </div>
-
-            <div class="terms-content">
-                <p>Welcome to <strong>schedy</strong>. By accessing or using our website, products, and services, you agree to be bound by the following Terms and Conditions. Please read them carefully.</p>
-
-                <h2>1. Acceptance of Terms</h2>
-                <p>By visiting our website or engaging our services, you acknowledge that you have read, understood, and agreed to these Terms. If you do not agree, please do not use our website or services.</p>
-
-                <h2>2. Services Provided</h2>
-                <p><strong>schedy</strong> offers professional web development, design, hosting, and related digital services.</p>
-                <p>Service details will be outlined in a project proposal, contract, or invoice agreed upon before work begins.</p>
-                <p>We reserve the right to refuse service to anyone at our sole discretion.</p>
-
-                <h2>3. Intellectual Property</h2>
-                <p>All content, design, code, graphics, and materials on this website are the intellectual property of <strong>schedy</strong> unless otherwise stated.</p>
-                <p>Clients retain ownership of their own content, logos, and data provided to us.</p>
-                <p>Completed projects remain the property of <strong>schedy</strong> until full payment is received.</p>
-
-                <h2>4. Payments & Fees</h2>
-                <p>Payment terms will be defined in each project agreement.</p>
-                <p>Unless otherwise agreed, a deposit is required before work begins, and the balance is due upon completion.</p>
-                <p>Late payments may result in suspension of services.</p>
-
-                <h2>5. Refund & Cancellation</h2>
-                <p>Refunds are subject to our <a href="/refund-policy.html">Refund & Cancellation Policy</a> (linked separately).</p>
-                <p>Custom development and design services are generally non-refundable, as they involve labor and resources.</p>
-
-                <h2>6. Client Responsibilities</h2>
-                <p>Clients agree to:</p>
-                <ul>
-                    <li>Provide necessary information, content, and approvals in a timely manner.</li>
-                    <li>Ensure all content provided does not infringe on third-party rights, including copyright and trademarks.</li>
-                    <li>Cooperate with project timelines to avoid delays.</li>
-                </ul>
-
-                <h2>7. Limitation of Liability</h2>
-                <p>We are not responsible for indirect, incidental, or consequential damages resulting from the use of our services.</p>
-                <p>While we take reasonable security measures, we do not guarantee that our services will be uninterrupted, error-free, or 100% secure.</p>
-                <p>Clients are responsible for maintaining backups of their own data.</p>
-
-                <h2>8. Third-Party Services</h2>
-                <p>We may use third-party services (e.g., hosting providers, plugins, APIs). We are not liable for issues, downtime, or failures caused by third parties.</p>
-
-                <h2>9. Termination of Services</h2>
-                <p>We reserve the right to suspend or terminate services if:</p>
-                <ul>
-                    <li>Payment terms are violated.</li>
-                    <li>A client engages in unlawful, abusive, or harmful activities.</li>
-                </ul>
-
-                <h2>10. Governing Law</h2>
-                <p>These Terms shall be governed by and interpreted according to the laws of <strong>AP</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts in <strong>CHALLAPALLI</strong>.</p>
-
-                <h2>11. Changes to Terms</h2>
-                <p>We may update these Terms from time to time. Continued use of our website and services constitutes acceptance of any changes.</p>
-
-                <h2>12. Contact Information</h2>
-                <p>If you have any questions regarding these Terms, please contact us at:</p>
-                <ul class="contact-info">
-                    <li>
-                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <span>Email: <a href="mailto:HARSHAVARDHANJW@GMAIL.COM">HARSHAVARDHANJW@GMAIL.COM</a></span>
-                    </li>
-                    <li>
-                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                        <span>Phone: <a href="tel:+917799181716">+91 77991 81716</a></span>
-                    </li>
-                    <li>
-                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span>Address: WESTREN STREET CHALLAPALLI</span>
-                    </li>
-                </ul>
-            </div>
+    <div id="mobileMenu">
+        <a href="about.html" class="mobile-nav-link">About</a>
+        <div class="mobile-auth-stack">
+            <a href="login.html" class="mobile-auth-button submit">Login</a>
+            <a href="apply.html" class="mobile-auth-button">Apply as Partner</a>
         </div>
-    </section>
+    </div>
+    <div id="menuOverlay"></div>
 
-    <!-- Footer -->
+    <header class="page-header">
+        <div class="sec-label"><span class="sec-label-line"></span> Legal Information <span class="sec-label-line"></span></div>
+        <h1>Terms of Service</h1>
+        <p>Last Updated: April 8, 2026</p>
+    </header>
+
+    <main class="policy-container">
+        <p>Welcome to Schedy. These Terms of Service ("Terms") govern your access to and use of the Schedy website, platform, and services (collectively, the "Services"). By accessing or using our Services, you agree to be bound by these Terms.</p>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By creating an account, purchasing a template, or otherwise using the Schedy platform, you agree to these Terms and our <a href="privacy-policy.html">Privacy Policy</a>. If you do not agree to these Terms, do not use our Services.</p>
+        
+        <h2>2. User Accounts</h2>
+        <p>To use certain features of the Services, you must register for an account. You agree to:</p>
+        <ul>
+            <li>Provide accurate, current, and complete information during the registration process.</li>
+            <li>Maintain and promptly update your account information to keep it accurate.</li>
+            <li>Maintain the security and confidentiality of your login credentials.</li>
+            <li>Be fully responsible for all activities that occur under your account.</li>
+        </ul>
+        <p>You must notify us immediately of any unauthorized use of your account or any other breach of security.</p>
+
+        <h2>3. User Content and Conduct</h2>
+        <h3>Your Content</h3>
+        <p>You retain all ownership rights to the photos, text, event details, and other materials you upload to your event websites ("User Content"). By uploading User Content to Schedy, you grant us a worldwide, non-exclusive, royalty-free license to host, display, and distribute your content solely for the purpose of providing the Services to you and your guests.</p>
+        
+        <h3>Acceptable Use</h3>
+        <p>You agree not to use the Services to:</p>
+        <ul>
+            <li>Upload or share content that is illegal, abusive, harassing, defamatory, or deceptive.</li>
+            <li>Infringe on the intellectual property rights of others.</li>
+            <li>Distribute spam, malware, or other harmful computer code.</li>
+            <li>Attempt to gain unauthorized access to our systems or disrupt the integrity of the platform.</li>
+        </ul>
+
+        <h2>4. Payments, Subscriptions, and Refunds</h2>
+        <p>Certain features of Schedy, including premium templates and custom domains, require payment. All fees are stated in the local currency and are non-refundable unless otherwise required by law.</p>
+        <ul>
+            <li><strong>Billing:</strong> By providing a payment method, you expressly authorize us to charge the applicable fees.</li>
+            <li><strong>Renewals:</strong> If you purchase a subscription (e.g., domain hosting), it will automatically renew until you cancel it.</li>
+            <li><strong>Cancellations:</strong> You may cancel your subscription at any time through your account settings. Cancellation will take effect at the end of the current billing cycle.</li>
+        </ul>
+
+        <h2>5. Intellectual Property</h2>
+        <p>The Schedy platform, including its original code, templates, design elements, and logos, are the exclusive property of Schedy Inc. and are protected by copyright, trademark, and other intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use our templates strictly for creating your personal or corporate event websites.</p>
+
+        <h2>6. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by law, Schedy and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising out of or in connection with your use of the Services. The Services are provided on an "as is" and "as available" basis without warranties of any kind.</p>
+
+        <h2>7. Termination</h2>
+        <p>We reserve the right to suspend or terminate your account and your access to the Services at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users of the Services, us, or third parties, or for any other reason.</p>
+
+        <h2>8. Changes to Terms</h2>
+        <p>We may modify these Terms at any time. We will post the most current version of these Terms on our website. If a revision meaningfully reduces your rights, we will notify you. By continuing to access or use the Services after revisions become effective, you agree to be bound by the revised Terms.</p>
+        
+        <h2>9. Contact Us</h2>
+        <p>If you have any questions about these Terms, please contact us at:</p>
+        <ul>
+            <li><strong>Email:</strong> legal@schedy.in</li>
+            <li><strong>Address:</strong> Schedy Inc., Legal Department, 123 Event Lane, Design City, 10001</li>
+        </ul>
+    </main>
+
     <footer class="footer">
         <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-logo-area">
-                    <img src="https://photography-harsha.netlify.app/yellow.png" alt="schedy Logo" class="footer-logo">
-                    <p class="logo-tagline">Your vision, realized through technology.</p>
-                </div>
-                <div class="footer-links-container">
-                    <div class="footer-column">
-                        <h3>Company</h3>
-                        <ul>
-                            <li><a href="about-us.html">About Us</a></li>
-                            <li><a href="/contact">Contact Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Help</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h3>Services</h3>
-                        <ul>
-                            <li><a href="#">Web Development</a></li>
-                            <li><a href="#">Digital Marketing</a></li>
-                            <li><a href="#">App Development</a></li>
-                            <li><a href="#">UI/UX Design</a></li>
-                        </ul>
+            <div class="footer-top">
+                
+                <div class="footer-brand">
+                    <h3>SCHEDY</h3>
+                    <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
+                    <div class="social-links">
+                        <a href="instagram.html" class="social-link" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        </a>
+                        <a href="twitter.html" class="social-link" aria-label="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                        </a>
+                        <a href="facebook.html" class="social-link" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <div class="footer-copyright-bar">
-                <p class="copyright-text">&copy; schedy. All rights reserved.</p>
-                <div class="copyright-links">
-                    <a href="/privacy-policy.html">Privacy Policy</a>
-                    <a href="/refund-policy.html">Refund Policy</a>
-                    <a href="/terms-and-conditions.html">Terms & Conditions</a>
+                <div class="footer-col">
+                    <h4>Templates</h4>
+                    <ul>
+                        <li><a href="wedding-invites.html">Wedding Invites</a></li>
+                        <li><a href="birthday-parties.html">Birthday Parties</a></li>
+                        <li><a href="housewarming.html">Housewarming</a></li>
+                        <li><a href="baby-showers.html">Baby Showers</a></li>
+                        <li><a href="corporate-events.html">Corporate Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="design-guides.html">Design Guides</a></li>
+                        <li><a href="blog.html">Event Planning Blog</a></li>
+                        <li><a href="showcase.html">Customer Showcase</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--color-accent-green); color: var(--color-dark-teal); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Schedy Inc. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-service.html">Terms of Service</a>
+                    <a href="cookies.html">Cookies</a>
                 </div>
             </div>
         </div>
     </footer>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const mobileMenuButton = document.getElementById('mobileMenuButton');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const mobileMenuClose = document.getElementById('mobileMenuClose');
-            const menuOverlay = document.getElementById('menuOverlay');
-            
-            const openMenu = () => {
-                mobileMenu.classList.add('active');
-                menuOverlay.classList.add('active');
-                document.body.classList.add('menu-open');
-                document.body.style.overflow = 'hidden';
-            };
-
-            const closeMenu = () => {
-                mobileMenu.classList.remove('active');
-                menuOverlay.classList.remove('active');
-                document.body.classList.remove('menu-open');
-                document.body.style.overflow = '';
-            };
-
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', openMenu);
-            }
-            
-            if (mobileMenuClose) {
-                mobileMenuClose.addEventListener('click', closeMenu);
-            }
-            
-            if (menuOverlay) {
-                menuOverlay.addEventListener('click', closeMenu);
-            }
-            
-            // Close menu when clicking on menu links
-            const mobileMenuLinks = document.querySelectorAll('#mobileMenu a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', closeMenu);
+            // Navbar scroll effect
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 0);
             });
-            
-            // Close menu when pressing Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeMenu();
+
+            // Mobile menu integration
+            const mobileMenu    = document.getElementById('mobileMenu');
+            const menuButton    = document.getElementById('mobileMenuButton');
+            const menuOverlay   = document.getElementById('menuOverlay');
+
+            const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
+
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                setMenuIcon(isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            }
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setMenuIcon(false);
                 }
             });
+            
+            setMenuIcon(false);
         });
     </script>
 </body>
