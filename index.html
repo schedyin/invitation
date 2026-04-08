@@ -82,6 +82,7 @@
         a, button {
             -webkit-tap-highlight-color: transparent;
             outline: none;
+            text-decoration: none;
         }
 
         /* ══════════════════════════════
@@ -675,7 +676,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
         }
 
         .btn-view-more:hover {
@@ -771,14 +771,13 @@
             padding-top: 20px;
         }
 
-        /* Change this: */
         .stack-wrapper .feature-card {
             position: sticky;
             top: var(--sticky-top-stack);
             background-color: #fff;
             width: 100%;
             border-top: 1px solid var(--border-color-stack);
-            margin-bottom: 0px; /* Change this to something smaller, e.g., 50px */
+            margin-bottom: 0px; 
             padding-bottom: 50px;
             box-shadow: none; 
         }
@@ -801,7 +800,6 @@
             justify-content: center;
         }
 
-        /* UPDATED: Changed from targeting svg to img */
         .stack-wrapper .icon-box img {
             width: 72px;
             height: 72px;
@@ -1607,11 +1605,10 @@
             
             .carousel-section {
                 order: 1;
-                margin-top: calc(-1 * var(--header-height)); 
+                margin-top: calc(-1 * var(--header-height));
                 margin-bottom: 0;                            
                 position: relative;
                 z-index: 1;                                  
-                
                 margin-left: -20px;
                 margin-right: -20px;
                 width: calc(100% + 40px);
@@ -1824,12 +1821,12 @@
         <header class="header" id="mainHeader">
             <div class="header-container">
                 <div class="nav-left">
-                    <a href="#" class="logo-text" aria-label="Home">
+                    <a href="/" class="logo-text" aria-label="Home">
                         SCHEDY
                     </a>
                     <div class="nav-links">
-                        <a class="nav-link" href="#">Upskill your Team</a>
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="/upskill">Upskill your Team</a>
+                        <a class="nav-link" href="/about">About</a>
                     </div>
                 </div>
                 <div class="nav-right">
@@ -1840,18 +1837,18 @@
                     </button>
                     <div class="auth-buttons">
                         <a class="auth-button submit" href="./login.html">Login</a>
-                        <a class="auth-button" href="#">Apply as Mentor</a>
+                        <a class="auth-button" href="/mentor">Apply as Mentor</a>
                     </div>
                 </div>
             </div>
         </header>
 
         <div id="mobileMenu">
-            <a href="#" class="mobile-nav-link">Upskill your Team</a>
-            <a href="#" class="mobile-nav-link">About</a>
+            <a href="/upskill" class="mobile-nav-link">Upskill your Team</a>
+            <a href="/about" class="mobile-nav-link">About</a>
             <div class="mobile-auth-stack">
                 <a href="./login.html" class="mobile-auth-button submit">Login</a>
-                <a href="#" class="mobile-auth-button">Apply as Mentor</a>
+                <a href="/mentor" class="mobile-auth-button">Apply as Mentor</a>
             </div>
         </div>
         <div id="menuOverlay"></div>
@@ -1862,7 +1859,7 @@
                 <span class="hero-eyebrow">Make Every Event Memorable</span>
                 <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
                 <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
-                <a href="#" class="hero-btn">
+                <a href="/templates" class="hero-btn">
                     <span>Choose Your Template</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
                         <path d="M1 7.11108L6 12L11 7.11108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -1923,12 +1920,12 @@
             <p>Pick a design. Add your details. Share in seconds.</p>
             
             <div class="categories">
-                <button class="cat-btn active" data-category="all">All Events</button>
-                <button class="cat-btn" data-category="wedding">Wedding</button>
-                <button class="cat-btn" data-category="birthday">Birthday</button>
-                <button class="cat-btn" data-category="housewarming">Housewarming</button>
-                <button class="cat-btn" data-category="baby">Baby Events</button>
-                <button class="cat-btn" data-category="others">Others</button>
+                <button class="cat-btn active" data-filter="all">All Events</button>
+                <button class="cat-btn" data-filter="wedding">Wedding</button>
+                <button class="cat-btn" data-filter="birthday">Birthday</button>
+                <button class="cat-btn" data-filter="housewarming">Housewarming</button>
+                <button class="cat-btn" data-filter="baby">Baby Events</button>
+                <button class="cat-btn" data-filter="others">Others</button>
             </div>
 
             <div class="mobile-dropdown-container" id="mobileDropdown">
@@ -1960,13 +1957,13 @@
                     <span class="banner-text">Wedding</span>
                 </div>
                 <div class="card-actions">
-                    <a href="#" class="btn-action btn-primary">
+                    <a href="/order/wedding" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="#" class="btn-action btn-secondary">
+                    <a href="/preview/wedding" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -1987,13 +1984,13 @@
                     <span class="banner-text">Birthday</span>
                 </div>
                 <div class="card-actions">
-                    <a href="#" class="btn-action btn-primary">
+                    <a href="/order/birthday" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="#" class="btn-action btn-secondary">
+                    <a href="/preview/birthday" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2014,13 +2011,13 @@
                     <span class="banner-text">Housewarming</span>
                 </div>
                 <div class="card-actions">
-                    <a href="#" class="btn-action btn-primary">
+                    <a href="/order/housewarming" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="#" class="btn-action btn-secondary">
+                    <a href="/preview/housewarming" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2038,16 +2035,16 @@
                     >
                 </div>
                 <div class="card-banner">
-                    <span class="banner-text">Baby Events</span>
+                    <span class="banner-text">Baby Event</span>
                 </div>
                 <div class="card-actions">
-                    <a href="#" class="btn-action btn-primary">
+                    <a href="/order/baby-event" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="#" class="btn-action btn-secondary">
+                    <a href="/preview/baby-event" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2058,7 +2055,7 @@
         </div>
 
         <div class="view-more-container">
-            <a href="#" class="btn-view-more">
+            <a href="/templates" class="btn-view-more">
                 View More Designs
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
@@ -2069,7 +2066,7 @@
                 <div class="left-panel">
                     <h2>Upgrade Student Outcomes Fast</h2>
                     <p>We integrate seamlessly to help your students build real skills, strong projects, and better outcomes.</p>
-                    <a href="#" class="btn-stack">Start Collaboration</a>
+                    <a href="/collaboration" class="btn-stack">Start Collaboration</a>
                 </div>
 
                 <div class="right-panel">
@@ -2236,7 +2233,7 @@
             </div>
 
             <div class="hiw-cta-wrapper">
-                <a href="#" class="hiw-cta">
+                <a href="/templates" class="hiw-cta">
                     Choose a template
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 12h14"/>
@@ -2330,7 +2327,7 @@
                 </table>
             </div>
 
-            <a href="#" class="cta-button">
+            <a href="/templates" class="cta-button">
                 Choose a template
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14"/>
@@ -2404,13 +2401,13 @@
                         <h3>SCHEDY</h3>
                         <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
                         <div class="social-links">
-                            <a href="#" class="social-link" aria-label="Instagram">
+                            <a href="https://instagram.com/schedy" class="social-link" aria-label="Instagram">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                             </a>
-                            <a href="#" class="social-link" aria-label="Twitter">
+                            <a href="https://twitter.com/schedy" class="social-link" aria-label="Twitter">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
                             </a>
-                            <a href="#" class="social-link" aria-label="Facebook">
+                            <a href="https://facebook.com/schedy" class="social-link" aria-label="Facebook">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                             </a>
                         </div>
@@ -2419,31 +2416,31 @@
                     <div class="footer-col">
                         <h4>Templates</h4>
                         <ul>
-                            <li><a href="#">Wedding Invites</a></li>
-                            <li><a href="#">Birthday Parties</a></li>
-                            <li><a href="#">Housewarming</a></li>
-                            <li><a href="#">Baby Showers</a></li>
-                            <li><a href="#">Corporate Events</a></li>
+                            <li><a href="/templates/wedding">Wedding Invites</a></li>
+                            <li><a href="/templates/birthday">Birthday Parties</a></li>
+                            <li><a href="/templates/housewarming">Housewarming</a></li>
+                            <li><a href="/templates/baby-shower">Baby Showers</a></li>
+                            <li><a href="/templates/corporate">Corporate Events</a></li>
                         </ul>
                     </div>
 
                     <div class="footer-col">
                         <h4>Resources</h4>
                         <ul>
-                            <li><a href="#">Help Center</a></li>
-                            <li><a href="#">Design Guides</a></li>
-                            <li><a href="#">Event Planning Blog</a></li>
-                            <li><a href="#">Customer Showcase</a></li>
+                            <li><a href="/help-center">Help Center</a></li>
+                            <li><a href="/design-guides">Design Guides</a></li>
+                            <li><a href="/blog">Event Planning Blog</a></li>
+                            <li><a href="/showcase">Customer Showcase</a></li>
                         </ul>
                     </div>
 
                     <div class="footer-col">
                         <h4>Company</h4>
                         <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Contact Support</a></li>
-                            <li><a href="#">Partner Program</a></li>
+                            <li><a href="/about-us">About Us</a></li>
+                            <li><a href="/careers">Careers</a></li>
+                            <li><a href="/contact">Contact Support</a></li>
+                            <li><a href="/partners">Partner Program</a></li>
                         </ul>
                     </div>
 
@@ -2454,7 +2451,7 @@
                     <div class="footer-bottom-links">
                         <a href="https://schedy.in/privacy-policy.html">Privacy Policy</a>
                         <a href="https://www.schedy.in/terms-and-conditions.html">Terms of Service</a>
-                        <a href="#">Cookies</a>
+                        <a href="/cookies">Cookies</a>
                     </div>
                 </div>
             </div>
@@ -2614,51 +2611,55 @@
             
             setMenuIcon(false);
 
-            // Filtering Function
-            const catBtns = document.querySelectorAll('.cat-btn');
-            const cards = document.querySelectorAll('.card');
-
-            function filterCards(category) {
+            // Filter functionality for cards
+            const filterBtns = document.querySelectorAll('.cat-btn');
+            const cards = document.querySelectorAll('.cards-container .card');
+            const dropdownOptions = document.querySelectorAll('.dropdown-option');
+            const selectedText = document.getElementById('selected-category');
+            const dropdown = document.getElementById('mobileDropdown');
+            
+            function filterItems(filterValue) {
                 cards.forEach(card => {
-                    if (category === 'all' || card.dataset.category === category) {
-                        card.style.display = 'block';
+                    if (filterValue === 'all' || card.dataset.category === filterValue) {
+                        card.style.display = 'block'; 
                     } else {
                         card.style.display = 'none';
                     }
                 });
+
+                // Sync Desktop buttons
+                filterBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === filterValue);
+                });
+                
+                // Sync Mobile dropdown text & options
+                dropdownOptions.forEach(opt => {
+                    opt.classList.toggle('selected', opt.dataset.value === filterValue);
+                    if (opt.dataset.value === filterValue) {
+                        selectedText.textContent = opt.textContent;
+                    }
+                });
             }
 
-            // Custom Mobile Dropdown Integration for Showcase
-            const dropdown = document.getElementById('mobileDropdown');
+            // Desktop click
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => filterItems(btn.dataset.filter));
+            });
+
+            // Mobile Dropdown Integration for Showcase
             if (dropdown) {
                 const trigger = document.getElementById('dropdownTrigger');
-                const selectedText = document.getElementById('selected-category');
-                const options = document.querySelectorAll('.dropdown-option');
 
                 trigger.addEventListener('click', (e) => {
                     e.stopPropagation();
                     dropdown.classList.toggle('open');
                 });
 
-                options.forEach(option => {
+                dropdownOptions.forEach(option => {
                     option.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        options.forEach(opt => opt.classList.remove('selected'));
-                        option.classList.add('selected');
-                        selectedText.textContent = option.textContent;
+                        filterItems(option.dataset.value);
                         dropdown.classList.remove('open');
-
-                        // Trigger filter
-                        const category = option.dataset.value;
-                        filterCards(category);
-
-                        // Sync desktop buttons
-                        catBtns.forEach(b => {
-                            b.classList.remove('active');
-                            if(b.dataset.category === category) {
-                                b.classList.add('active');
-                            }
-                        });
                     });
                 });
 
@@ -2666,29 +2667,6 @@
                     if (dropdown.classList.contains('open')) {
                         dropdown.classList.remove('open');
                     }
-                });
-
-                // Desktop Categories Click Logic
-                catBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        // Update active state
-                        catBtns.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        
-                        // Trigger filter
-                        const category = btn.dataset.category;
-                        filterCards(category);
-                        
-                        // Sync mobile dropdown
-                        if (selectedText) {
-                            selectedText.textContent = btn.textContent;
-                        }
-                        if(options) {
-                            options.forEach(opt => opt.classList.remove('selected'));
-                            const matchingOpt = Array.from(options).find(opt => opt.dataset.value === category);
-                            if(matchingOpt) matchingOpt.classList.add('selected');
-                        }
-                    });
                 });
             }
 
