@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedy - Design Guides</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Universal box-sizing --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Root variables (Exact Match) --- */
+        :root {
+            /* Navbar Variables */
+            --font-nav: 'IBM Plex Sans', sans-serif;
+            --color-dark-teal: #002726;
+            --color-teal-hover: #004D4B;
+            --color-white: #ffffff;
+            --color-accent-green: #33C375;
+            --header-height: 72px;
+            --font-weight-medium: 500;
+            
+            /* Global/Hero Variables */
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f8f8;
+            --accent-color: #1a1a1a;
+            --text-primary: #121212;
+            --text-secondary: #666666;
+            --text-light: #888888;
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --font-sans: 'IBM Plex Sans', sans-serif;
+
+            /* Syncskill UI/UX Tokens */
+            --color-green-hover: #2fb168;
+            --color-green-dim: rgba(51,195,117,0.12);
+            --page-bg: #f8f9f8; 
+            --card-bg: #ffffff;
+            --text-main: #002726;
+            --text-sub: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-focus: #41B66E;
+            
+            --radius-btn: 14px;
+            --radius-btn-sm: 8px;
+            --radius-card-outer: 24px;
+            --radius-card-inner: 14px; 
+            --radius-input: 12px;
+            
+            --font-main: 'IBM Plex Sans', sans-serif; 
+            --font-ui: 'IBM Plex Sans', sans-serif; 
+            
+            --ease-smooth: cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        html, body { overflow-x: clip; scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            padding-top: var(--header-height); 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        /* ══════════════════════════════
+            EXACT NAVBAR STYLES
+        ══════════════════════════════ */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 9999;
+            background-color: var(--color-white);
+            border-bottom: 1px solid transparent;
+            box-shadow: none;
+            display: flex; align-items: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: var(--font-nav);
+        }
+        .header.scrolled {
+            border-bottom-color: var(--border-subtle);
+            box-shadow: 0 4px 15px -1px rgba(0,0,0,0.05);
+        }
+        .header-container {
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        
+        .logo-text { 
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--color-dark-teal);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { display: none; gap: 8px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-link {
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
+            background: transparent;
+        }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+
+        .nav-right { display: flex; align-items: center; }
+        .auth-buttons { display: none; gap: 12px; }
+        @media (min-width: 768px) { .auth-buttons { display: flex; } }
+        .auth-button {
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+        }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
+        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
+        .menu-button {
+            display: flex; padding: 8px;
+            border: 1px solid var(--border-subtle); border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
+        }
+        @media (min-width: 768px) { .menu-button { display: none; } }
+
+        #mobileMenu {
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 9998;
+            transform: translateY(-110%);
+            transition: transform 0.3s ease-in-out;
+            padding: 24px 5%;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; gap: 20px;
+            font-family: var(--font-nav);
+        }
+        #mobileMenu.active { transform: translateY(0); }
+        .mobile-nav-link {
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .mobile-auth-stack {
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
+        }
+        .mobile-auth-button {
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+            transition: background-color 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
+        #menuOverlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 9997; display: none;
+        }
+        #menuOverlay.active { display: block; }
+
+        /* ══════════════════════════════
+            DESIGN GUIDES STYLES
+        ══════════════════════════════ */
+        
+        /* Page Header */
+        .page-header {
+            margin-bottom: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            padding: 80px 40px 0 40px;
+        }
+
+        .sec-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 0.9rem;
+        }
+        
+        .sec-label-line {
+            width: 18px;
+            height: 1.5px;
+            background: #94a3b8;
+            display: inline-block;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-main);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .page-header p {
+            color: var(--text-sub);
+            font-size: 1.15rem;
+            margin-bottom: 40px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Categories Filter */
+        .categories-wrapper {
+            max-width: 1280px;
+            margin: 0 auto 50px auto;
+            padding: 0 5%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .cat-btn {
+            padding: 10px 24px;
+            border-radius: var(--radius-btn);
+            border: 1px solid var(--border-subtle);
+            background: var(--card-bg);
+            font-size: 0.95rem;
+            font-family: var(--font-ui);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s var(--ease-smooth);
+            color: var(--text-sub);
+        }
+
+        .cat-btn:hover {
+            border-color: var(--color-dark-teal);
+            color: var(--color-dark-teal);
+        }
+
+        .cat-btn.active {
+            background: var(--color-dark-teal);
+            color: #ffffff;
+            border-color: var(--color-dark-teal);
+        }
+
+        /* Featured Article */
+        .featured-article {
+            max-width: 1280px;
+            margin: 0 auto 60px auto;
+            padding: 0 5%;
+        }
+
+        .featured-card {
+            display: flex;
+            background: var(--color-white);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card-outer);
+            overflow: hidden;
+            transition: all 0.3s var(--ease-smooth);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 39, 38, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        .featured-img-wrapper {
+            flex: 1;
+            min-height: 400px;
+        }
+
+        .featured-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .guide-badge {
+            display: inline-block;
+            background: var(--color-green-dim);
+            color: #0d4a2a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .featured-content h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .featured-content p {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .read-more-btn {
+            font-weight: 600;
+            color: var(--color-dark-teal);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .read-more-btn svg {
+            transition: transform 0.2s var(--ease-smooth);
+        }
+
+        .featured-card:hover .read-more-btn svg,
+        .guide-card:hover .read-more-btn svg {
+            transform: translateX(4px);
+        }
+
+        /* Guides Grid */
+        .guides-grid {
+            max-width: 1280px;
+            margin: 0 auto 100px auto;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .guide-card {
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card-outer);
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s var(--ease-smooth);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 39, 38, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .guide-visual {
+            height: 240px;
+            width: 100%;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .guide-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s var(--ease-smooth);
+        }
+
+        .guide-card:hover .guide-visual img {
+            transform: scale(1.05);
+        }
+
+        .guide-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .guide-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .guide-content p {
+            font-size: 1rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: var(--color-green-dim);
+            padding: 80px 5%;
+            text-align: center;
+            border-top: 1px solid rgba(51, 195, 117, 0.2);
+        }
+
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-container h2 {
+            font-size: 2rem;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .newsletter-container p {
+            color: var(--text-sub);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-input);
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .newsletter-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 4px rgba(65,182,110,0.12);
+        }
+
+        .newsletter-btn {
+            background: var(--color-dark-teal);
+            color: #fff;
+            border: none;
+            padding: 0 32px;
+            border-radius: var(--radius-input);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--color-teal-hover);
+        }
+
+        /* ══════════════════════════════
+            EXACT FOOTER STYLES
+        ══════════════════════════════ */
+        .footer {
+            background-color: var(--color-dark-teal);
+            color: var(--color-white);
+            padding: 80px 5% 40px 5%;
+            font-family: var(--font-sans);
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: var(--color-white);
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+            margin-bottom: 24px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            transition: all 0.25s ease;
+        }
+
+        .social-link:hover {
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
+            transform: translateY(-2px);
+        }
+
+        .footer-col h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--color-white);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--color-accent-green);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-bottom-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--color-white);
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1024px) {
+            .featured-content { padding: 40px; }
+            .guides-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .page-header { padding: 60px 20px 0 20px; }
+            .page-header h1 { font-size: 2.2rem; }
+            
+            .categories { display: none; /* In a real app, replace with the mobile dropdown from index.html */ }
+            
+            .featured-card { flex-direction: column; }
+            .featured-img-wrapper { min-height: 250px; }
+            .featured-content { padding: 30px 20px; }
+            .featured-content h2 { font-size: 1.8rem; }
+            
+            .guides-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 60px; }
+            
+            .newsletter-form { flex-direction: column; }
+            .newsletter-btn { padding: 16px; }
+
+            .footer-top { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header" id="mainHeader">
+        <div class="header-container">
+            <div class="nav-left">
+                <a href="/" class="logo-text" aria-label="Home">
+                    SCHEDY
+                </a>
+                <div class="nav-links">
+                    <a class="nav-link" href="about.html">About</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="auth-buttons">
+                    <a class="auth-button submit" href="login.html">Login</a>
+                    <a class="auth-button" href="apply.html">Apply as Partner</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobileMenu">
+        <a href="about.html" class="mobile-nav-link">About</a>
+        <div class="mobile-auth-stack">
+            <a href="login.html" class="mobile-auth-button submit">Login</a>
+            <a href="apply.html" class="mobile-auth-button">Apply as Partner</a>
+        </div>
+    </div>
+    <div id="menuOverlay"></div>
+    <header class="page-header">
+        <div class="sec-label"><span class="sec-label-line"></span> Design Resources <span class="sec-label-line"></span></div>
+        <h1>Craft Your Perfect Event Website</h1>
+        <p>Expert tips, step-by-step tutorials, and aesthetic inspiration to help you build digital invitations that leave a lasting impression.</p>
+    </header>
+
+    <div class="categories-wrapper">
+        <div class="categories">
+            <button class="cat-btn active" data-filter="all">All Guides</button>
+            <button class="cat-btn" data-filter="typography">Typography</button>
+            <button class="cat-btn" data-filter="color-theory">Color Theory</button>
+            <button class="cat-btn" data-filter="copywriting">Copywriting</button>
+            <button class="cat-btn" data-filter="photography">Photography</button>
+            <button class="cat-btn" data-filter="ux-design">UX Design</button>
+            <button class="cat-btn" data-filter="inspiration">Inspiration</button>
+        </div>
+    </div>
+
+    <section class="featured-article">
+        <a href="guide-detail.html" class="featured-card" data-category="typography">
+            <div class="featured-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1200&auto=format&fit=crop" alt="Person designing on a tablet">
+            </div>
+            <div class="featured-content">
+                <span class="guide-badge">Featured Masterclass</span>
+                <h2>The Ultimate Guide to Customizing Wedding Templates</h2>
+                <p>Learn how to take a base template and make it uniquely yours. We cover font pairings, adjusting color palettes for different seasons, and structuring your RSVP logic perfectly.</p>
+                <span class="read-more-btn">
+                    Read Full Guide 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+    </section>
+
+    <section class="guides-grid">
+        
+        <a href="guide-detail.html" class="guide-card" data-category="color-theory">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Color swatches">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #eef2ff; color: #3730a3;">Color Theory</span>
+                <h3>Choosing the Right Palette for Your Event Season</h3>
+                <p>From crisp autumn terracottas to vibrant summer teals. Learn how to map your real-world decor to your digital invite.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+        <a href="guide-detail.html" class="guide-card" data-category="typography">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=800&auto=format&fit=crop" alt="Typography layout">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #fff4e5; color: #9a3412;">Typography</span>
+                <h3>Pairing Serif and Sans-Serif Fonts Like a Pro</h3>
+                <p>The secret to elegant design lies in font pairings. Discover 5 timeless combinations that work for any formal event.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+        <a href="guide-detail.html" class="guide-card" data-category="copywriting">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1455390582262-044cdead27d8?q=80&w=800&auto=format&fit=crop" alt="Writing on paper">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #fce7f3; color: #9d174d;">Copywriting</span>
+                <h3>How to Write the Perfect RSVP and Info Sections</h3>
+                <p>Avoid guest confusion. Here are the templates and exact wording you need to handle +1s, dietary restrictions, and kid-free zones politely.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+        <a href="guide-detail.html" class="guide-card" data-category="photography">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop" alt="Camera lens">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #ecfdf5; color: #065f46;">Photography</span>
+                <h3>Preparing Your Engagement Photos for Web</h3>
+                <p>Large files slow down your site, but compression can ruin quality. Here is our guide to exporting images perfectly for Schedy templates.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+        <a href="guide-detail.html" class="guide-card" data-category="ux-design">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800&auto=format&fit=crop" alt="Mobile phone displaying app">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #f3f4f6; color: #1f2937;">UX Design</span>
+                <h3>Testing Your Invite on Mobile Devices</h3>
+                <p>90% of your guests will view your invite on their phones. Learn what to look for when previewing your design on mobile screens.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+        <a href="guide-detail.html" class="guide-card" data-category="inspiration">
+            <div class="guide-visual">
+                <img src="https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=800&auto=format&fit=crop" alt="Brainstorming on paper">
+            </div>
+            <div class="guide-content">
+                <span class="guide-badge" style="background: #fef08a; color: #854d0e;">Inspiration</span>
+                <h3>5 Non-Traditional Layouts We Love This Year</h3>
+                <p>Break away from the standard hero-image trend. Explore editorial, brutalist, and minimalist layouts for modern events.</p>
+                <span class="read-more-btn">
+                    Read Article 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+            </div>
+        </a>
+
+    </section>
+
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2>Get Design Tips in Your Inbox</h2>
+            <p>Join 10,000+ creators and event planners getting our weekly roundup of design inspiration, template updates, and tutorials.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                
+                <div class="footer-brand">
+                    <h3>SCHEDY</h3>
+                    <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
+                    <div class="social-links">
+                        <a href="instagram.html" class="social-link" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        </a>
+                        <a href="twitter.html" class="social-link" aria-label="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                        </a>
+                        <a href="facebook.html" class="social-link" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Templates</h4>
+                    <ul>
+                        <li><a href="wedding-invites.html">Wedding Invites</a></li>
+                        <li><a href="birthday-parties.html">Birthday Parties</a></li>
+                        <li><a href="housewarming.html">Housewarming</a></li>
+                        <li><a href="baby-showers.html">Baby Showers</a></li>
+                        <li><a href="corporate-events.html">Corporate Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="design-guides.html">Design Guides</a></li>
+                        <li><a href="blog.html">Event Planning Blog</a></li>
+                        <li><a href="showcase.html">Customer Showcase</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--color-accent-green); color: var(--color-dark-teal); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Schedy Inc. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="https://schedy.in/privacy-policy.html">Privacy Policy</a>
+                    <a href="https://www.schedy.in/terms-and-conditions.html">Terms of Service</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navbar scroll effect
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 0);
+            });
+
+            // Mobile menu integration
+            const mobileMenu    = document.getElementById('mobileMenu');
+            const menuButton    = document.getElementById('mobileMenuButton');
+            const menuOverlay   = document.getElementById('menuOverlay');
+
+            const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
+
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                setMenuIcon(isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            }
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setMenuIcon(false);
+                }
+            });
+            
+            setMenuIcon(false);
+            
+            // Category filtering logic
+            const catBtns = document.querySelectorAll('.cat-btn');
+            const featuredSection = document.querySelector('.featured-article');
+            const featuredCard = document.querySelector('.featured-card');
+            const guideCards = document.querySelectorAll('.guide-card');
+
+            catBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active styling
+                    catBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.getAttribute('data-filter');
+
+                    // Filter Featured Article Card
+                    if (filter === 'all' || featuredCard.getAttribute('data-category') === filter) {
+                        featuredSection.style.display = ''; 
+                    } else {
+                        featuredSection.style.display = 'none';
+                    }
+
+                    // Filter Grid Cards
+                    guideCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.style.display = ''; // Resets to original flex layout
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
