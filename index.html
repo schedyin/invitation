@@ -82,7 +82,6 @@
         a, button {
             -webkit-tap-highlight-color: transparent;
             outline: none;
-            text-decoration: none;
         }
 
         /* ══════════════════════════════
@@ -676,6 +675,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
 
         .btn-view-more:hover {
@@ -771,13 +771,14 @@
             padding-top: 20px;
         }
 
+        /* Change this: */
         .stack-wrapper .feature-card {
             position: sticky;
             top: var(--sticky-top-stack);
             background-color: #fff;
             width: 100%;
             border-top: 1px solid var(--border-color-stack);
-            margin-bottom: 0px; 
+            margin-bottom: 0px; /* Change this to something smaller, e.g., 50px */
             padding-bottom: 50px;
             box-shadow: none; 
         }
@@ -800,6 +801,7 @@
             justify-content: center;
         }
 
+        /* UPDATED: Changed from targeting svg to img */
         .stack-wrapper .icon-box img {
             width: 72px;
             height: 72px;
@@ -1570,9 +1572,10 @@
                 max-width: 100%;
             }
 
+            /* Change this: */
             .stack-wrapper .feature-card {
                 top: calc(var(--header-height) + 300px); 
-                margin-bottom: 0px; 
+                margin-bottom: 0px; /* Change this to something smaller, e.g., 40px */
                 padding-bottom: 50px;
                 z-index: 10;
             }
@@ -1583,6 +1586,7 @@
             }
 
             .stack-wrapper .icon-box { width: 70px; height: 70px; }
+            /* UPDATED: Changed from targeting svg to img */
             .stack-wrapper .icon-box img { width: 52px; height: 52px; }
             
             .stack-wrapper .stack-desc { font-size: 20px; }
@@ -1605,10 +1609,12 @@
             
             .carousel-section {
                 order: 1;
-                margin-top: calc(-1 * var(--header-height));
-                margin-bottom: 0;                            
+                margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
+                margin-bottom: 0;                            /* No overlap with text */
                 position: relative;
-                z-index: 1;                                  
+                z-index: 1;                                  /* Behind the text */
+                
+                /* Remove 20px left/right padding - counteract .main-wrapper padding */
                 margin-left: -20px;
                 margin-right: -20px;
                 width: calc(100% + 40px);
@@ -1618,9 +1624,9 @@
                 height: 480px;
                 perspective: 850px;
                 -webkit-perspective: 850px;
-                mask: none;          
+                mask: none;          /* Prevent clipping on mobile */
                 -webkit-mask: none;
-                width: 100%;         
+                width: 100%;         /* Ensure it fills the expanded section width */
             }
             
             .image-container {
@@ -1636,9 +1642,9 @@
             
             .hero-text-content {
                 order: 2;
-                margin-top: -50px;      
+                margin-top: -50px;      /* Move up 20px to overlay carousel */
                 position: relative;
-                z-index: 10;            
+                z-index: 10;            /* Above carousel (z-index:1) */
             }
         
             .hero-description { 
@@ -1825,8 +1831,8 @@
                         SCHEDY
                     </a>
                     <div class="nav-links">
-                        <a class="nav-link" href="/upskill">Upskill your Team</a>
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link" href="upskill.html">Upskill your Team</a>
+                        <a class="nav-link" href="about.html">About</a>
                     </div>
                 </div>
                 <div class="nav-right">
@@ -1836,19 +1842,19 @@
                         </svg>
                     </button>
                     <div class="auth-buttons">
-                        <a class="auth-button submit" href="./login.html">Login</a>
-                        <a class="auth-button" href="/mentor">Apply as Mentor</a>
+                        <a class="auth-button submit" href="login.html">Login</a>
+                        <a class="auth-button" href="apply.html">Apply as Mentor</a>
                     </div>
                 </div>
             </div>
         </header>
 
         <div id="mobileMenu">
-            <a href="/upskill" class="mobile-nav-link">Upskill your Team</a>
-            <a href="/about" class="mobile-nav-link">About</a>
+            <a href="upskill.html" class="mobile-nav-link">Upskill your Team</a>
+            <a href="about.html" class="mobile-nav-link">About</a>
             <div class="mobile-auth-stack">
-                <a href="./login.html" class="mobile-auth-button submit">Login</a>
-                <a href="/mentor" class="mobile-auth-button">Apply as Mentor</a>
+                <a href="login.html" class="mobile-auth-button submit">Login</a>
+                <a href="apply.html" class="mobile-auth-button">Apply as Mentor</a>
             </div>
         </div>
         <div id="menuOverlay"></div>
@@ -1859,7 +1865,7 @@
                 <span class="hero-eyebrow">Make Every Event Memorable</span>
                 <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
                 <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
-                <a href="/templates" class="hero-btn">
+                <a href="templates.html" class="hero-btn">
                     <span>Choose Your Template</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
                         <path d="M1 7.11108L6 12L11 7.11108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -1957,13 +1963,13 @@
                     <span class="banner-text">Wedding</span>
                 </div>
                 <div class="card-actions">
-                    <a href="/order/wedding" class="btn-action btn-primary">
+                    <a href="order.html" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="/preview/wedding" class="btn-action btn-secondary">
+                    <a href="view.html" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -1984,13 +1990,13 @@
                     <span class="banner-text">Birthday</span>
                 </div>
                 <div class="card-actions">
-                    <a href="/order/birthday" class="btn-action btn-primary">
+                    <a href="order.html" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="/preview/birthday" class="btn-action btn-secondary">
+                    <a href="view.html" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2011,13 +2017,13 @@
                     <span class="banner-text">Housewarming</span>
                 </div>
                 <div class="card-actions">
-                    <a href="/order/housewarming" class="btn-action btn-primary">
+                    <a href="order.html" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="/preview/housewarming" class="btn-action btn-secondary">
+                    <a href="view.html" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2030,21 +2036,21 @@
                 <div class="card-top" style="background-color: #f5f3ff;">
                     <img 
                         src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop" 
-                        alt="Baby Event Design" 
+                        alt="Baby Events Design" 
                         class="product-img"
                     >
                 </div>
                 <div class="card-banner">
-                    <span class="banner-text">Baby Event</span>
+                    <span class="banner-text">Baby Events</span>
                 </div>
                 <div class="card-actions">
-                    <a href="/order/baby-event" class="btn-action btn-primary">
+                    <a href="order.html" class="btn-action btn-primary">
                         <span>Order</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                         </svg>
                     </a>
-                    <a href="/preview/baby-event" class="btn-action btn-secondary">
+                    <a href="view.html" class="btn-action btn-secondary">
                         <span>View</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-sm">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -2055,7 +2061,7 @@
         </div>
 
         <div class="view-more-container">
-            <a href="/templates" class="btn-view-more">
+            <a href="templates.html" class="btn-view-more">
                 View More Designs
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
@@ -2066,7 +2072,7 @@
                 <div class="left-panel">
                     <h2>Upgrade Student Outcomes Fast</h2>
                     <p>We integrate seamlessly to help your students build real skills, strong projects, and better outcomes.</p>
-                    <a href="/collaboration" class="btn-stack">Start Collaboration</a>
+                    <a href="collaboration.html" class="btn-stack">Start Collaboration</a>
                 </div>
 
                 <div class="right-panel">
@@ -2233,7 +2239,7 @@
             </div>
 
             <div class="hiw-cta-wrapper">
-                <a href="/templates" class="hiw-cta">
+                <a href="templates.html" class="hiw-cta">
                     Choose a template
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 12h14"/>
@@ -2327,7 +2333,7 @@
                 </table>
             </div>
 
-            <a href="/templates" class="cta-button">
+            <a href="templates.html" class="cta-button">
                 Choose a template
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14"/>
@@ -2401,13 +2407,13 @@
                         <h3>SCHEDY</h3>
                         <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
                         <div class="social-links">
-                            <a href="https://instagram.com/schedy" class="social-link" aria-label="Instagram">
+                            <a href="instagram.html" class="social-link" aria-label="Instagram">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                             </a>
-                            <a href="https://twitter.com/schedy" class="social-link" aria-label="Twitter">
+                            <a href="twitter.html" class="social-link" aria-label="Twitter">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
                             </a>
-                            <a href="https://facebook.com/schedy" class="social-link" aria-label="Facebook">
+                            <a href="facebook.html" class="social-link" aria-label="Facebook">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                             </a>
                         </div>
@@ -2416,31 +2422,31 @@
                     <div class="footer-col">
                         <h4>Templates</h4>
                         <ul>
-                            <li><a href="/templates/wedding">Wedding Invites</a></li>
-                            <li><a href="/templates/birthday">Birthday Parties</a></li>
-                            <li><a href="/templates/housewarming">Housewarming</a></li>
-                            <li><a href="/templates/baby-shower">Baby Showers</a></li>
-                            <li><a href="/templates/corporate">Corporate Events</a></li>
+                            <li><a href="wedding-invites.html">Wedding Invites</a></li>
+                            <li><a href="birthday-parties.html">Birthday Parties</a></li>
+                            <li><a href="housewarming.html">Housewarming</a></li>
+                            <li><a href="baby-showers.html">Baby Showers</a></li>
+                            <li><a href="corporate-events.html">Corporate Events</a></li>
                         </ul>
                     </div>
 
                     <div class="footer-col">
                         <h4>Resources</h4>
                         <ul>
-                            <li><a href="/help-center">Help Center</a></li>
-                            <li><a href="/design-guides">Design Guides</a></li>
-                            <li><a href="/blog">Event Planning Blog</a></li>
-                            <li><a href="/showcase">Customer Showcase</a></li>
+                            <li><a href="help-center.html">Help Center</a></li>
+                            <li><a href="design-guides.html">Design Guides</a></li>
+                            <li><a href="blog.html">Event Planning Blog</a></li>
+                            <li><a href="showcase.html">Customer Showcase</a></li>
                         </ul>
                     </div>
 
                     <div class="footer-col">
                         <h4>Company</h4>
                         <ul>
-                            <li><a href="/about-us">About Us</a></li>
-                            <li><a href="/careers">Careers</a></li>
-                            <li><a href="/contact">Contact Support</a></li>
-                            <li><a href="/partners">Partner Program</a></li>
+                            <li><a href="about-us.html">About Us</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact-support.html">Contact Support</a></li>
+                            <li><a href="partner-program.html">Partner Program</a></li>
                         </ul>
                     </div>
 
@@ -2451,7 +2457,7 @@
                     <div class="footer-bottom-links">
                         <a href="https://schedy.in/privacy-policy.html">Privacy Policy</a>
                         <a href="https://www.schedy.in/terms-and-conditions.html">Terms of Service</a>
-                        <a href="/cookies">Cookies</a>
+                        <a href="cookies.html">Cookies</a>
                     </div>
                 </div>
             </div>
@@ -2611,55 +2617,78 @@
             
             setMenuIcon(false);
 
-            // Filter functionality for cards
-            const filterBtns = document.querySelectorAll('.cat-btn');
-            const cards = document.querySelectorAll('.cards-container .card');
-            const dropdownOptions = document.querySelectorAll('.dropdown-option');
-            const selectedText = document.getElementById('selected-category');
-            const dropdown = document.getElementById('mobileDropdown');
+            // --- Product Showcase Filtering Logic ---
+            const cards = document.querySelectorAll('.card');
+            const desktopCatBtns = document.querySelectorAll('.cat-btn');
             
-            function filterItems(filterValue) {
+            function filterCards(category) {
                 cards.forEach(card => {
-                    if (filterValue === 'all' || card.dataset.category === filterValue) {
-                        card.style.display = 'block'; 
+                    // Show all cards if 'all' is selected, otherwise match data-category
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = '';
                     } else {
                         card.style.display = 'none';
                     }
                 });
-
-                // Sync Desktop buttons
-                filterBtns.forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.filter === filterValue);
-                });
-                
-                // Sync Mobile dropdown text & options
-                dropdownOptions.forEach(opt => {
-                    opt.classList.toggle('selected', opt.dataset.value === filterValue);
-                    if (opt.dataset.value === filterValue) {
-                        selectedText.textContent = opt.textContent;
-                    }
-                });
             }
 
-            // Desktop click
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => filterItems(btn.dataset.filter));
+            // Desktop Category Buttons Event Listeners
+            desktopCatBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Update active state
+                    desktopCatBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    const filter = e.target.dataset.filter;
+                    filterCards(filter);
+                    
+                    // Sync mobile dropdown text if it exists
+                    const selectedText = document.getElementById('selected-category');
+                    if(selectedText) selectedText.textContent = e.target.textContent;
+
+                    // Sync mobile dropdown active state
+                    const mobileOptions = document.querySelectorAll('.dropdown-option');
+                    mobileOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        if(opt.dataset.value === filter) {
+                            opt.classList.add('selected');
+                        }
+                    });
+                });
             });
 
-            // Mobile Dropdown Integration for Showcase
+            // Custom Mobile Dropdown Integration for Showcase
+            const dropdown = document.getElementById('mobileDropdown');
             if (dropdown) {
                 const trigger = document.getElementById('dropdownTrigger');
+                const selectedText = document.getElementById('selected-category');
+                const options = document.querySelectorAll('.dropdown-option');
 
                 trigger.addEventListener('click', (e) => {
                     e.stopPropagation();
                     dropdown.classList.toggle('open');
                 });
 
-                dropdownOptions.forEach(option => {
+                options.forEach(option => {
                     option.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        filterItems(option.dataset.value);
+                        // Update mobile selection state
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        selectedText.textContent = option.textContent;
                         dropdown.classList.remove('open');
+                        
+                        // Apply filter
+                        const filter = option.dataset.value;
+                        filterCards(filter);
+
+                        // Sync desktop buttons active state
+                        desktopCatBtns.forEach(btn => {
+                            btn.classList.remove('active');
+                            if(btn.dataset.filter === filter) {
+                                btn.classList.add('active');
+                            }
+                        });
                     });
                 });
 
