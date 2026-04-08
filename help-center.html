@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedy - Help Center</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Universal box-sizing --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Root variables (Exact Match) --- */
+        :root {
+            /* Navbar Variables */
+            --font-nav: 'IBM Plex Sans', sans-serif;
+            --color-dark-teal: #002726;
+            --color-teal-hover: #004D4B;
+            --color-white: #ffffff;
+            --color-accent-green: #33C375;
+            --header-height: 72px;
+            --font-weight-medium: 500;
+            
+            /* Global/Hero Variables */
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f8f8;
+            --accent-color: #1a1a1a;
+            --text-primary: #121212;
+            --text-secondary: #666666;
+            --text-light: #888888;
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --font-sans: 'IBM Plex Sans', sans-serif;
+
+            /* Syncskill UI/UX Tokens */
+            --color-green-hover: #2fb168;
+            --color-green-dim: rgba(51,195,117,0.12);
+            --page-bg: #f8f9f8; 
+            --card-bg: #ffffff;
+            --text-main: #002726;
+            --text-sub: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-focus: #41B66E;
+            
+            --radius-btn: 14px;
+            --radius-btn-sm: 8px;
+            --radius-card-outer: 24px;
+            --radius-card-inner: 14px; 
+            --radius-input: 12px;
+            
+            --font-main: 'IBM Plex Sans', sans-serif; 
+            --font-ui: 'IBM Plex Sans', sans-serif; 
+            
+            --ease-smooth: cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        html, body { overflow-x: clip; scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            padding-top: var(--header-height); 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        /* ══════════════════════════════
+            EXACT NAVBAR STYLES
+        ══════════════════════════════ */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--header-height); z-index: 9999;
+            background-color: var(--color-white);
+            border-bottom: 1px solid transparent;
+            box-shadow: none;
+            display: flex; align-items: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: var(--font-nav);
+        }
+        .header.scrolled {
+            border-bottom-color: var(--border-subtle);
+            box-shadow: 0 4px 15px -1px rgba(0,0,0,0.05);
+        }
+        .header-container {
+            width: 90%; margin: 0 auto; max-width: 1280px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-left { display: flex; align-items: center; gap: 32px; }
+        
+        .logo-text { 
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--color-dark-teal);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { display: none; gap: 8px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-link {
+            padding: 8px 16px; font-weight: var(--font-weight-medium);
+            color: var(--color-dark-teal); text-decoration: none;
+            border-radius: 0; transition: color 0.2s ease;
+            background: transparent;
+        }
+        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+
+        .nav-right { display: flex; align-items: center; }
+        .auth-buttons { display: none; gap: 12px; }
+        @media (min-width: 768px) { .auth-buttons { display: flex; } }
+        .auth-button {
+            padding: 8px 24px; font-weight: var(--font-weight-medium);
+            border-radius: 8px; text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+        }
+        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
+        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
+        .menu-button {
+            display: flex; padding: 8px;
+            border: 1px solid var(--border-subtle); border-radius: 8px;
+            background: #f1f5f9; cursor: pointer;
+            color: var(--color-dark-teal); transition: background 0.1s;
+        }
+        @media (min-width: 768px) { .menu-button { display: none; } }
+
+        #mobileMenu {
+            position: fixed; top: var(--header-height); left: 0; width: 100%;
+            background: var(--color-white); z-index: 9998;
+            transform: translateY(-110%);
+            transition: transform 0.3s ease-in-out;
+            padding: 24px 5%;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; gap: 20px;
+            font-family: var(--font-nav);
+        }
+        #mobileMenu.active { transform: translateY(0); }
+        .mobile-nav-link {
+            font-size: 1.1rem; font-weight: 500; text-decoration: none;
+            color: var(--color-dark-teal); padding: 8px 0;
+            transition: color 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .mobile-auth-stack {
+            display: flex; flex-direction: column; gap: 12px;
+            padding-top: 12px; border-top: 1px solid #f1f5f9;
+        }
+        .mobile-auth-button {
+            width: 100%; padding: 12px; text-align: center;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            border: 1px solid var(--color-dark-teal);
+            color: var(--color-dark-teal); background: transparent;
+            transition: background-color 0.2s, color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+
+        #menuOverlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            z-index: 9997; display: none;
+        }
+        #menuOverlay.active { display: block; }
+
+        /* ══════════════════════════════
+            HELP CENTER SPECIFIC STYLES
+        ══════════════════════════════ */
+        
+        /* Hero & Search */
+        .help-hero {
+            background-color: var(--page-bg);
+            padding: 80px 20px 100px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .sec-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+        
+        .sec-label-line {
+            width: 18px;
+            height: 1.5px;
+            background: #94a3b8;
+            display: inline-block;
+        }
+
+        .help-hero h1 {
+            font-family: var(--font-main);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            margin-bottom: 16px;
+        }
+
+        .help-hero p {
+            color: var(--text-sub);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-wrapper {
+            max-width: 650px;
+            margin: 40px auto 0;
+            display: flex;
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px -10px rgba(0, 39, 38, 0.08);
+            border: 1px solid var(--border-subtle);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: var(--border-focus);
+            box-shadow: 0 15px 35px -10px rgba(0, 39, 38, 0.1), 0 0 0 4px rgba(65,182,110,0.12);
+        }
+
+        .search-icon {
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            color: #94a3b8;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1.05rem;
+            font-family: var(--font-sans);
+            color: var(--text-main);
+            outline: none;
+            padding: 12px 0;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-btn {
+            background: var(--color-dark-teal);
+            color: var(--color-white);
+            border: none;
+            padding: 0 28px;
+            border-radius: var(--radius-btn);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: var(--font-sans);
+        }
+
+        .search-btn:hover {
+            background: var(--color-teal-hover);
+        }
+
+        /* Help Categories Grid */
+        .help-categories {
+            max-width: 1100px;
+            margin: -50px auto 80px;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .help-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card-outer);
+            padding: 40px 32px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s var(--ease-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02);
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            border-color: #cbd5e1;
+            box-shadow: 0 20px 40px -15px rgba(0, 39, 38, 0.08);
+        }
+
+        .help-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: var(--color-green-dim);
+            color: var(--color-dark-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .help-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .help-card p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Popular Articles Section */
+        .popular-section {
+            max-width: 900px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card-inner);
+            text-decoration: none;
+            transition: all 0.25s var(--ease-smooth);
+        }
+
+        .article-item:hover {
+            border-color: var(--color-dark-teal);
+            box-shadow: 0 10px 30px -10px rgba(0, 39, 38, 0.08);
+            transform: translateX(4px);
+        }
+
+        .article-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .article-meta {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .article-icon {
+            color: var(--color-dark-teal);
+            transition: transform 0.25s;
+        }
+
+        .article-item:hover .article-icon {
+            transform: translateX(4px);
+        }
+
+        /* Contact Support Banner */
+        .support-banner {
+            max-width: 1100px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .support-card {
+            background-color: var(--color-dark-teal);
+            border-radius: var(--radius-card-outer);
+            padding: 60px 40px;
+            text-align: center;
+            color: var(--color-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background elements for banner */
+        .support-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(51, 195, 117, 0.1);
+            border-radius: 50%;
+        }
+
+        .support-card::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: -20px;
+            width: 250px;
+            height: 250px;
+            background: rgba(51, 195, 117, 0.05);
+            border-radius: 50%;
+        }
+
+        .support-card h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .support-card p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-support {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
+            padding: 16px 32px;
+            border-radius: var(--radius-btn);
+            font-weight: 600;
+            font-size: 1.05rem;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.25s, background 0.25s;
+            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.2);
+        }
+
+        .btn-support:hover {
+            background: var(--color-green-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            max-height: 85vh;
+            border-radius: var(--radius-card-outer);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .modal-overlay.hidden .modal-container {
+            transform: translateY(20px);
+        }
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin: 0;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .close-modal {
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .close-modal:hover {
+            background: #e2e8f0;
+            color: var(--color-dark-teal);
+        }
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            color: var(--text-sub);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        .modal-body h3 {
+            color: var(--text-main);
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        .modal-body h3:first-child {
+            margin-top: 0;
+        }
+        .modal-body p {
+            margin-bottom: 16px;
+        }
+        .modal-body ul, .modal-body ol {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+        .modal-body li {
+            margin-bottom: 8px;
+        }
+        .modal-body strong {
+            color: var(--text-main);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        /* ══════════════════════════════
+            EXACT FOOTER STYLES
+        ══════════════════════════════ */
+        .footer {
+            background-color: var(--color-dark-teal);
+            color: var(--color-white);
+            padding: 80px 5% 40px 5%;
+            font-family: var(--font-sans);
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: var(--color-white);
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+            margin-bottom: 24px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            transition: all 0.25s ease;
+        }
+
+        .social-link:hover {
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
+            transform: translateY(-2px);
+        }
+
+        .footer-col h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--color-white);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--color-accent-green);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-bottom-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--color-white);
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1024px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .help-hero { padding: 60px 20px 100px; }
+            .help-hero h1 { font-size: 2.2rem; }
+            
+            .search-wrapper { flex-direction: column; padding: 12px; border-radius: 20px; }
+            .search-btn { padding: 16px; width: 100%; border-radius: 12px; }
+            
+            .help-categories { grid-template-columns: 1fr; gap: 20px; margin-top: -60px; }
+            .help-card { padding: 30px 20px; }
+
+            .support-card { padding: 40px 20px; }
+            .support-card h2 { font-size: 1.8rem; }
+            
+            .footer-top { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header" id="mainHeader">
+        <div class="header-container">
+            <div class="nav-left">
+                <a href="/" class="logo-text" aria-label="Home">
+                    SCHEDY
+                </a>
+                <div class="nav-links">
+                    <a class="nav-link" href="about.html">About</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="menu-button" id="mobileMenuButton" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="auth-buttons">
+                    <a class="auth-button submit" href="login.html">Login</a>
+                    <a class="auth-button" href="apply.html">Apply as Partner</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobileMenu">
+        <a href="about.html" class="mobile-nav-link">About</a>
+        <div class="mobile-auth-stack">
+            <a href="login.html" class="mobile-auth-button submit">Login</a>
+            <a href="apply.html" class="mobile-auth-button">Apply as Partner</a>
+        </div>
+    </div>
+    <div id="menuOverlay"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="help-hero">
+            <div class="sec-label"><span class="sec-label-line"></span> Help & Support <span class="sec-label-line"></span></div>
+            <h1>How can we help you today?</h1>
+            <p>Search our knowledge base or browse categories below to find answers.</p>
+            
+            <form class="search-wrapper" id="searchForm" onsubmit="event.preventDefault();">
+                <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search for articles, features, or tutorials..." autocomplete="off">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </section>
+
+        <!-- Categories Grid -->
+        <section class="help-categories" id="helpCategories">
+            <a href="#" class="help-card open-modal" data-id="cat-getting-started">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <h3>Getting Started</h3>
+                <p>Everything you need to know to create your first event website.</p>
+            </a>
+
+            <a href="#" class="help-card open-modal" data-id="cat-designing">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </div>
+                <h3>Designing & Customization</h3>
+                <p>Learn how to change fonts, upload photos, and tailor templates.</p>
+            </a>
+
+            <a href="#" class="help-card open-modal" data-id="cat-guest">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3>Guest Management</h3>
+                <p>Managing RSVPs, sending bulk updates, and tracking dietary needs.</p>
+            </a>
+
+            <a href="#" class="help-card open-modal" data-id="cat-domains">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><path d="M9 21V9"/></svg>
+                </div>
+                <h3>Custom Domains</h3>
+                <p>How to link your own web address (URL) to your event invitation.</p>
+            </a>
+
+            <a href="#" class="help-card open-modal" data-id="cat-billing">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                </div>
+                <h3>Billing & Payments</h3>
+                <p>Managing your subscriptions, invoices, and payment methods.</p>
+            </a>
+
+            <a href="#" class="help-card open-modal" data-id="cat-privacy">
+                <div class="help-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Privacy & Security</h3>
+                <p>How we protect your data and how to keep your event private.</p>
+            </a>
+        </section>
+
+        <!-- Popular Articles -->
+        <section class="popular-section">
+            <h2 class="section-title" id="articlesTitle">Popular Articles</h2>
+            <div class="article-list" id="articleList">
+                
+                <a href="#" class="article-item open-modal" data-id="art-whatsapp">
+                    <div class="article-content">
+                        <span class="article-title">How do I share my invitation via WhatsApp?</span>
+                        <div class="article-meta">
+                            <span>Getting Started</span> • <span>3 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+
+                <a href="#" class="article-item open-modal" data-id="art-rsvp-hide">
+                    <div class="article-content">
+                        <span class="article-title">Can I hide the RSVP form after a certain date?</span>
+                        <div class="article-meta">
+                            <span>Guest Management</span> • <span>2 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+
+                <a href="#" class="article-item open-modal" data-id="art-custom-domain">
+                    <div class="article-content">
+                        <span class="article-title">Connecting a custom domain from GoDaddy or Namecheap</span>
+                        <div class="article-meta">
+                            <span>Custom Domains</span> • <span>5 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+
+                <a href="#" class="article-item open-modal" data-id="art-crop-photos">
+                    <div class="article-content">
+                        <span class="article-title">How to crop and compress photos before uploading</span>
+                        <div class="article-meta">
+                            <span>Designing & Customization</span> • <span>4 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+
+                <a href="#" class="article-item open-modal" data-id="art-downgrade">
+                    <div class="article-content">
+                        <span class="article-title">What happens if I downgrade my premium plan?</span>
+                        <div class="article-meta">
+                            <span>Billing & Payments</span> • <span>2 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+
+                <a href="#" class="article-item open-modal" data-id="art-dietary">
+                    <div class="article-content">
+                        <span class="article-title">How to track dietary restrictions for your guests</span>
+                        <div class="article-meta">
+                            <span>Guest Management</span> • <span>3 min read</span>
+                        </div>
+                    </div>
+                    <svg class="article-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+                
+                <div id="noResultsMsg" class="no-results">
+                    No articles found matching your search. Please try different keywords.
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Support Banner -->
+        <section class="support-banner">
+            <div class="support-card">
+                <h2>Still can't find what you're looking for?</h2>
+                <p>Our dedicated support team is available Monday through Friday to help you build the perfect event website.</p>
+                <a href="contact-support.html" class="btn-support">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Contact Support
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                
+                <div class="footer-brand">
+                    <h3>SCHEDY</h3>
+                    <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
+                    <div class="social-links">
+                        <a href="instagram.html" class="social-link" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        </a>
+                        <a href="twitter.html" class="social-link" aria-label="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                        </a>
+                        <a href="facebook.html" class="social-link" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Templates</h4>
+                    <ul>
+                        <li><a href="wedding-invites.html">Wedding Invites</a></li>
+                        <li><a href="birthday-parties.html">Birthday Parties</a></li>
+                        <li><a href="housewarming.html">Housewarming</a></li>
+                        <li><a href="baby-showers.html">Baby Showers</a></li>
+                        <li><a href="corporate-events.html">Corporate Events</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="design-guides.html">Design Guides</a></li>
+                        <li><a href="blog.html">Event Planning Blog</a></li>
+                        <li><a href="showcase.html">Customer Showcase</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--color-accent-green); color: var(--color-dark-teal); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Schedy Inc. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-service.html">Terms of Service</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Article Modal -->
+    <div id="articleModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Article Title</h2>
+                <button class="close-modal" id="closeModalBtn" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navbar scroll effect
+            const header = document.getElementById('mainHeader');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 0);
+            });
+
+            // Mobile menu integration
+            const mobileMenu    = document.getElementById('mobileMenu');
+            const menuButton    = document.getElementById('mobileMenuButton');
+            const menuOverlay   = document.getElementById('menuOverlay');
+
+            const hamburgerSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            const closeSVG     = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            function setMenuIcon(isOpen) { menuButton.innerHTML = isOpen ? closeSVG : hamburgerSVG; }
+
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                setMenuIcon(isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            }
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setMenuIcon(false);
+                }
+            });
+            
+            setMenuIcon(false);
+
+            // --- Help Center Logic: Content Data ---
+            const helpContent = {
+                "cat-getting-started": {
+                    title: "Getting Started Guide",
+                    content: `
+                        <h3>Welcome to Schedy</h3>
+                        <p>Creating your first event website is simple. Follow these steps to get your invitation up and running in minutes:</p>
+                        <ol>
+                            <li><strong>Choose a Template:</strong> Browse our library of professional templates categorized by event type.</li>
+                            <li><strong>Add Your Details:</strong> Use the intuitive editor to update names, dates, and venue information.</li>
+                            <li><strong>Publish & Share:</strong> Once you are happy with the preview, click publish to get your unique shareable link.</li>
+                        </ol>
+                        <p>If you encounter any issues during onboarding, feel free to contact our support team.</p>
+                    `
+                },
+                "cat-designing": {
+                    title: "Designing & Customization",
+                    content: `
+                        <h3>Personalizing Your Invite</h3>
+                        <p>Schedy gives you the flexibility to match your event's unique theme.</p>
+                        <ul>
+                            <li><strong>Typography:</strong> Select from premium Google Fonts to change the look and feel.</li>
+                            <li><strong>Colors:</strong> Adjust the primary and secondary color palettes in the 'Design' tab.</li>
+                            <li><strong>Photo Galleries:</strong> Upload high-resolution images. Our system automatically optimizes them for fast loading.</li>
+                        </ul>
+                    `
+                },
+                "cat-guest": {
+                    title: "Guest Management Features",
+                    content: `
+                        <h3>Handling RSVPs Seamlessly</h3>
+                        <p>Keeping track of who is coming has never been easier.</p>
+                        <p>Our dashboard allows you to view all incoming RSVPs in real-time. You can filter by 'Attending', 'Declined', and view specific dietary requirements. You also have the option to export this data to a CSV file to share with your caterer or event planner.</p>
+                    `
+                },
+                "cat-domains": {
+                    title: "Setting Up Custom Domains",
+                    content: `
+                        <h3>Make It Yours</h3>
+                        <p>A custom domain (like <em>kanikawedsabhishek.com</em>) makes your event feel premium.</p>
+                        <p>To connect your domain, purchase one from providers like GoDaddy or Namecheap. Then, go to your Schedy Settings -> Domain, and follow the instructions to update your DNS records (A Record and CNAME). Propagation usually takes 24-48 hours.</p>
+                    `
+                },
+                "cat-billing": {
+                    title: "Billing & Subscriptions",
+                    content: `
+                        <h3>Managing Your Plan</h3>
+                        <p>We offer transparent pricing with no hidden fees.</p>
+                        <p>Your subscription can be managed from the 'Account Settings' page. You can upgrade to a premium plan to unlock custom domains and unlimited photo storage. Downgrading will keep your data safe, but premium features will be disabled at the end of your billing cycle.</p>
+                    `
+                },
+                "cat-privacy": {
+                    title: "Privacy & Security",
+                    content: `
+                        <h3>Keeping Your Event Private</h3>
+                        <p>We understand that event details are personal.</p>
+                        <p>By default, Schedy templates are configured to <strong>block search engines</strong> (like Google) from indexing your website. Additionally, you can add a 'Passcode PIN' to your website, meaning guests will need to enter a 4-digit pin to view the details and RSVP.</p>
+                    `
+                },
+                "art-whatsapp": {
+                    title: "How do I share my invitation via WhatsApp?",
+                    content: `
+                        <h3>Sharing in One Click</h3>
+                        <p>To share your published invitation directly to WhatsApp:</p>
+                        <ol>
+                            <li>Log in to your Schedy Dashboard.</li>
+                            <li>Click on your active event to open the Event Overview.</li>
+                            <li>Locate the <strong>Share</strong> button at the top right of the screen.</li>
+                            <li>Select the <strong>WhatsApp</strong> icon. This will open WhatsApp Web or the app on your phone.</li>
+                            <li>Select your contacts or broadcast list and hit send! Schedy automatically generates a beautiful preview image and text snippet.</li>
+                        </ol>
+                    `
+                },
+                "art-rsvp-hide": {
+                    title: "Can I hide the RSVP form after a certain date?",
+                    content: `
+                        <h3>Setting RSVP Deadlines</h3>
+                        <p>Yes, you can automatically disable the RSVP form to finalize your headcount.</p>
+                        <ul>
+                            <li>Go to the <strong>Guest Management</strong> tab in your dashboard.</li>
+                            <li>Click on <strong>RSVP Settings</strong>.</li>
+                            <li>Toggle on <strong>Set Deadline</strong>.</li>
+                            <li>Choose the exact date and time. After this passes, the form on your website will be replaced with a customizable message (e.g., "RSVPs are now closed. Please contact the host directly.").</li>
+                        </ul>
+                    `
+                },
+                "art-custom-domain": {
+                    title: "Connecting a custom domain from GoDaddy or Namecheap",
+                    content: `
+                        <h3>Step-by-Step DNS Setup</h3>
+                        <p>If you've purchased a premium plan, you can mask our default URL with your own.</p>
+                        <ol>
+                            <li>Log into your registrar account (GoDaddy, Namecheap, etc.).</li>
+                            <li>Navigate to the <strong>DNS Management</strong> or <strong>Advanced DNS</strong> page for your domain.</li>
+                            <li>Add an <strong>A Record</strong> pointing to Schedy's IP address: <code>76.76.21.21</code>.</li>
+                            <li>Add a <strong>CNAME Record</strong> with the host <code>www</code> pointing to <code>cname.schedy.in</code>.</li>
+                            <li>Return to Schedy Settings and click <strong>Verify Domain</strong>. We will provision a free SSL certificate for you.</li>
+                        </ol>
+                    `
+                },
+                "art-crop-photos": {
+                    title: "How to crop and compress photos before uploading",
+                    content: `
+                        <h3>Optimizing Your Images</h3>
+                        <p>Large files can slow down your website for guests on mobile networks.</p>
+                        <p>We recommend keeping individual photo sizes under <strong>2MB</strong>. While our platform automatically compresses images, pre-cropping them to the right aspect ratio (usually 4:3 or 1:1 for galleries) ensures no heads are cut off.</p>
+                        <p><strong>Pro Tip:</strong> Use free tools like <em>TinyPNG.com</em> or <em>Squoosh.app</em> to quickly compress engagement or professional photos without losing visible quality.</p>
+                    `
+                },
+                "art-downgrade": {
+                    title: "What happens if I downgrade my premium plan?",
+                    content: `
+                        <h3>Downgrading Safely</h3>
+                        <p>If you choose to cancel or downgrade your premium subscription after your event is over:</p>
+                        <ul>
+                            <li><strong>Custom Domain:</strong> Your custom domain connection will be severed, and the link will revert to your original <em>schedy.in/your-name</em> link.</li>
+                            <li><strong>Data Retention:</strong> We <strong>do not</strong> delete your photos, guest lists, or RSVP data. They remain securely stored in your account.</li>
+                            <li><strong>Re-upgrading:</strong> You can re-upgrade at any time to instantly restore premium functionalities.</li>
+                        </ul>
+                    `
+                },
+                "art-dietary": {
+                    title: "How to track dietary restrictions for your guests",
+                    content: `
+                        <h3>Customizing the RSVP Form</h3>
+                        <p>To ensure everyone is catered for, you can add custom questions to your RSVP flow.</p>
+                        <ol>
+                            <li>In the editor, navigate to the <strong>RSVP Block</strong>.</li>
+                            <li>Click <strong>Edit Fields</strong>.</li>
+                            <li>Click <strong>Add Custom Question</strong>.</li>
+                            <li>Set the question type to <em>Dropdown</em> or <em>Short Answer</em> (e.g., "Any dietary requirements?").</li>
+                            <li>Make the field 'Optional' so guests who don't have restrictions can skip it.</li>
+                        </ol>
+                        <p>The responses will appear in a dedicated column when you export your Guest List CSV.</p>
+                    `
+                }
+            };
+
+            // --- Search Functionality ---
+            const searchInput = document.getElementById('searchInput');
+            const categoriesSection = document.getElementById('helpCategories');
+            const articlesTitle = document.getElementById('articlesTitle');
+            const articleItems = document.querySelectorAll('.article-item');
+            const noResultsMsg = document.getElementById('noResultsMsg');
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase().trim();
+                let matchCount = 0;
+
+                if (term.length > 0) {
+                    // Hide categories, change title
+                    categoriesSection.style.display = 'none';
+                    articlesTitle.textContent = 'Search Results';
+                    
+                    articleItems.forEach(item => {
+                        const title = item.querySelector('.article-title').textContent.toLowerCase();
+                        const meta = item.querySelector('.article-meta').textContent.toLowerCase();
+                        
+                        if (title.includes(term) || meta.includes(term)) {
+                            item.style.display = 'flex';
+                            matchCount++;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    // Show/hide no results message
+                    noResultsMsg.style.display = matchCount === 0 ? 'block' : 'none';
+                } else {
+                    // Reset to default state
+                    categoriesSection.style.display = 'grid'; // Note: grid is defined in CSS
+                    articlesTitle.textContent = 'Popular Articles';
+                    noResultsMsg.style.display = 'none';
+                    
+                    articleItems.forEach(item => {
+                        item.style.display = 'flex';
+                    });
+                }
+            });
+
+            // --- Modal Functionality ---
+            const modal = document.getElementById('articleModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            function openModal(id) {
+                const data = helpContent[id];
+                if (data) {
+                    modalTitle.textContent = data.title;
+                    modalBody.innerHTML = data.content;
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                
+                // Slight delay to clear content after animation
+                setTimeout(() => {
+                    modalTitle.textContent = '';
+                    modalBody.innerHTML = '';
+                }, 300);
+            }
+
+            // Attach listeners to all cards and articles
+            document.querySelectorAll('.open-modal').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = el.getAttribute('data-id');
+                    openModal(id);
+                });
+            });
+
+            // Close listeners
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
