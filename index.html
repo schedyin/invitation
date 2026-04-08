@@ -771,14 +771,13 @@
             padding-top: 20px;
         }
 
-        /* Change this: */
         .stack-wrapper .feature-card {
             position: sticky;
             top: var(--sticky-top-stack);
             background-color: #fff;
             width: 100%;
             border-top: 1px solid var(--border-color-stack);
-            margin-bottom: 0px; /* Change this to something smaller, e.g., 50px */
+            margin-bottom: 0px; 
             padding-bottom: 50px;
             box-shadow: none; 
         }
@@ -801,11 +800,11 @@
             justify-content: center;
         }
 
-        /* UPDATED: Changed from targeting svg to img */
-        .stack-wrapper .icon-box img {
-            width: 72px;
-            height: 72px;
-            object-fit: contain;
+        /* Restored to target SVG */
+        .stack-wrapper .icon-box svg {
+            width: 64px;
+            height: 64px;
+            color: var(--accent-green-stack);
         }
 
         .stack-wrapper .text-box {
@@ -1586,8 +1585,9 @@
             }
 
             .stack-wrapper .icon-box { width: 70px; height: 70px; }
-            /* UPDATED: Changed from targeting svg to img */
-            .stack-wrapper .icon-box img { width: 52px; height: 52px; }
+            
+            /* Restored to SVG mobile size */
+            .stack-wrapper .icon-box svg { width: 48px; height: 48px; }
             
             .stack-wrapper .stack-desc { font-size: 20px; }
 
@@ -2070,8 +2070,8 @@
         <div class="stacking-section-bg">
             <div class="stack-wrapper">
                 <div class="left-panel">
-                    <h2>Design Your Perfect Event Experience</h2>
-                    <p>From beautiful digital invitations to seamless RSVP tracking, everything you need to celebrate in style.</p>
+                    <h2>Make Your Event Unforgettable</h2>
+                    <p>Go beyond standard printed cards. Create a stunning digital experience to share your story, manage guests, and keep everyone updated.</p>
                     <a href="templates.html" class="btn-stack">Browse Templates</a>
                 </div>
 
@@ -2080,11 +2080,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/i3wuRW6TVZhoDwpc9wrBf7WwXDU.png?scale-down-to=512&width=1024&height=1024" alt="Premium Templates">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><rect width="18" height="5" x="3" y="3" rx="2" ry="2"/><path d="M9 21V8"/></svg>
                             </div>
                             <div class="text-box">
                                 <span class="stack-label">1. Premium Designer Templates</span>
-                                <p class="stack-desc">Choose from a curated collection of beautiful themes tailored for weddings, birthdays, and every special occasion.</p>
+                                <p class="stack-desc">Choose from a curated collection of beautiful themes crafted for weddings, birthdays, and special milestones.</p>
                             </div>
                         </div>
                     </div>
@@ -2092,11 +2092,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/c3CpPBrJqewkXEW8A0c8mDzu5ak.png?scale-down-to=512&width=1024&height=1024" alt="Effortless Customization">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">2. Effortless Customization</span>
-                                <p class="stack-desc">Personalize colors, fonts, and layouts instantly. No coding or design experience required.</p>
+                                <span class="stack-label">2. Seamless RSVP Tracking</span>
+                                <p class="stack-desc">Say goodbye to scattered messages. Collect and manage guest responses, dietary preferences, and headcounts in one place.</p>
                             </div>
                         </div>
                     </div>
@@ -2104,11 +2104,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/VOuy0HkiwNCwjmO9JLJ3g9RTPk8.png?scale-down-to=512&width=1024&height=1024" alt="Smart RSVP">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">3. Smart RSVP Management</span>
-                                <p class="stack-desc">Say goodbye to scattered messages. Collect and manage all your guest responses in one organized dashboard.</p>
+                                <span class="stack-label">3. Unlimited Photo Galleries</span>
+                                <p class="stack-desc">Share your pre-wedding shoots, event memories, and special moments with a beautiful, high-quality image gallery.</p>
                             </div>
                         </div>
                     </div>
@@ -2116,11 +2116,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/w7qDFUxzVmCvSIbk22WjQRcOBY.png?scale-down-to=512&width=1024&height=1024" alt="Digital Galleries">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">4. Digital Photo Galleries</span>
-                                <p class="stack-desc">Share your precious moments. Upload high-quality photos and let guests relive the memories together.</p>
+                                <span class="stack-label">4. Interactive Venue Maps</span>
+                                <p class="stack-desc">Ensure no guest gets lost. Integrate Google Maps directly into your invite for accurate, one-click navigation.</p>
                             </div>
                         </div>
                     </div>
@@ -2128,11 +2128,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/6WYYw2qeYsbIJHmSdvbUyjw8UQ.png?scale-down-to=512&width=1024&height=1024" alt="Flawless Mobile">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.25V14"/><circle cx="16" cy="16" r="6"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">5. Flawless on Any Device</span>
-                                <p class="stack-desc">Your event website automatically adapts to look perfect on phones, tablets, and desktop computers.</p>
+                                <span class="stack-label">5. Live Countdowns & Itineraries</span>
+                                <p class="stack-desc">Build excitement with a live countdown timer and keep guests informed with a detailed, step-by-step event schedule.</p>
                             </div>
                         </div>
                     </div>
@@ -2140,11 +2140,11 @@
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
-                                <img src="https://framerusercontent.com/images/AdB0Rm5oFVYPn7bZwuxQwRkT1fk.png?scale-down-to=512&width=1024&height=1024" alt="Instant Sharing">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">6. Instant Global Sharing</span>
-                                <p class="stack-desc">Generate a custom link immediately and share your beautiful invite via WhatsApp, email, or social media.</p>
+                                <span class="stack-label">6. Instant WhatsApp Sharing</span>
+                                <p class="stack-desc">Distribute your digital invitation globally in just one click via WhatsApp, email, or your preferred social platform.</p>
                             </div>
                         </div>
                     </div>
