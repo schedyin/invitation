@@ -1,817 +1,264 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Create Template - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncSkill - Pack Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* --- DASHBOARD & FORM COMBINED CSS VARIABLES --- */
         :root {
-            /* Dashboard Tokens */
-            --header-height-desktop: 70px;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 90px;
-            --row-height: 52px;
-            --sidebar-bg: #ffffff;
-            --header-bg: #ffffff;
-            --text-color: #18181A;
-            --icon-color: #6b7280;
-            --active-bg: #E5E5E5;
-            --hover-bg: #f3f4f6;
-            --border-subtle: #e5e7eb;
-            --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --tooltip-bg: #1f2937;
-            
-            --font-main: "IBM Plex Sans", sans-serif; 
-            --font-alt: 'Inter', sans-serif; 
-            --font-nav: 'DM Sans', sans-serif;
-            
-            --light-bg-tertiary: #f1f3f6;
-            --light-text-primary: #1f2937; 
-            --light-text-secondary: #52616b;
-            --color-background: #f8fafc; 
-
-            /* Form Tokens */
-            --primary-dark: #2B1664;
-            --accent-color: #673DE6;
-            --pure-white: #FFFFFF;
+            --bg: #f8fafc; --surface: #ffffff; --text: #0f172a; --text-sub: #64748b;
+            --accent: #673DE6; --border: #e2e8f0; --radius: 12px;
+            --font-main: 'IBM Plex Sans', sans-serif;
             --bg-light: #F8F9FA;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border-color: #e2e8f0;
-            --radius-lg: 16px;
-            --ease-cubic: cubic-bezier(0.25, 0.8, 0.25, 1);
-            --btn-shadow: 0 4px 12px rgba(103, 61, 230, 0.2);
         }
-
-        /* --- GLOBAL RESETS --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; }
+        .container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         
-        body {
-            background: var(--color-background);
-            font-family: var(--font-alt);
-            font-weight: 500;
-            color: var(--text-main);
-            overflow: hidden; /* Handled by content-area */
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.6;
-        }
-
-        /* ============= UNIFIED LAYOUT & SIDEBAR ============= */
-        .app-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .desktop-only { display: none !important; }
-        .mobile-only { display: flex; }
+        .card { background: var(--surface); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h2 { font-family: var(--font-main); margin-bottom: 1.5rem; color: var(--text); }
         
-        .sidebar, .m-header, .profile-popup { font-family: var(--font-nav); }
-
-        .brand-logo { display: flex; align-items: center; text-decoration: none; transition: all 0.3s; }
-        .brand-logo img { height: 36px; width: auto; display: block; }
-        .mini-logo { display: none; align-items: center; justify-content: center; }
-        .mini-logo img { height: 36px; width: auto; display: block; }
-
-        .icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
-        .icon svg { width: 22px; height: 22px; stroke: var(--icon-color); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .input-group { margin-bottom: 1.25rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-sub); }
+        input, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem; }
+        input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.1); }
+        textarea { height: 150px; resize: vertical; font-family: monospace; }
         
-        .nav-item { position: relative; display: flex; align-items: center; height: var(--row-height); padding: 0 16px; margin: 6px 0; border-radius: 10px; gap: 14px; cursor: pointer; color: var(--text-color); text-decoration: none; transition: background 0.2s, color 0.2s; white-space: nowrap; }
-        .nav-item:hover { background: var(--hover-bg); }
-        .nav-item.active { background: var(--active-bg); color: var(--text-color); font-weight: 800; }
-        .nav-item.active .icon svg { stroke: #000000; }
-
-        .account-card { display: flex; align-items: center; gap: 12px; }
-        .account-avatar { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-subtle); object-fit: cover; flex-shrink: 0; background: var(--light-bg-tertiary); }
-        .account-text { display: flex; flex-direction: column; overflow: hidden; transition: opacity 0.2s; }
-        .account-name { font-size: 15px; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; color: var(--text-color); }
-        .account-email { font-size: 13px; color: var(--text-sub); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-
-        /* Mobile First Structure */
-        .m-header { height: 72px; background: #fff; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: fixed; top: 0; width: 100%; z-index: 1000; }
-        .main-content { flex: 1; display: flex; flex-direction: column; margin-top: 72px; overflow: hidden; position: relative; }
-        .content-area { flex: 1; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
+        .btn { width: 100%; padding: 0.875rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--text); }
         
-        /* Mobile Menu Button */
-        .m-menu-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .m-menu-lines { width: 18px; height: 14px; position: relative; }
-        .m-menu-lines::before, .m-menu-lines::after, .m-menu-lines span { content: ""; position: absolute; left: 0; right: 0; height: 2px; background: #111827; border-radius: 10px; }
-        .m-menu-lines::before { top: 0; } .m-menu-lines span { top: 6px; } .m-menu-lines::after { bottom: 0; }
+        .list-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem; background: var(--bg); }
+        .list-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+        .list-item-info h4 { font-family: var(--font-main); margin-bottom: 0.25rem; }
+        .list-item-info span { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
 
-        /* Sidebar Styling */
-        .sidebar { position: fixed; left: 0; top: 0; width: 300px; max-width: 85vw; height: 100%; background: #fff; transform: translateX(-100%); transition: 0.25s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; z-index: 2001; }
-        .sidebar.mobile-open { transform: translateX(0); }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); opacity: 0; pointer-events: none; transition: 0.25s; z-index: 2000; }
-        .sidebar-overlay.mobile-open { opacity: 1; pointer-events: auto; }
-
-        .sidebar-header { height: 80px; padding: 0 20px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; transition: all 0.3s; }
-        .m-drawer-close { width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; }
-        .m-drawer-close-icon { width: 14px; height: 14px; position: relative; }
-        .m-drawer-close-icon::before, .m-drawer-close-icon::after { content: ""; position: absolute; inset: 0; margin: auto; width: 14px; height: 2px; background: #111827; }
-        .m-drawer-close-icon::before { transform: rotate(45deg); } .m-drawer-close-icon::after { transform: rotate(-45deg); }
-
-        .sidebar-inner { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-        .nav-menu { padding: 20px 12px; }
-        .account-section { padding: 20px; border-top: 1px solid var(--border-subtle); background: #fff; cursor: pointer; }
-
-        /* Profile Context Menu */
-        .profile-popup { position: fixed; background: #fff; border-radius: 12px; box-shadow: var(--shadow-premium); border: 1px solid #e5e7eb; width: 260px; z-index: 3000; opacity: 0; pointer-events: none; transition: 0.2s; overflow: hidden; bottom: 100px; left: 50%; transform: translateX(-50%); }
-        .profile-popup.active { opacity: 1; pointer-events: all; }
-        .popup-header { padding: 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 12px; }
-        .popup-list { list-style: none; padding: 8px; }
-        .popup-list a { display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 500;}
-        .popup-list a:hover { background: var(--hover-bg); }
-
-        /* Desktop Adjustments */
-        @media (min-width: 1150px) {
-            .app-layout { flex-direction: row; }
-            .desktop-only { display: flex !important; }
-            .mobile-only { display: none !important; }
-            .m-header { display: none; }
-            .sidebar-overlay { display: none; }
-            .brand-logo img, .mini-logo img { height: 45px; }
-            
-            .main-content { margin-top: 0; }
-            
-            .topbar {
-                height: 80px;
-                background: var(--header-bg);
-                border-bottom: 1px solid var(--border-subtle);
-                padding: 0 40px;
-                display: flex;
-                align-items: center;
-                font-weight: 600;
-                font-size: 1.75rem;
-                font-family: var(--font-main);
-                color: var(--light-text-primary);
-                flex-shrink: 0;
-            }
-
-            .sidebar { position: relative; transform: translateX(0) !important; width: var(--sidebar-width); max-width: none; background: var(--sidebar-bg); border-right: 1px solid var(--border-subtle); z-index: 100; }
-            .sidebar-header { height: auto; min-height: var(--header-height-desktop); padding: 30px 24px; border-bottom: none; }
-            .nav-menu { padding: 10px 16px; }
-            .account-section { margin-top: auto; padding: 24px 16px; }
-            
-            .profile-popup { bottom: 80px; left: 16px; transform: none; }
-            
-            .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--icon-color); display: flex; align-items: center; justify-content: center; padding: 6px; border-radius: 8px; transition: 0.2s; }
-            .sidebar-toggle:hover { background: var(--hover-bg); color: var(--text-color); }
-
-            .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-            .sidebar.collapsed .brand-logo, .sidebar.collapsed .account-text, .sidebar.collapsed .btn-close-svg { display: none !important; }
-            .sidebar.collapsed .mini-logo, .sidebar.collapsed .btn-open-svg { display: flex !important; }
-            .btn-open-svg { display: none; }
-            .sidebar.collapsed .sidebar-header { flex-direction: column; padding: 30px 0 20px 0; gap: 30px; }
-            .sidebar.collapsed .nav-item { justify-content: center; padding: 0; }
-            .sidebar.collapsed .account-section { display: flex; justify-content: center; padding: 24px 0; }
-            .sidebar.collapsed .nav-label { display: none; }
-            .sidebar.collapsed .sidebar-inner { overflow: visible; }
-            
-            .sidebar.collapsed .nav-item:hover .nav-label { display: block; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background-color: var(--tooltip-bg); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 1000; margin-left: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
-            .sidebar.collapsed .nav-item:hover .nav-label::before { content: ""; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); border-width: 6px 6px 6px 0; border-style: solid; border-color: transparent var(--tooltip-bg) transparent transparent; }
-        }
-
-        /* ============= FORM LAYOUT AND PREVIEW ============= */
-        .layout-split {
-            display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-            align-items: flex-start;
-            gap: 2rem;
-            /* Lock height to strictly fit within the content area (100vh - 80px topbar - 48px padding) */
-            height: calc(100vh - 128px);
-        }
-
-        .form-side {
-            flex: 1;
-            max-width: 800px;
-            width: 100%;
-            height: 100%; /* Force height constraint */
-            padding-bottom: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Desktop Sticky Preview */
-        .preview-side {
-            width: 375px; 
-            height: 100%; /* Match the layout-split height */
-            background: #E5E7EB;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: var(--shadow-premium);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-
-        .preview-header { 
-            background: #0f172a;
-            color: #94a3b8;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        
-        .preview-iframe { width: 100%; height: 100%; border: none; background: #E5E7EB; flex: 1; }
-
-        /* Mobile specific overrides for Form Layout */
-        .sticky-action-bar { display: none; }
-
-        @media (max-width: 1150px) {
-            .layout-split { flex-direction: column; align-items: center; gap: 0; height: auto; }
-            .form-side { width: 100%; padding-bottom: 100px; height: auto; }
-            
-            /* Remove Card Design on Mobile for more width */
-            .form-section {
-                background: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                border-radius: 0 !important;
-                height: auto !important;
-                max-height: none !important;
-                overflow: visible !important;
-            }
-
-            .editor-group { display: block !important; }
-
-            .input-group textarea { 
-                flex: none !important; 
-                height: 60vh !important; 
-                min-height: 400px;
-                -webkit-overflow-scrolling: touch; 
-            }
-
-            .preview-side { 
-                position: fixed;
-                top: 72px; /* Starts below mobile header */
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: calc(100vh - 72px - 85px); /* Full height minus headers and bottom bar */
-                border-radius: 0;
-                border: none;
-                z-index: 998; 
-            }
-            .preview-header { display: none; }
-            
-            .sticky-action-bar.mobile-only {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: var(--pure-white);
-                padding: 1rem;
-                border-top: 1px solid var(--border-color);
-                z-index: 1000;
-                gap: 1rem;
-                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            }
-            .mobile-hidden { display: none !important; }
-        }
-
-        /* --- UI COMPONENTS --- */
-        .form-section { 
-            background: var(--pure-white);
-            padding: 2.5rem 3rem; border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color); 
-            font-family: var(--font-main);
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            /* Strict constraints to prevent pushing the screen down */
-            height: 100%;
-            max-height: 100%;
-            overflow: hidden;
-        }
-
-        .input-group { position: relative; padding-top: 8px; margin-bottom: 1rem; flex-shrink: 0; }
-        
-        .editor-group { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 0; /* Critical flex property to allow shrinking */
-            margin-bottom: 0;
-        }
-        
-        .input-group input, .input-group textarea {
-            width: 100%; background-color: transparent; border: 1px solid var(--border-color);
-            border-radius: 12px; font-size: 16px; padding: 14px;
-            font-family: inherit; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-group input { font-weight: 600; }
-        
-        .input-group textarea { 
-            resize: none; /* Disable vertical resize to preserve fixed layout */
-            flex: 1; /* Stretch smoothly to fill available space */
-            height: 100%; 
-            min-height: 0; /* Crucial for internal scrolling */
-            font-family: 'Fira Code', monospace; 
-            font-size: 14px; 
-            line-height: 1.5; 
-            background: #f8fafc; 
-            overflow-y: auto; /* Contains all scrolling securely inside the input block */
-        }
-        
-        .input-group input:hover, .input-group textarea:hover { border-color: var(--text-sub); }
-        .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); background: #fff; }
-        
-        .input-group label {
-            position: absolute; left: 15px; top: 22px; color: var(--text-sub); font-weight: 500; pointer-events: none;
-            transition: all 0.3s var(--ease-cubic); background: transparent; padding: 0;
-        }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
-        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label {
-            top: 0; left: 12px; font-size: 12px; font-weight: 500; color: var(--accent-color); background: var(--pure-white); padding: 0 5px;
-        }
-
-        /* --- BUTTON STYLES --- */
-        .btn-submit {
-            width: 100%; padding: 1.125rem; font-size: 1.1rem; font-weight: 700; font-family: inherit; color: var(--pure-white);
-            background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; border-radius: 16px; cursor: pointer;
-            transition: all 0.3s var(--ease-cubic); box-shadow: var(--btn-shadow); margin-top: 1rem; margin-bottom: 1rem; flex-shrink: 0;
-        }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(103, 61, 230, 0.3); }
-
-        .btn-half {
-            flex: 1; padding: 1rem; border-radius: 12px; font-weight: 700;
-            font-size: 1rem; cursor: pointer; text-align: center;
-            font-family: inherit; transition: all 0.3s var(--ease-cubic);
-        }
-        .btn-outline-mobile { background: transparent; border: 1.5px solid var(--accent-color); color: var(--accent-color); }
-        .btn-solid-mobile { background: linear-gradient(135deg, #7c53f0, var(--accent-color)); border: none; color: var(--pure-white); box-shadow: var(--btn-shadow); }
-
-        /* --- CUSTOM DROPDOWN --- */
+        /* Custom Dropdown Styles (Ported from your original code) */
         .custom-dropdown { position: relative; width: 100%; }
-        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; background: transparent; transition: all 0.3s; font-weight: 600; color: var(--text-main); font-size: 16px; }
+        .dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: var(--surface); transition: all 0.3s; font-size: 0.95rem; }
         .dropdown-header:hover { border-color: var(--text-sub); }
-        .dropdown-header.active { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.15); }
-        .dropdown-icon { transition: transform 0.3s ease; width: 20px; height: 20px; color: var(--text-sub); }
-        .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent-color); }
-        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--pure-white); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 50; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s var(--ease-cubic); list-style: none; overflow: hidden; max-height: 250px; overflow-y: auto; }
-        .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-list li { padding: 14px 15px; cursor: pointer; transition: background 0.2s; font-weight: 500; font-size: 15px;}
-        .dropdown-list li:hover { background: var(--bg-light); color: var(--accent-color); }
+        .dropdown-header.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.1); }
+        .dropdown-icon { transition: transform 0.3s ease; width: 18px; height: 18px; color: var(--text-sub); }
+        .dropdown-header.active .dropdown-icon { transform: rotate(180deg); color: var(--accent); }
         
-        .create-new-cat { border-top: 1px solid var(--border-color); color: var(--accent-color) !important; font-weight: 600 !important; display: flex; align-items: center; gap: 8px; }
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 4px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 50; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s; list-style: none; max-height: 200px; overflow-y: auto; }
+        .dropdown-list.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-list li { padding: 12px; cursor: pointer; transition: background 0.2s; font-size: 0.95rem; }
+        .dropdown-list li:hover { background: var(--bg-light); color: var(--accent); }
+        
+        .create-new-cat { border-top: 1px solid var(--border); color: var(--accent) !important; font-weight: 600 !important; display: flex; align-items: center; gap: 8px; }
         .create-new-cat:hover { background: rgba(103, 61, 230, 0.05) !important; }
-
     </style>
 </head>
-
 <body>
-    <!-- App Container -->
-    <div class="app-layout">
-        
-        <!-- Mobile Header (Hidden on Desktop) -->
-        <header class="m-header mobile-only">
-            <button class="m-menu-btn" id="m-open-drawer">
-                <div class="m-menu-lines"><span></span></div>
-            </button>
-            <a href="#" class="brand-logo">
-                <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
-            </a>
-            <div style="width:40px;"></div>
-        </header>
 
-        <!-- Sidebar Overlay (Mobile) -->
-        <div class="sidebar-overlay" id="sidebar-overlay"></div>
-        
-        <!-- Unified Sidebar (Desktop & Mobile) -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a href="#" class="brand-logo">
-                    <img src="https://ksupvc.wixo.in/image.svg" alt="SyncSkill">
-                </a>
-                
-                <span class="mini-logo">
-                    <img src="https://ksupvc.wixo.in/logo-square.png" alt="S">
-                </span>
-                
-                <!-- Desktop Collapse Button -->
-                <button class="sidebar-toggle desktop-only" id="sidebar-toggle-btn">
-                    <svg class="btn-close-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
-                    <svg class="btn-open-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
-                </button>
-
-                <!-- Mobile Close Button -->
-                <button class="m-drawer-close mobile-only" id="m-close-drawer">
-                    <div class="m-drawer-close-icon"></div>
-                </button>
-            </div>
-            
-            <div class="sidebar-inner">
-                <nav class="nav-menu">
-                    <a href="./dashboard.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg></span>
-                        <span class="nav-label">Dashboard</span>
-                    </a>
-                    <a href="./create.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
-                        <span class="nav-label">Create Invitation</span>
-                    </a>
-                    <a href="./invitations.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></span>
-                        <span class="nav-label">All Invitations</span>
-                    </a>
-                    <!-- HIGHLIGHTED MENU ITEM FOR CREATE TEMPLATE -->
-                    <a href="./create-template.html" class="nav-item active">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></span>
-                        <span class="nav-label">Create Template</span>
-                    </a>
-                    <a href="./templates.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg></span>
-                        <span class="nav-label">Manage Templates</span>
-                    </a>
-                    <a href="./customize.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"/><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/></svg></span>
-                        <span class="nav-label">Customize Site</span>
-                    </a>
-                    <a href="./support.html" class="nav-item">
-                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
-                        <span class="nav-label">Support</span>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Profile Account Section in Sidebar -->
-            <div class="account-section" id="profile-trigger">
-                <div class="account-card">
-                    <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
-                    <div class="account-text">
-                        <div class="account-name">John Doe</div>
-                        <div class="account-email">admin@syncskill.com</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Dashboard Content Shell -->
-        <div class="main-content">
-            <header class="topbar desktop-only">Create Template</header>
-            
-            <main class="content-area">
-                <!-- EMBEDDED TEMPLATE EDITOR LAYOUT -->
-                <div class="layout-split">
-                    <div class="form-side" id="editor-view">
-                        <div class="form-section">
-                            
-                            <!-- Side-by-Side Category and Save Button -->
-                            <div style="display: flex; gap: 16px; align-items: center; z-index: 20; position: relative; margin-bottom: 1rem; flex-shrink: 0;">
-                                <div class="input-group" style="flex: 1; margin-bottom: 0; padding-top: 0;">
-                                    <div class="custom-dropdown" id="category-dropdown">
-                                        <div class="dropdown-header">
-                                            <span class="selected-value" style="font-weight: 400; color: var(--text-sub);">Select Category...</span>
-                                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                        </div>
-                                        <ul class="dropdown-list">
-                                            </ul>
-                                        <input type="hidden" id="selected-category" value="">
-                                    </div>
-                                </div>
-                                <button class="btn-submit desktop-only" onclick="saveTemplate()" id="btn-save-desktop" style="margin: 0; padding: 14px 24px; width: auto; min-width: 180px;">Save Template</button>
-                            </div>
-
-                            <div class="input-group" style="flex-shrink: 0;">
-                                <input type="text" id="template-name" placeholder=" ">
-                                <label for="template-name">Template Name (e.g. Traditional Telugu Gold)</label>
-                            </div>
-
-                            <div class="input-group editor-group">
-                                <textarea id="html-code" placeholder=" "></textarea>
-                                <label for="html-code">HTML Code (Paste complete template here)</label>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="preview-side mobile-hidden" id="preview-view">
-                        <div class="preview-header">LIVE PREVIEW</div>
-                        <iframe id="preview-frame" class="preview-iframe" srcdoc="
-                            <div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'>
-                                <h2 style='color:#2B1664;'>Awaiting Code...</h2>
-                                <p>Paste your HTML into the editor to see your live preview.</p>
-                            </div>
-                        "></iframe>
-                    </div>
-                </div>
-
-                <!-- Sticky Mobile Form Action Bar -->
-                <div class="sticky-action-bar mobile-only">
-                    <button type="button" id="btn-toggle-view" class="btn-half btn-outline-mobile">PREVIEW</button>
-                    <button type="button" id="btn-save-mobile" class="btn-half btn-solid-mobile">SAVE</button>
-                </div>
-
-            </main>
+<div class="container">
+    <div class="card">
+        <h2>1. Create Template Entry</h2>
+        <div class="input-group">
+            <label>Template Name</label>
+            <input type="text" id="t-name" placeholder="e.g. Traditional Gold">
         </div>
-    </div>
-
-    <!-- Profile Popup Menu -->
-    <div class="profile-popup" id="profile-popup">
-        <div class="popup-header">
-            <img class="account-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="User">
-            <div class="account-text">
-                <div class="account-name">John Doe</div>
-                <div class="account-email">admin@syncskill.com</div>
+        
+        <div class="input-group">
+            <label>Category</label>
+            <div class="custom-dropdown" id="category-dropdown">
+                <div class="dropdown-header">
+                    <span class="selected-value" style="color: var(--text-sub);">Select Category...</span>
+                    <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <ul class="dropdown-list">
+                    </ul>
+                <input type="hidden" id="selected-category-name" value="">
             </div>
         </div>
-        <ul class="popup-list">
-            <li><a href="#"><span>Profile</span></a></li>
-            <li><a href="#"><span>Settings</span></a></li>
-            <li><a href="#" style="color:#dc2626"><span>Logout</span></a></li>
-        </ul>
+
+        <div class="input-group">
+            <label>Preview Image URL (or Base64)</label>
+            <input type="text" id="t-image" placeholder="https://...">
+        </div>
+        <div class="input-group">
+            <label>HTML Code</label>
+            <textarea id="t-code" placeholder="<html>...</html>"></textarea>
+        </div>
+        <button class="btn btn-outline" onclick="addTemplate()">+ Add to Bundle</button>
     </div>
 
-    <script>
-        // ==========================================
-        // --- DASHBOARD UI INITIALIZATION LOGIC ---
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            initSidebarNavigation();
-        });
+    <div>
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h2>2. Templates in Bundle (<span id="count">0</span>)</h2>
+            <div id="staging-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                <p style="color: var(--text-sub); font-size: 0.9rem;">No templates added yet.</p>
+            </div>
+        </div>
 
-        function initSidebarNavigation() {
-            const sidebar = document.getElementById('sidebar');
-            const mOverlay = document.getElementById('sidebar-overlay');
-            
-            // Desktop Sidebar Toggle
-            const toggleBtn = document.getElementById('sidebar-toggle-btn');
-            if(toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                });
-            }
+        <div class="card">
+            <h2>3. Encrypt & Export</h2>
+            <div class="input-group">
+                <label>Secure Password</label>
+                <input type="password" id="export-password" placeholder="Enter a strong password">
+            </div>
+            <button class="btn" onclick="exportEncryptedJSON()">Download Encrypted File</button>
+        </div>
+    </div>
+</div>
 
-            // Mobile Drawer Toggle
-            const mOpen = document.getElementById('m-open-drawer');
-            const mClose = document.getElementById('m-close-drawer');
-            
-            const openMobileDrawer = () => {
-                sidebar.classList.add('mobile-open');
-                mOverlay.classList.add('mobile-open');
-            };
-            const closeMobileDrawer = () => {
-                sidebar.classList.remove('mobile-open');
-                mOverlay.classList.remove('mobile-open');
-            };
+<script>
+    // --- SUPABASE INIT ---
+    // Make sure these match your actual Supabase keys
+    const supabaseUrl = 'https://jihtqbzrqymdkypicajz.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-            if(mOpen) mOpen.onclick = openMobileDrawer;
-            if(mClose) mClose.onclick = closeMobileDrawer;
-            if(mOverlay) mOverlay.onclick = closeMobileDrawer;
+    // --- CATEGORY DROPDOWN LOGIC ---
+    const catHeader = document.querySelector('#category-dropdown .dropdown-header');
+    const catList = document.querySelector('#category-dropdown .dropdown-list');
+    const catHiddenName = document.getElementById('selected-category-name');
+    const catSelectedValue = document.querySelector('#category-dropdown .selected-value');
 
-            // Profile Popup Interaction
-            const pPopup = document.getElementById('profile-popup');
-            const profileTrigger = document.getElementById('profile-trigger');
+    catHeader.addEventListener('click', (e) => {
+        catList.classList.toggle('show');
+        catHeader.classList.toggle('active');
+        e.stopPropagation();
+    });
 
-            if(profileTrigger && pPopup) {
-                profileTrigger.onclick = (e) => {
-                    e.stopPropagation();
-                    if (window.innerWidth > 768) {
-                        pPopup.style.left = '16px';
-                        pPopup.style.bottom = '80px';
-                        pPopup.style.transform = 'none';
-                    } else {
-                        pPopup.style.left = '50%';
-                        pPopup.style.bottom = '100px';
-                        pPopup.style.transform = 'translateX(-50%)';
-                    }
-                    pPopup.classList.toggle('active');
-                };
-            }
+    document.addEventListener('click', () => {
+        catList.classList.remove('show');
+        catHeader.classList.remove('active');
+    });
 
-            document.addEventListener('click', () => {
-                if(pPopup) pPopup.classList.remove('active');
+    async function fetchCategories() {
+        catSelectedValue.textContent = 'Loading...';
+        const { data, error } = await supabaseClient.from('template_categories').select('name').order('name');
+        
+        catList.innerHTML = '';
+        
+        if (error) {
+            catSelectedValue.textContent = 'Error loading categories';
+            return;
+        }
+
+        if (data && data.length > 0) {
+            catSelectedValue.textContent = 'Select Category...';
+            data.forEach(cat => {
+                const li = document.createElement('li');
+                li.textContent = cat.name;
+                li.addEventListener('click', (e) => selectCategory(cat.name, e));
+                catList.appendChild(li);
             });
         }
 
-        // ==========================================
-        // --- TEMPLATE EDITOR LOGIC SCRIPTS ---
-        // ==========================================
-
-        // --- SUPABASE INIT ---
-        const supabaseClient = supabase.createClient('https://jihtqbzrqymdkypicajz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw');
-
-        // --- DOM ELEMENTS ---
-        const textarea = document.getElementById('html-code');
-        const iframe = document.getElementById('preview-frame');
-        const toggleBtnView = document.getElementById('btn-toggle-view');
-        const saveBtnMobile = document.getElementById('btn-save-mobile');
-        const editorView = document.getElementById('editor-view');
-        const previewView = document.getElementById('preview-view');
-        const btnSaveDesktop = document.getElementById('btn-save-desktop');
-
-        // --- CATEGORY DROPDOWN LOGIC ---
-        const catHeader = document.querySelector('#category-dropdown .dropdown-header');
-        const catList = document.querySelector('#category-dropdown .dropdown-list');
-        const catHidden = document.getElementById('selected-category');
-        const catSelectedValue = document.querySelector('#category-dropdown .selected-value');
-
-        catHeader.addEventListener('click', (e) => {
-            catList.classList.toggle('show');
-            catHeader.classList.toggle('active');
+        // "Create New" option
+        const createLi = document.createElement('li');
+        createLi.className = 'create-new-cat';
+        createLi.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Create New Category
+        `;
+        createLi.addEventListener('click', async (e) => {
             e.stopPropagation();
-        });
-
-        document.addEventListener('click', () => {
             catList.classList.remove('show');
             catHeader.classList.remove('active');
+            await createNewCategory();
         });
+        catList.appendChild(createLi);
+    }
 
-        async function fetchCategories() {
-            catSelectedValue.textContent = 'Loading categories...';
-            const { data, error } = await supabaseClient.from('template_categories').select('id, name').order('name');
-            
-            catList.innerHTML = '';
-            
-            if (error) {
-                catSelectedValue.textContent = 'Error loading categories';
-                return;
-            }
+    function selectCategory(name, event = null) {
+        if(event) event.stopPropagation();
+        // We store the NAME in the hidden input, because the importer creates missing categories by name
+        catHiddenName.value = name; 
+        catSelectedValue.textContent = name;
+        catSelectedValue.style.color = 'var(--text)';
+        catList.classList.remove('show');
+        catHeader.classList.remove('active');
+    }
 
-            if (data && data.length > 0) {
-                catSelectedValue.textContent = 'Select Category...';
-                catSelectedValue.style.color = 'var(--text-sub)';
-                catSelectedValue.style.fontWeight = '400';
+    async function createNewCategory() {
+        const newName = prompt("Enter the name for the new Category:");
+        if (!newName || !newName.trim()) return;
 
-                data.forEach(cat => {
-                    const li = document.createElement('li');
-                    li.dataset.value = cat.id;
-                    li.textContent = cat.name;
-                    li.addEventListener('click', (e) => selectCategory(cat.id, cat.name, e));
-                    catList.appendChild(li);
-                });
-            } else {
-                catSelectedValue.textContent = 'No categories found';
-            }
+        const safeName = newName.trim();
 
-            // Always append the "Create New" option
-            const createLi = document.createElement('li');
-            createLi.className = 'create-new-cat';
-            createLi.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Create New Category
+        // Push directly to Supabase so it's globally available immediately
+        const { data, error } = await supabaseClient
+            .from('template_categories')
+            .insert([{ name: safeName }])
+            .select()
+            .single();
+
+        if (error) {
+            if (error.code === '23505') alert("A category with this name already exists!");
+            else alert("Database Error: " + error.message);
+        } else {
+            await fetchCategories();
+            selectCategory(data.name);
+        }
+    }
+
+    // Initialize categories on load
+    fetchCategories();
+
+    // --- TEMPLATE BUNDLING LOGIC ---
+    let templates = [];
+
+    function addTemplate() {
+        const name = document.getElementById('t-name').value.trim();
+        const category = document.getElementById('selected-category-name').value;
+        const image = document.getElementById('t-image').value.trim();
+        const code = document.getElementById('t-code').value.trim();
+
+        if(!name || !category || !code) return alert("Please fill Name, Category, and Code.");
+
+        templates.push({ name, category_name: category, preview_image: image, html_code: code });
+        
+        // Clear specific form fields (leave category selected for rapid adding)
+        document.getElementById('t-name').value = '';
+        document.getElementById('t-code').value = '';
+        
+        renderList();
+    }
+
+    function renderList() {
+        const list = document.getElementById('staging-list');
+        document.getElementById('count').textContent = templates.length;
+        list.innerHTML = '';
+        
+        templates.forEach(t => {
+            list.innerHTML += `
+                <div class="list-item">
+                    <img src="${t.preview_image || 'https://via.placeholder.com/60'}" alt="Preview">
+                    <div class="list-item-info">
+                        <h4>${t.name}</h4>
+                        <span>${t.category_name}</span>
+                    </div>
+                </div>
             `;
-            createLi.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                catList.classList.remove('show');
-                catHeader.classList.remove('active');
-                await createNewCategory();
-            });
-            catList.appendChild(createLi);
-        }
-
-        function selectCategory(id, name, event = null) {
-            if(event) event.stopPropagation();
-            catHidden.value = id;
-            catSelectedValue.textContent = name;
-            catSelectedValue.style.color = 'var(--text-main)';
-            catSelectedValue.style.fontWeight = '600';
-            catList.classList.remove('show');
-            catHeader.classList.remove('active');
-        }
-
-        async function createNewCategory() {
-            const newName = prompt("Enter the name for the new Category:");
-            if (!newName || !newName.trim()) return;
-
-            const safeName = newName.trim();
-
-            const { data, error } = await supabaseClient
-                .from('template_categories')
-                .insert([{ name: safeName }])
-                .select()
-                .single();
-
-            if (error) {
-                if (error.code === '23505') alert("A category with this name already exists!");
-                else alert("Database Error: " + error.message);
-            } else {
-                // Refresh list and auto-select the new one
-                await fetchCategories();
-                selectCategory(data.id, data.name);
-            }
-        }
-
-        // Initialize categories on load
-        fetchCategories();
-
-        // --- LIVE PREVIEW ENGINE ---
-        // Debounce to prevent lag while typing fast
-        let timeout;
-        textarea.addEventListener('input', (e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                const code = e.target.value;
-                if (code.trim() === '') {
-                    iframe.srcdoc = `
-                        <div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'>
-                            <h2 style='color:#2B1664;'>Awaiting Code...</h2>
-                            <p>Paste your HTML into the editor to see your live preview.</p>
-                        </div>`;
-                } else {
-                    iframe.srcdoc = code;
-                }
-            }, 300); // 300ms delay
         });
+    }
 
-        // --- MOBILE TOGGLE LOGIC ---
-        toggleBtnView.addEventListener('click', () => {
-            if (previewView.classList.contains('mobile-hidden')) {
-                // Switch to Preview
-                editorView.classList.add('mobile-hidden');
-                previewView.classList.remove('mobile-hidden');
-                toggleBtnView.textContent = 'EDIT CODE';
-            } else {
-                // Switch to Editor
-                previewView.classList.add('mobile-hidden');
-                editorView.classList.remove('mobile-hidden');
-                toggleBtnView.textContent = 'PREVIEW';
-            }
-        });
+    function exportEncryptedJSON() {
+        if(templates.length === 0) return alert("Add at least one template.");
+        const password = document.getElementById('export-password').value;
+        if(!password) return alert("Password is required to encrypt the file.");
 
-        // --- SAVE TO SUPABASE ---
-        async function saveTemplate() {
-            const name = document.getElementById('template-name').value.trim();
-            const html_code = document.getElementById('html-code').value.trim();
-            const category_id = document.getElementById('selected-category').value;
-
-            if (!category_id) return alert("⚠️ Please select a Category from the dropdown first.");
-            if (!name || !html_code) return alert("⚠️ Please provide both a Template Name and HTML Code.");
-
-            // UI Loading state
-            btnSaveDesktop.textContent = "Saving...";
-            saveBtnMobile.textContent = "SAVING...";
-            btnSaveDesktop.disabled = true;
-            saveBtnMobile.disabled = true;
-
-            const { error } = await supabaseClient.from('templates').insert([{ 
-                name, 
-                html_code,
-                category_id 
-            }]);
-            
-            // Restore UI state
-            btnSaveDesktop.textContent = "Save Template";
-            saveBtnMobile.textContent = "SAVE";
-            btnSaveDesktop.disabled = false;
-            saveBtnMobile.disabled = false;
-
-            if (error) {
-                alert('Database Error: ' + error.message);
-            } else {
-                alert('✅ Template saved successfully!');
-                document.getElementById('template-name').value = '';
-                document.getElementById('html-code').value = '';
-                
-                // Optional: reset category dropdown
-                catHidden.value = '';
-                catSelectedValue.textContent = 'Select Category...';
-                catSelectedValue.style.color = 'var(--text-sub)';
-                catSelectedValue.style.fontWeight = '400';
-
-                iframe.srcdoc = `
-                    <div style='font-family:sans-serif; padding:4rem 2rem; text-align:center; color:#64748b;'>
-                        <h2 style='color:#2B1664;'>Template Saved!</h2>
-                        <p>Ready for the next one.</p>
-                    </div>`;
-                
-                // If on mobile and in preview mode, flip back to editor
-                if (!previewView.classList.contains('mobile-hidden') && window.innerWidth <= 1150) {
-                    toggleBtnView.click();
-                }
-            }
-        }
-
-        // Attach mobile save button
-        saveBtnMobile.addEventListener('click', saveTemplate);
-
-        // --- HANDLE TAB KEY IN TEXTAREA ---
-        // Allows users to indent code using the Tab key instead of switching elements
-        textarea.addEventListener('keydown', function(e) {
-            if (e.key == 'Tab') {
-                e.preventDefault();
-                var start = this.selectionStart;
-                var end = this.selectionEnd;
-                // set textarea value to: text before caret + tab + text after caret
-                this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
-                // put caret at right position again
-                this.selectionStart = this.selectionEnd = start + 1;
-            }
-        });
-    </script>
+        const jsonString = JSON.stringify(templates);
+        const encrypted = CryptoJS.AES.encrypt(jsonString, password).toString();
+        
+        const blob = new Blob([encrypted], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `SyncSkill_Bundle_${new Date().getTime()}.sk`; 
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
 </body>
 </html>
