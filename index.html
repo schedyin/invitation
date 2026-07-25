@@ -4,78 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedy - Hero</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Outfit:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <style>
-        /* --- Universal box-sizing --- */
+        /* ══════════════════════════════
+            DESIGN TOKENS
+            Concept: "The digital invitation" — warm paper ground,
+            an editorial serif for the moments that matter (names,
+            headlines), marigold as the celebratory accent color
+            (haldi/mehendi warmth rather than the expected terracotta),
+            deep ink-teal kept as the brand's anchor color.
+            Signature motif: a dotted "perforated ticket" rule marks
+            the seam between sections, like tearing along an invite.
+        ══════════════════════════════ */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        /* --- Root variables --- */
         :root {
-            /* Navbar Variables */
-            --font-nav: 'IBM Plex Sans', sans-serif;
-            --color-dark-teal: #002726;
-            --color-teal-hover: #004D4B;
-            --color-white: #ffffff;
-            --color-accent-green: #33C375;
-            --header-height: 72px;
-            --font-weight-medium: 500;
-            
-            /* Global/Hero Variables */
-            --primary-bg: #ffffff;
-            --secondary-bg: #f8f8f8;
-            --accent-color: #1a1a1a;
-            --text-primary: #121212;
-            --text-secondary: #666666;
-            --text-light: #888888;
-            --transition: all 0.3s ease;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --font-sans: 'IBM Plex Sans', sans-serif;
+            /* Type */
+            --font-nav: 'Inter', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-main: 'Inter', sans-serif;
+            --font-ui: 'Inter', sans-serif;
+            --font-display: 'Fraunces', serif;
 
-            /* Syncskill UI/UX Tokens */
-            --color-green-hover: #2fb168;
-            --color-green-dim: rgba(51,195,117,0.12);
-            --page-bg: #f8f9f8; 
-            --card-bg: #ffffff;
-            --text-main: #002726;
-            --text-sub: #64748b;
-            --border-subtle: #e2e8f0;
-            --border-focus: #41B66E;
-            
-            --radius-btn: 14px;
+            /* Core palette */
+            --ink: #142722;
+            --ink-soft: #4C5D57;
+            --ink-faint: #8B968F;
+            --teal-deep: #0F2E29;
+            --teal-hover: #164039;
+            --paper: #F6F4EE;
+            --paper-warm: #FBF9F4;
+            --card-bg: #FFFFFF;
+
+            --marigold: #E08A34;
+            --marigold-hover: #C6741F;
+            --marigold-tint: #FBEBD8;
+            --marigold-tint-strong: #F3D9B4;
+
+            --rose: #BE5C6A;
+            --rose-tint: #F7E4E4;
+
+            --sage: #6F8B77;
+            --sage-tint: #E7EEE3;
+
+            --lilac: #8478A8;
+            --lilac-tint: #ECE7F5;
+
+            --border-subtle: #E4E0D3;
+            --border-strong: #D3CDB9;
+
+            /* Legacy variable names kept for compatibility across the file */
+            --color-dark-teal: var(--teal-deep);
+            --color-teal-hover: var(--teal-hover);
+            --color-white: #ffffff;
+            --color-accent-green: var(--marigold);
+            --header-height: 76px;
+            --font-weight-medium: 500;
+
+            --primary-bg: var(--paper-warm);
+            --secondary-bg: var(--paper);
+            --accent-color: var(--ink);
+            --text-primary: var(--ink);
+            --text-secondary: var(--ink-soft);
+            --text-light: var(--ink-faint);
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(20, 39, 34, 0.08);
+
+            --color-green-hover: var(--marigold-hover);
+            --color-green-dim: var(--marigold-tint);
+            --page-bg: var(--paper);
+            --text-main: var(--ink);
+            --text-sub: var(--ink-soft);
+            --border-subtle-legacy: var(--border-subtle);
+            --border-focus: var(--marigold);
+
+            --radius-btn: 999px;
             --radius-btn-sm: 8px;
-            --radius-card-outer: 24px;
-            --radius-card-inner: 14px; 
+            --radius-card-outer: 20px;
+            --radius-card-inner: 14px;
             --radius-input: 12px;
-            
-            --font-main: 'IBM Plex Sans', sans-serif; 
-            --font-ui: 'IBM Plex Sans', sans-serif; 
-            
+
             --ease-smooth: cubic-bezier(0.25,0.46,0.45,0.94);
-            
-            /* Stacking Section Vars */
-            --sticky-top-stack: 100px; 
+
+            --sticky-top-stack: 100px;
         }
 
-        /* Use clip instead of hidden to prevent breaking position: sticky */
         html, body { overflow-x: clip; scroll-behavior: smooth; }
-        
-        /* --- Body styles --- */
+
         body {
             font-family: var(--font-sans);
             line-height: 1.6;
-            background-color: var(--primary-bg);
+            background-color: var(--paper-warm);
             color: var(--text-primary);
-            padding-top: var(--header-height); 
+            padding-top: var(--header-height);
             -webkit-font-smoothing: antialiased;
         }
 
@@ -85,111 +116,127 @@
         }
 
         /* ══════════════════════════════
-            NAVBAR (Integrated UI/UX)
+            SIGNATURE MOTIF — perforated divider
+        ══════════════════════════════ */
+        .ticket-divider {
+            width: 100%;
+            height: 2px;
+            background-image: radial-gradient(circle, var(--border-strong) 1.6px, transparent 1.7px);
+            background-size: 14px 2px;
+            background-repeat: repeat-x;
+            background-position: center;
+            opacity: 0.9;
+        }
+
+        /* ══════════════════════════════
+            NAVBAR
         ══════════════════════════════ */
         .header {
             position: fixed; top: 0; left: 0; width: 100%;
             height: var(--header-height); z-index: 9999;
-            background-color: var(--color-white);
+            background-color: var(--paper-warm);
             border-bottom: 1px solid transparent;
             box-shadow: none;
             display: flex; align-items: center;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
             font-family: var(--font-nav);
         }
         .header.scrolled {
             border-bottom-color: var(--border-subtle);
-            box-shadow: 0 4px 15px -1px rgba(0,0,0,0.05);
+            background-color: rgba(251, 249, 244, 0.92);
+            backdrop-filter: blur(8px);
         }
         .header-container {
             width: 90%; margin: 0 auto; max-width: 1280px;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .nav-left { display: flex; align-items: center; gap: 32px; }
-        
-        .logo-text { 
-            font-family: 'IBM Plex Sans', sans-serif;
+        .nav-left { display: flex; align-items: center; gap: 36px; }
+
+        .logo-text {
+            font-family: var(--font-display);
             font-size: 26px;
-            font-weight: 700;
-            color: var(--color-dark-teal);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: var(--teal-deep);
             text-decoration: none;
-            letter-spacing: -0.5px;
         }
 
         .nav-links { display: none; gap: 8px; }
         @media (min-width: 768px) { .nav-links { display: flex; } }
         .nav-link {
-            padding: 8px 16px; font-weight: var(--font-weight-medium);
-            color: var(--color-dark-teal); text-decoration: none;
+            padding: 8px 4px; font-weight: var(--font-weight-medium);
+            font-size: 0.95rem;
+            color: var(--ink-soft); text-decoration: none;
             border-radius: 0; transition: color 0.2s ease;
             background: transparent;
         }
-        .nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .nav-link:hover { color: var(--teal-deep); background: transparent; }
 
         .nav-right { display: flex; align-items: center; }
         .auth-buttons { display: none; gap: 12px; }
         @media (min-width: 768px) { .auth-buttons { display: flex; } }
         .auth-button {
-            padding: 8px 24px; font-weight: var(--font-weight-medium);
-            border-radius: 8px; text-decoration: none;
+            padding: 9px 22px; font-weight: var(--font-weight-medium);
+            font-size: 0.92rem;
+            border-radius: var(--radius-btn); text-decoration: none;
             transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-            border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal); background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--teal-deep); background: transparent;
         }
-        .auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
-        .auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); color: var(--color-white); }
-        .auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .auth-button.submit { background-color: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+        .auth-button.submit:hover { background-color: var(--teal-hover); border-color: var(--teal-hover); }
+        .auth-button:not(.submit):hover { background-color: var(--teal-deep); border-color: var(--teal-deep); color: #ffffff; }
 
         .menu-button {
             display: flex; padding: 8px;
             border: 1px solid var(--border-subtle); border-radius: 8px;
-            background: #f1f5f9; cursor: pointer;
-            color: var(--color-dark-teal); transition: background 0.1s;
+            background: var(--paper); cursor: pointer;
+            color: var(--teal-deep); transition: background 0.1s;
         }
         @media (min-width: 768px) { .menu-button { display: none; } }
 
         #mobileMenu {
             position: fixed; top: var(--header-height); left: 0; width: 100%;
-            background: var(--color-white); z-index: 9998;
+            background: var(--paper-warm); z-index: 9998;
             transform: translateY(-110%);
             transition: transform 0.3s ease-in-out;
             padding: 24px 5%;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(20,39,34,0.08);
             display: flex; flex-direction: column; gap: 20px;
             font-family: var(--font-nav);
         }
         #mobileMenu.active { transform: translateY(0); }
         .mobile-nav-link {
             font-size: 1.1rem; font-weight: 500; text-decoration: none;
-            color: var(--color-dark-teal); padding: 8px 0;
+            color: var(--teal-deep); padding: 8px 0;
             transition: color 0.2s; -webkit-tap-highlight-color: transparent;
         }
-        .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
+        .mobile-nav-link:hover { color: var(--marigold); background: transparent; }
         .mobile-auth-stack {
             display: flex; flex-direction: column; gap: 12px;
-            padding-top: 12px; border-top: 1px solid #f1f5f9;
+            padding-top: 12px; border-top: 1px solid var(--border-subtle);
         }
         .mobile-auth-button {
             width: 100%; padding: 12px; text-align: center;
-            border-radius: 8px; text-decoration: none; font-weight: 600;
-            border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal); background: transparent;
+            border-radius: var(--radius-btn); text-decoration: none; font-weight: 600;
+            border: 1px solid var(--teal-deep);
+            color: var(--teal-deep); background: transparent;
             transition: background-color 0.2s, color 0.2s;
             -webkit-tap-highlight-color: transparent;
         }
-        .mobile-auth-button.submit { background-color: var(--color-dark-teal); color: var(--color-white); }
-        .mobile-auth-button.submit:hover { background-color: var(--color-teal-hover); border-color: var(--color-teal-hover); }
-        .mobile-auth-button:not(.submit):hover { background-color: var(--color-dark-teal); color: var(--color-white); }
+        .mobile-auth-button.submit { background-color: var(--teal-deep); color: #fff; }
+        .mobile-auth-button.submit:hover { background-color: var(--teal-hover); border-color: var(--teal-hover); }
+        .mobile-auth-button:not(.submit):hover { background-color: var(--teal-deep); color: #ffffff; }
 
         #menuOverlay {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            background: rgba(20,39,34,0.28); backdrop-filter: blur(2px);
             z-index: 9997; display: none;
         }
         #menuOverlay.active { display: block; }
 
         /* ══════════════════════════════
-            HERO SECTION STYLES
+            HERO SECTION
         ══════════════════════════════ */
         .hero-wrapper {
             display: flex;
@@ -198,7 +245,7 @@
             gap: 40px;
             width: 100%;
             max-width: 1400px;
-            padding: 60px 30px 40px 30px;
+            padding: 56px 30px 40px 30px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
@@ -206,51 +253,66 @@
 
         .hero-text-content {
             text-align: center;
-            max-width: 800px;
+            max-width: 760px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
             z-index: 10;
         }
 
         .hero-eyebrow {
-            color: var(--color-accent-green);
-            font-size: 0.9rem;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--marigold-hover);
+            font-size: 0.82rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.09em;
             font-family: var(--font-nav);
+        }
+        .hero-eyebrow::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--marigold);
+            display: inline-block;
         }
 
         .hero-heading {
-            font-size: clamp(1.8rem, 4vw, 3.2rem);
-            font-weight: 700;
-            color: var(--color-dark-teal);
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            font-family: var(--font-nav);
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4.4vw, 3.6rem);
+            font-weight: 600;
+            color: var(--teal-deep);
+            line-height: 1.12;
+            letter-spacing: -0.01em;
+        }
+        .hero-heading em {
+            font-style: italic;
+            font-weight: 500;
+            color: var(--marigold);
         }
 
         .hero-description {
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 10px;
+            max-width: 580px;
+            line-height: 1.65;
+            margin-bottom: 6px;
         }
 
         .hero-btn {
-            background: var(--color-accent-green);
-            color: var(--color-dark-teal);
-            padding: 12px 28px;
-            border-radius: 10px;
+            background: var(--marigold);
+            color: #ffffff;
+            padding: 13px 30px;
+            border-radius: var(--radius-btn);
             font-weight: 600;
             font-size: 0.95rem;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.1);
-            transition: transform 0.25s ease, background 0.25s ease;
+            box-shadow: 0 8px 20px rgba(224, 138, 52, 0.28);
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -259,8 +321,9 @@
         }
 
         .hero-btn:hover {
-            background: var(--color-green-hover);
+            background: var(--marigold-hover);
             transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(198, 116, 31, 0.32);
         }
 
         .carousel-section {
@@ -268,12 +331,12 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-left: -30px; 
-            margin-right: -30px; 
-            margin-top: -80px; 
+            margin-left: -30px;
+            margin-right: -30px;
+            margin-top: -60px;
             margin-bottom: 0;
             overflow: hidden;
-            z-index: 1; 
+            z-index: 1;
         }
 
         .carousel-container {
@@ -295,8 +358,8 @@
             width: 1px;
             height: 100%;
             transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d; 
-            will-change: transform; 
+            -webkit-transform-style: preserve-3d;
+            will-change: transform;
             animation: rotateAnimation 60s linear infinite;
         }
 
@@ -309,14 +372,14 @@
             position: absolute;
             top: 20px;
             left: 0;
-            width: 1600px; 
+            width: 1600px;
             height: 400px;
             transform-style: preserve-3d;
             -webkit-transform-style: preserve-3d;
             transform-origin: center;
             transform: translateX(-50%);
         }
-        
+
         .image-container:nth-child(1) { transform: translateX(-50%) rotateY(30deg); }
         .image-container:nth-child(2) { transform: translateX(-50%) rotateY(60deg); }
         .image-container:nth-child(3) { transform: translateX(-50%) rotateY(90deg); }
@@ -326,15 +389,15 @@
 
         .image-container img {
             position: absolute;
-            width: 280px; 
+            width: 280px;
             height: 400px;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: 18px;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            outline: 1px solid transparent; 
+            outline: 1px solid transparent;
             will-change: transform;
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5), 0 20px 30px -10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 30px 55px -15px rgba(15, 46, 41, 0.45), 0 16px 26px -10px rgba(15, 46, 41, 0.25);
         }
 
         .image-container .img-front { transform: rotateY(90deg); left: 0; }
@@ -359,20 +422,20 @@
         }
 
         .stat-number {
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--text-main);
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--teal-deep);
             line-height: 1;
-            margin-bottom: 5px;
-            font-family: var(--font-nav);
+            margin-bottom: 6px;
         }
 
         .stat-label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-sub);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.08em;
             font-family: var(--font-sans);
         }
 
@@ -385,43 +448,42 @@
             margin-left: auto;
             margin-right: auto;
             text-align: center;
-            padding: 80px 40px 0 40px;
+            padding: 90px 40px 0 40px;
         }
 
         .page-header h2 {
-            font-family: var(--font-main);
-            font-size: clamp(2.2rem, 4vw, 3rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 14px;
             color: var(--text-main);
-            line-height: 1.2;
+            line-height: 1.22;
         }
 
         .page-header p {
             color: var(--text-sub);
-            font-size: 1.05rem;
-            margin-bottom: 32px;
+            font-size: 1.02rem;
+            margin-bottom: 34px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* --- CATEGORY BUTTONS (Desktop) --- */
         .categories {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 40px;
         }
 
         .cat-btn {
-            padding: 10px 24px;
+            padding: 10px 22px;
             border-radius: var(--radius-btn);
             border: 1px solid var(--border-subtle);
             background: var(--card-bg);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-family: var(--font-ui);
             font-weight: 600;
             cursor: pointer;
@@ -430,14 +492,14 @@
         }
 
         .cat-btn:hover {
-            border-color: var(--color-dark-teal);
-            color: var(--color-dark-teal);
+            border-color: var(--teal-deep);
+            color: var(--teal-deep);
         }
 
         .cat-btn.active {
-            background: var(--color-dark-teal);
+            background: var(--teal-deep);
             color: #ffffff;
-            border-color: var(--color-dark-teal);
+            border-color: var(--teal-deep);
         }
 
         /* --- MOBILE CUSTOM DROPDOWN --- */
@@ -467,10 +529,10 @@
             cursor: pointer;
             user-select: none;
         }
-        
+
         .mobile-dropdown-container.open .dropdown-trigger {
             border-color: var(--border-focus);
-            box-shadow: 0 0 0 4px rgba(65,182,110,0.12);
+            box-shadow: 0 0 0 4px rgba(224,138,52,0.14);
         }
 
         .dropdown-trigger svg {
@@ -489,7 +551,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-input);
-            box-shadow: 0 10px 25px rgba(0,39,38,0.1);
+            box-shadow: 0 14px 30px rgba(20,39,34,0.12);
             z-index: 100;
             opacity: 0;
             visibility: hidden;
@@ -519,11 +581,11 @@
         }
 
         .dropdown-option:hover {
-            background: rgba(65,182,110,0.08); 
-            color: var(--color-dark-teal);
+            background: var(--marigold-tint);
+            color: var(--marigold-hover);
         }
 
-        /* --- CARDS CONTAINER (4 SIDE BY SIDE GRID) --- */
+        /* --- CARDS CONTAINER --- */
         .cards-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -533,7 +595,6 @@
             margin: 0 auto;
         }
 
-        /* --- THE CARD --- */
         .card {
             width: 100%;
             background-color: var(--card-bg);
@@ -545,9 +606,9 @@
         }
 
         .card:hover {
-            border-color: #c7e6d0;
+            border-color: var(--marigold-tint-strong);
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px -15px rgba(0,39,38,0.08); 
+            box-shadow: 0 22px 42px -18px rgba(20, 39, 34, 0.18);
         }
 
         .card-top {
@@ -559,7 +620,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f1f5f9; 
+            background-color: var(--paper);
         }
 
         .product-img {
@@ -573,9 +634,8 @@
             transform: scale(1.05);
         }
 
-        /* Banner (Promotion) */
         .card-banner {
-            background-color: #f8fafc;
+            background-color: var(--paper-warm);
             height: 60px;
             margin-top: -24px;
             border-bottom-left-radius: var(--radius-card-inner);
@@ -586,18 +646,17 @@
             align-items: flex-end;
             justify-content: center;
             padding-bottom: 10px;
-            border-top: 1px solid rgba(0,0,0,0.03);
+            border-top: 1px solid rgba(20,39,34,0.04);
         }
 
         .banner-text {
             color: var(--text-main);
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
 
-        /* Actions Section */
         .card-actions {
             padding: 16px 4px 6px 4px;
             display: flex;
@@ -622,25 +681,24 @@
         }
 
         .btn-primary {
-            background-color: var(--color-accent-green);
-            color: var(--color-dark-teal);
-            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.3);
+            background-color: var(--marigold);
+            color: #ffffff;
         }
 
         .btn-primary:hover {
-            background-color: var(--color-green-hover);
+            background-color: var(--marigold-hover);
             transform: translateY(-1px);
         }
 
         .btn-secondary {
             background-color: transparent;
-            color: var(--color-dark-teal);
+            color: var(--teal-deep);
             border: 1px solid var(--border-subtle);
         }
 
         .btn-secondary:hover {
-            border-color: var(--color-dark-teal);
-            background-color: var(--color-dark-teal);
+            border-color: var(--teal-deep);
+            background-color: var(--teal-deep);
             color: #ffffff;
         }
 
@@ -650,7 +708,6 @@
             stroke-width: 2px;
         }
 
-        /* View More Footer */
         .view-more-container {
             display: flex;
             justify-content: center;
@@ -664,8 +721,8 @@
         .btn-view-more {
             padding: 14px 32px;
             background: transparent;
-            border: 1px solid var(--color-dark-teal);
-            color: var(--color-dark-teal);
+            border: 1px solid var(--teal-deep);
+            color: var(--teal-deep);
             font-weight: 600;
             font-size: 16px;
             font-family: var(--font-ui);
@@ -679,45 +736,43 @@
         }
 
         .btn-view-more:hover {
-            background: var(--color-dark-teal);
+            background: var(--teal-deep);
             color: #ffffff;
         }
 
         /* ══════════════════════════════
-            PERFECT STACKING SECTION
+            STACKING SECTION
         ══════════════════════════════ */
         .stacking-section-bg {
-            background-color: #ffffff; 
-            width: 100%; 
-            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--paper-warm);
+            width: 100%;
+            font-family: var(--font-sans);
             position: relative;
             z-index: 5;
         }
 
         .stack-wrapper {
-            /* Scoped variables for this section only */
-            --text-main-stack: #000000;
-            --text-sub-stack: #5E5E5E;
-            --text-label-stack: #1a1a1a;
-            --border-color-stack: #E5E5E5;
-            --bg-color-stack: #ffffff;
-            --accent-green-stack: #41B66E;
-            
+            --text-main-stack: var(--ink);
+            --text-sub-stack: var(--ink-soft);
+            --text-label-stack: var(--marigold-hover);
+            --border-color-stack: var(--border-subtle);
+            --bg-color-stack: var(--paper-warm);
+            --accent-green-stack: var(--marigold);
+
             max-width: 1300px;
             margin: 0 auto;
             display: flex;
-            padding: 0 80px; 
+            padding: 0 80px;
             justify-content: space-between;
             align-items: flex-start;
             background-color: var(--bg-color-stack);
         }
 
-        /* LEFT SIDE - Pinned Content */
         .stack-wrapper .left-panel {
             flex: 0 0 320px;
             position: sticky;
             top: var(--sticky-top-stack);
-            padding-top: 20px; 
+            padding-top: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -725,45 +780,44 @@
         }
 
         .stack-wrapper .left-panel h2 {
-            font-size: 32px;
-            font-weight: 500;
-            line-height: 1.15;
-            letter-spacing: -0.04em;
+            font-family: var(--font-display);
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 1.18;
+            letter-spacing: -0.01em;
             margin: 0;
             color: var(--text-main-stack);
         }
 
         .stack-wrapper .left-panel p {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 400;
             color: var(--text-sub-stack);
-            line-height: 1.5;
+            line-height: 1.55;
             margin: 0;
         }
 
         .stack-wrapper .btn-stack {
             display: inline-block;
-            width: fit-content; 
-            padding: 12px 28px;
-            background: var(--accent-green-stack); /* Accent Green */
-            color: #0B3A38; 
-            border-radius: 10px;
-            font-weight: 500; 
+            width: fit-content;
+            padding: 12px 26px;
+            background: var(--accent-green-stack);
+            color: #ffffff;
+            border-radius: var(--radius-btn);
+            font-weight: 600;
             font-size: 14px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            box-shadow: inset 0 0 0 2px rgba(11, 58, 56, 0.2);
             transition: background 0.25s ease;
             margin-top: 12px;
         }
 
         .stack-wrapper .btn-stack:hover {
-            background: #38a862; /* Hover */
+            background: var(--marigold-hover);
         }
 
-        /* RIGHT SIDE - List of Cards */
         .stack-wrapper .right-panel {
             flex: 1;
             max-width: 600px;
@@ -774,21 +828,20 @@
         .stack-wrapper .feature-card {
             position: sticky;
             top: var(--sticky-top-stack);
-            background-color: #fff;
+            background-color: var(--paper-warm);
             width: 100%;
             border-top: 1px solid var(--border-color-stack);
-            margin-bottom: 0px; 
+            margin-bottom: 0px;
             padding-bottom: 50px;
-            box-shadow: none; 
+            box-shadow: none;
         }
 
-        /* Content inside each card */
         .stack-wrapper .card-inner {
             display: flex;
-            align-items: flex-start; /* Anchor text to top right of icon */
+            align-items: flex-start;
             gap: 25px;
             padding-top: 30px;
-            padding-bottom: 5px; /* Minimized bottom padding */
+            padding-bottom: 5px;
         }
 
         .stack-wrapper .icon-box {
@@ -800,33 +853,34 @@
             justify-content: center;
         }
 
-        /* Restored to target SVG */
         .stack-wrapper .icon-box svg {
-            width: 64px;
-            height: 64px;
+            width: 60px;
+            height: 60px;
             color: var(--accent-green-stack);
         }
 
         .stack-wrapper .text-box {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
             padding-top: 2px;
         }
 
         .stack-wrapper .stack-label {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             color: var(--text-label-stack);
-            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .stack-wrapper .stack-desc {
+            font-family: var(--font-display);
             font-size: 24px;
-            font-weight: 400;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            color: #1e1e1e;
+            font-weight: 500;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--ink);
             margin: 0;
         }
 
@@ -844,34 +898,34 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            font-weight: 600;
+            gap: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
+            letter-spacing: 0.1em;
+            color: var(--marigold-hover);
             margin-bottom: 0.9rem;
         }
-        
+
         .sec-label-line {
             width: 18px;
             height: 1.5px;
-            background: #94a3b8;
+            background: var(--border-strong);
             display: inline-block;
         }
 
         .hiw-title {
-            font-family: var(--font-main);
-            font-size: clamp(2rem, 4vw, 2.6rem);
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 4vw, 2.5rem);
+            font-weight: 600;
+            line-height: 1.22;
+            letter-spacing: -0.01em;
             color: var(--text-main);
             margin-bottom: 12px;
         }
 
         .hiw-subtitle {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             color: var(--text-sub);
             max-width: 580px;
             margin: 0 auto;
@@ -886,9 +940,9 @@
         }
 
         .hiw-card {
-            border: 1.5px solid var(--border-subtle);
+            border: 1px solid var(--border-subtle);
             border-radius: 20px;
-            background: #ffffff;
+            background: var(--card-bg);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -898,8 +952,8 @@
 
         .hiw-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px -15px rgba(0, 39, 38, 0.08);
-            border-color: #cbd5e1;
+            box-shadow: 0 22px 42px -18px rgba(20, 39, 34, 0.16);
+            border-color: var(--border-strong);
         }
 
         .hiw-visual {
@@ -908,9 +962,9 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            background: #ffffff;
+            background: var(--paper);
             overflow: hidden;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
         .hiw-content {
@@ -918,8 +972,9 @@
         }
 
         .hiw-content h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-main);
         }
@@ -938,16 +993,16 @@
         }
 
         .hiw-cta {
-            background: var(--color-accent-green);
-            color: var(--color-dark-teal);
+            background: var(--marigold);
+            color: #ffffff;
             padding: 16px 32px;
-            border-radius: 14px;
+            border-radius: var(--radius-btn);
             font-family: var(--font-main);
             font-size: 1rem;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3);
+            box-shadow: 0 10px 24px rgba(224, 138, 52, 0.28);
             transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-flex;
             align-items: center;
@@ -956,34 +1011,33 @@
         }
 
         .hiw-cta:hover {
-            background: var(--color-green-hover);
+            background: var(--marigold-hover);
             transform: translateY(-2px);
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3), 0 8px 20px rgba(51, 195, 117, 0.25);
+            box-shadow: 0 14px 28px rgba(198, 116, 31, 0.32);
         }
 
         /* --- PURE CSS MOCKUP GRAPHICS --- */
         .art-phone, .art-tablet, .art-chat-card-img {
-            background-color: #f1f5f9;
+            background-color: var(--paper);
             background-size: cover;
             background-position: center;
         }
 
-        /* Graphic 1: Phone */
         .art-phone {
             width: 150px;
             height: 300px;
-            border-radius: 28px;
-            border: 6px solid var(--color-dark-teal);
+            border-radius: 30px;
+            border: 6px solid var(--teal-deep);
             position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 10px 20px rgba(20,39,34,0.14);
             overflow: hidden;
         }
-        
+
         .art-phone::before {
             content: '';
             position: absolute;
             bottom: 0; left: 0; width: 100%; height: 30%;
-            background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+            background: linear-gradient(0deg, rgba(15,46,41,0.55) 0%, transparent 100%);
         }
 
         .art-island {
@@ -993,41 +1047,39 @@
             transform: translateX(-50%);
             width: 44px;
             height: 14px;
-            background: var(--color-dark-teal);
+            background: var(--teal-deep);
             border-radius: 10px;
             z-index: 10;
         }
 
-        /* Graphic 2: Desktop/Tablet Editor */
         .art-tablet {
             width: 200px;
             height: 280px;
-            border-radius: 12px;
+            border-radius: 14px;
             position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border: 4px solid var(--color-dark-teal);
+            box-shadow: 0 10px 20px rgba(20,39,34,0.1);
+            border: 4px solid var(--teal-deep);
         }
-        
-        /* Dark gradient at top of tablet for better text visibility */
+
         .art-tablet::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 40%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 100%);
-            border-radius: 8px 8px 0 0;
+            background: linear-gradient(180deg, rgba(15,46,41,0.35) 0%, transparent 100%);
+            border-radius: 10px 10px 0 0;
         }
 
         .art-tablet-edit-btn {
             position: absolute;
             top: 12px;
             right: -20px;
-            background: var(--color-dark-teal);
+            background: var(--marigold);
             color: #ffffff;
             padding: 8px 20px;
-            border-radius: 8px;
+            border-radius: var(--radius-btn);
             font-size: 11px;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(224,138,52,0.25);
             z-index: 5;
         }
 
@@ -1036,21 +1088,20 @@
             bottom: 20px;
             right: -30px;
             width: 180px;
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 14px 32px rgba(20,39,34,0.14);
             padding: 16px;
             border: 1px solid var(--border-subtle);
             text-align: left;
             z-index: 4;
         }
 
-        /* Blinking Cursor for Input */
         .blinking-cursor {
             display: inline-block;
             width: 1.5px;
             height: 12px;
-            background-color: var(--color-dark-teal);
+            background-color: var(--teal-deep);
             animation: blink 1s step-end infinite;
             margin-left: 1px;
             vertical-align: middle;
@@ -1060,7 +1111,6 @@
             50% { opacity: 0; }
         }
 
-        /* Graphic 3: Chat Bubbles */
         .art-chat-wrapper {
             display: flex;
             flex-direction: column;
@@ -1071,9 +1121,9 @@
 
         .art-chat-left {
             align-self: flex-start;
-            background: #ffffff;
+            background: var(--card-bg);
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 10px rgba(20,39,34,0.03);
             padding: 10px 14px;
             border-radius: 16px 16px 16px 4px;
             font-size: 0.72rem;
@@ -1084,12 +1134,12 @@
 
         .art-chat-right {
             align-self: flex-end;
-            background: var(--color-green-dim);
-            border: 1px solid rgba(51, 195, 117, 0.2);
+            background: var(--marigold-tint);
+            border: 1px solid var(--marigold-tint-strong);
             padding: 10px 14px;
             border-radius: 16px 16px 4px 16px;
             font-size: 0.72rem;
-            color: #0d4a2a;
+            color: #7A4515;
             max-width: 90%;
             line-height: 1.4;
             position: relative;
@@ -1097,8 +1147,8 @@
 
         .art-chat-card {
             align-self: flex-end;
-            background: var(--color-green-dim);
-            border: 1px solid rgba(51, 195, 117, 0.2);
+            background: var(--marigold-tint);
+            border: 1px solid var(--marigold-tint-strong);
             width: 220px;
             border-radius: 12px;
             display: flex;
@@ -1116,15 +1166,15 @@
         .art-chat-card-text {
             font-size: 0.75rem;
             font-weight: 700;
-            color: #0d4a2a;
+            color: #7A4515;
             padding: 0 4px 4px 4px;
         }
 
         .art-chat-card-sub {
             font-size: 0.55rem;
             font-weight: 500;
-            color: #166534;
-            opacity: 0.8;
+            color: #8A5A22;
+            opacity: 0.85;
             margin-top: 2px;
         }
 
@@ -1136,13 +1186,13 @@
             border-radius: 50%;
             padding: 4px;
             font-size: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(20,39,34,0.12);
             line-height: 1;
             z-index: 2;
         }
 
         /* ══════════════════════════════
-            COMPARISON SECTION STYLES
+            COMPARISON SECTION
         ══════════════════════════════ */
         .comparison-section {
             max-width: 1100px;
@@ -1160,16 +1210,17 @@
         }
 
         .section-title {
-            font-size: clamp(2rem, 4vw, 2.6rem);
-            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 4vw, 2.5rem);
+            font-weight: 600;
             color: var(--text-main);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
+            line-height: 1.22;
+            letter-spacing: -0.01em;
             margin-bottom: 16px;
         }
 
         .section-subtitle {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             color: var(--text-sub);
             max-width: 580px;
             margin: 0 auto;
@@ -1181,9 +1232,9 @@
             margin-bottom: 50px;
             border: 1px solid var(--border-subtle);
             border-radius: 24px;
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 16px;
-            box-shadow: 0 10px 40px -10px rgba(0, 39, 38, 0.05);
+            box-shadow: 0 14px 44px -14px rgba(20, 39, 34, 0.1);
         }
 
         .comparison-table {
@@ -1193,11 +1244,11 @@
             text-align: left;
         }
 
-        .comparison-table th, 
+        .comparison-table th,
         .comparison-table td {
             padding: 24px 20px;
             vertical-align: middle;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid var(--paper);
         }
 
         .comparison-table tr:last-child td {
@@ -1218,7 +1269,7 @@
 
         .comparison-table th:nth-child(4),
         .comparison-table td:nth-child(4) {
-            background-color: var(--color-green-dim);
+            background-color: var(--marigold-tint);
             text-align: center;
             position: relative;
         }
@@ -1226,7 +1277,7 @@
         .comparison-table th:nth-child(4) {
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            border-bottom: 1px solid rgba(51, 195, 117, 0.2);
+            border-bottom: 1px solid var(--marigold-tint-strong);
         }
 
         .comparison-table tr:last-child td:nth-child(4) {
@@ -1235,8 +1286,8 @@
         }
 
         .comparison-table td:nth-child(4) {
-            border-bottom: 1px solid rgba(51, 195, 117, 0.1);
-            color: #0d4a2a;
+            border-bottom: 1px solid var(--marigold-tint-strong);
+            color: #7A4515;
             font-weight: 700;
         }
 
@@ -1245,8 +1296,8 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: var(--color-accent-green);
-            color: var(--color-dark-teal);
+            background: var(--marigold);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: 999px;
             font-weight: 700;
@@ -1272,8 +1323,8 @@
             width: 36px;
             height: 36px;
             border-radius: 10px;
-            background: #f1f5f9;
-            color: var(--color-dark-teal);
+            background: var(--paper);
+            color: var(--teal-deep);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1281,16 +1332,16 @@
         }
 
         .cta-button {
-            background: var(--color-accent-green);
-            color: var(--color-dark-teal);
+            background: var(--marigold);
+            color: #ffffff;
             padding: 16px 32px;
-            border-radius: 14px;
+            border-radius: var(--radius-btn);
             font-family: var(--font-main);
             font-size: 1rem;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3);
+            box-shadow: 0 10px 24px rgba(224, 138, 52, 0.28);
             transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-flex;
             align-items: center;
@@ -1299,13 +1350,13 @@
         }
 
         .cta-button:hover {
-            background: var(--color-green-hover);
+            background: var(--marigold-hover);
             transform: translateY(-2px);
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3), 0 8px 20px rgba(51, 195, 117, 0.25);
+            box-shadow: 0 14px 28px rgba(198, 116, 31, 0.32);
         }
 
         /* ══════════════════════════════
-            FAQ SECTION STYLES
+            FAQ SECTION
         ══════════════════════════════ */
         .faq-section {
             max-width: 800px;
@@ -1316,25 +1367,25 @@
         .faq-container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .faq-item {
             border: 1px solid var(--border-subtle);
             border-radius: 16px;
-            background: #ffffff;
+            background: var(--card-bg);
             overflow: hidden;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .faq-item:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border-color: var(--border-strong);
+            box-shadow: 0 4px 14px rgba(20,39,34,0.04);
         }
 
         .faq-item.active {
-            border-color: var(--color-dark-teal);
-            box-shadow: 0 4px 12px rgba(0,39,38,0.05);
+            border-color: var(--marigold);
+            box-shadow: 0 4px 14px rgba(224,138,52,0.1);
         }
 
         .faq-question {
@@ -1348,7 +1399,7 @@
             align-items: center;
             cursor: pointer;
             font-family: var(--font-main);
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             font-weight: 600;
             color: var(--text-main);
         }
@@ -1356,7 +1407,7 @@
         .faq-question svg {
             width: 20px;
             height: 20px;
-            color: var(--color-dark-teal);
+            color: var(--marigold);
             transition: transform 0.3s var(--ease-smooth);
             flex-shrink: 0;
         }
@@ -1388,11 +1439,11 @@
         }
 
         /* ══════════════════════════════
-            FOOTER STYLES
+            FOOTER
         ══════════════════════════════ */
         .footer {
-            background-color: var(--color-dark-teal);
-            color: var(--color-white);
+            background-color: var(--teal-deep);
+            color: #ffffff;
             padding: 80px 5% 40px 5%;
             font-family: var(--font-sans);
         }
@@ -1410,16 +1461,16 @@
         }
 
         .footer-brand h3 {
-            font-family: 'IBM Plex Sans', sans-serif;
+            font-family: var(--font-display);
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 16px;
-            letter-spacing: -0.5px;
-            color: var(--color-white);
+            letter-spacing: 0.01em;
+            color: #ffffff;
         }
 
         .footer-brand p {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.68);
             font-size: 0.95rem;
             line-height: 1.6;
             max-width: 300px;
@@ -1439,21 +1490,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--color-white);
+            color: #ffffff;
             transition: all 0.25s ease;
         }
 
         .social-link:hover {
-            background: var(--color-accent-green);
-            color: var(--color-dark-teal);
+            background: var(--marigold);
+            color: #ffffff;
             transform: translateY(-2px);
         }
 
         .footer-col h4 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: var(--color-white);
+            color: #ffffff;
         }
 
         .footer-col ul {
@@ -1464,24 +1515,24 @@
         }
 
         .footer-col a {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.68);
             text-decoration: none;
             font-size: 0.95rem;
             transition: color 0.2s ease;
         }
 
         .footer-col a:hover {
-            color: var(--color-accent-green);
+            color: var(--marigold);
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
             padding-top: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.55);
         }
 
         .footer-bottom-links {
@@ -1490,32 +1541,32 @@
         }
 
         .footer-bottom-links a {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.55);
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .footer-bottom-links a:hover {
-            color: var(--color-white);
+            color: #ffffff;
         }
 
         /* ══════════════════════════════
-            INVITATION VIEWER STYLES
+            INVITATION VIEWER
         ══════════════════════════════ */
         #invitation-viewer {
             width: 100%;
-            display: none; /* hidden by default */
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f9f9f9;
+            background-color: var(--paper);
         }
 
         #loader {
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 1.2rem;
-            color: #555;
+            font-family: var(--font-sans);
+            font-size: 1.1rem;
+            color: var(--text-sub);
         }
 
         #invitation-container {
@@ -1523,19 +1574,19 @@
             max-width: 100%;
         }
 
-        /* --- RESPONSIVE ADJUSTMENTS (ALL SECTIONS) --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 1600px) {
             .carousel-container { width: 98vw; }
         }
-        
+
         @media (max-width: 1200px) {
             .stats-container { gap: 40px; }
-            .stat-number { font-size: 36px; }
+            .stat-number { font-size: 34px; }
         }
 
         @media (max-width: 1024px) {
             .cards-container { grid-template-columns: repeat(2, 1fr); }
-            
+
             .footer-top {
                 grid-template-columns: 1fr 1fr;
             }
@@ -1546,7 +1597,6 @@
         }
 
         @media (max-width: 900px) {
-            /* Stacking Section Mobile Adjustments */
             .stack-wrapper {
                 flex-direction: column;
                 padding: 0 30px;
@@ -1558,11 +1608,11 @@
                 width: 100%;
                 flex: none;
                 padding-top: 30px;
-                height: 300px; 
-                box-sizing: border-box; 
-                margin-bottom: 0; 
-                background-color: var(--bg-color-stack); 
-                z-index: 20; 
+                height: 300px;
+                box-sizing: border-box;
+                margin-bottom: 0;
+                background-color: var(--bg-color-stack);
+                z-index: 20;
             }
 
             .stack-wrapper .right-panel {
@@ -1571,10 +1621,9 @@
                 max-width: 100%;
             }
 
-            /* Change this: */
             .stack-wrapper .feature-card {
-                top: calc(var(--header-height) + 300px); 
-                margin-bottom: 0px; /* Change this to something smaller, e.g., 40px */
+                top: calc(var(--header-height) + 300px);
+                margin-bottom: 0px;
                 padding-bottom: 50px;
                 z-index: 10;
             }
@@ -1585,13 +1634,11 @@
             }
 
             .stack-wrapper .icon-box { width: 70px; height: 70px; }
-            
-            /* Restored to SVG mobile size */
-            .stack-wrapper .icon-box svg { width: 48px; height: 48px; }
-            
+
+            .stack-wrapper .icon-box svg { width: 46px; height: 46px; }
+
             .stack-wrapper .stack-desc { font-size: 20px; }
 
-            /* HIW Mobile Adjustments */
             .hiw-grid {
                 grid-template-columns: 1fr;
                 gap: 24px;
@@ -1601,56 +1648,55 @@
             }
         }
 
-        @media (max-width: 768px) { 
-            .hero-wrapper { 
-                padding: 0 20px; 
+        @media (max-width: 768px) {
+            .hero-wrapper {
+                padding: 0 20px;
                 gap: 10px;
             }
-            
+
             .carousel-section {
                 order: 1;
-                margin-top: calc(-1 * var(--header-height)); /* Pull up behind navbar */
-                margin-bottom: 0;                            /* No overlap with text */
+                margin-top: calc(-1 * var(--header-height));
+                margin-bottom: 0;
                 position: relative;
-                z-index: 1;                                  /* Behind the text */
-                
-                /* Remove 20px left/right padding - counteract .main-wrapper padding */
+                z-index: 1;
+
                 margin-left: -20px;
                 margin-right: -20px;
                 width: calc(100% + 40px);
             }
-            
+
             .carousel-container {
                 height: 480px;
                 perspective: 850px;
                 -webkit-perspective: 850px;
-                mask: none;          /* Prevent clipping on mobile */
+                mask: none;
                 -webkit-mask: none;
-                width: 100%;         /* Ensure it fills the expanded section width */
+                width: 100%;
             }
-            
+
             .image-container {
                 width: 1550px;
                 height: 420px;
                 top: 30px;
             }
-            
+
             .image-container img {
                 width: 300px;
                 height: 420px;
             }
-            
+
             .hero-text-content {
                 order: 2;
-                margin-top: -50px;      /* Move up 20px to overlay carousel */
+                margin-top: -50px;
                 position: relative;
-                z-index: 10;            /* Above carousel (z-index:1) */
+                z-index: 10;
             }
-        
-            .hero-description { 
+
+            .hero-description {
                 font-size: 0.85rem;
             }
-            
+
             .stats-container {
                 order: 3;
                 margin-top: 20px;
@@ -1658,26 +1704,25 @@
                 gap: 15px;
                 padding: 10px 0;
             }
-            
+
             .stat-item {
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
                 text-align: left;
             }
-            
+
             .stat-number {
                 margin-bottom: 0;
-                font-size: 32px;
+                font-size: 30px;
             }
 
-            /* Product Showcase Mobile Adjustments */
             .page-header {
                 padding: 40px 20px 0 20px;
             }
 
             .page-header h2 {
-                font-size: 2.2rem;
+                font-size: 2rem;
                 text-align: center;
             }
 
@@ -1706,7 +1751,6 @@
 
             .btn-action { height: 48px; }
 
-            /* Comparison Mobile */
             .comparison-section {
                 padding: 60px 5%;
             }
@@ -1720,7 +1764,7 @@
                 word-wrap: break-word;
                 table-layout: fixed;
             }
-            .comparison-table th, 
+            .comparison-table th,
             .comparison-table td {
                 padding: 14px 6px;
                 font-size: 0.85rem;
@@ -1760,7 +1804,6 @@
                 height: 12px;
             }
 
-            /* FAQ and Footer Mobile */
             .faq-section {
                 padding: 40px 5% 80px 5%;
             }
@@ -1785,7 +1828,7 @@
                 padding: 4px;
                 border-radius: 12px;
             }
-            .comparison-table th, 
+            .comparison-table th,
             .comparison-table td {
                 padding: 10px 4px;
                 font-size: 0.75rem;
@@ -1794,7 +1837,7 @@
                 font-size: 0.7rem;
             }
             .feature-icon {
-                display: none; 
+                display: none;
             }
             .feature-cell {
                 font-size: 0.75rem !important;
@@ -1828,7 +1871,7 @@
             <div class="header-container">
                 <div class="nav-left">
                     <a href="/" class="logo-text" aria-label="Home">
-                        SCHEDY
+                        Schedy
                     </a>
                     <div class="nav-links">
                         <a class="nav-link" href="about.html">About</a>
@@ -1858,16 +1901,16 @@
         <div id="menuOverlay"></div>
 
         <div class="hero-wrapper">
-            
+
             <div class="hero-text-content">
-                <span class="hero-eyebrow">Make Every Event Memorable</span>
-                <h1 class="hero-heading">All-in-One Website Templates for Any Event</h1>
+                <span class="hero-eyebrow">Make every event memorable</span>
+                <h1 class="hero-heading">All-in-one website templates for <em>any</em> event</h1>
                 <p class="hero-description">Weddings, birthdays, engagements, parties & more—<br>Launch your event website effortlessly.</p>
                 <a href="templates.html" class="hero-btn">
-                    <span>Choose Your Template</span>
+                    <span>Choose your template</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
                         <path d="M1 7.11108L6 12L11 7.11108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M1 1L6 5.88889L11 1" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M1 1L6 5.88889L11 1" stroke="currentColor" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </a>
             </div>
@@ -1919,10 +1962,12 @@
             </div>
         </div>
 
+        <div class="ticket-divider" aria-hidden="true"></div>
+
         <header class="page-header">
             <h2>Crafted for your special day.<br>Simple to customize.</h2>
             <p>Pick a design. Add your details. Share in seconds.</p>
-            
+
             <div class="categories">
                 <button class="cat-btn active" data-filter="all">All Events</button>
                 <button class="cat-btn" data-filter="wedding">Wedding</button>
@@ -1950,10 +1995,10 @@
 
         <div class="cards-container">
             <div class="card" data-category="wedding">
-                <div class="card-top" style="background-color: #fff4e5;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=800&auto=format&fit=crop" 
-                        alt="Wedding Design" 
+                <div class="card-top" style="background-color: var(--rose-tint);">
+                    <img
+                        src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=800&auto=format&fit=crop"
+                        alt="Wedding Design"
                         class="product-img"
                     >
                 </div>
@@ -1977,10 +2022,10 @@
             </div>
 
             <div class="card" data-category="birthday">
-                <div class="card-top" style="background-color: #eef2ff;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=800&auto=format&fit=crop" 
-                        alt="Birthday Design" 
+                <div class="card-top" style="background-color: var(--lilac-tint);">
+                    <img
+                        src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=800&auto=format&fit=crop"
+                        alt="Birthday Design"
                         class="product-img"
                     >
                 </div>
@@ -2004,10 +2049,10 @@
             </div>
 
             <div class="card" data-category="housewarming">
-                <div class="card-top" style="background-color: #ecfdf5;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=800&auto=format&fit=crop" 
-                        alt="Housewarming Design" 
+                <div class="card-top" style="background-color: var(--sage-tint);">
+                    <img
+                        src="https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=800&auto=format&fit=crop"
+                        alt="Housewarming Design"
                         class="product-img"
                     >
                 </div>
@@ -2031,10 +2076,10 @@
             </div>
 
             <div class="card" data-category="baby">
-                <div class="card-top" style="background-color: #f5f3ff;">
-                    <img 
-                        src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop" 
-                        alt="Baby Events Design" 
+                <div class="card-top" style="background-color: var(--marigold-tint);">
+                    <img
+                        src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop"
+                        alt="Baby Events Design"
                         class="product-img"
                     >
                 </div>
@@ -2065,23 +2110,25 @@
             </a>
         </div>
 
+        <div class="ticket-divider" aria-hidden="true"></div>
+
         <div class="stacking-section-bg">
             <div class="stack-wrapper">
                 <div class="left-panel">
-                    <h2>Make Your Event Unforgettable</h2>
+                    <h2>Make your event unforgettable</h2>
                     <p>Go beyond standard printed cards. Create a stunning digital experience to share your story, manage guests, and keep everyone updated.</p>
                     <a href="templates.html" class="btn-stack">Browse Templates</a>
                 </div>
 
                 <div class="right-panel">
-                    
+
                     <div class="feature-card">
                         <div class="card-inner">
                             <div class="icon-box">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><rect width="18" height="5" x="3" y="3" rx="2" ry="2"/><path d="M9 21V8"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">1. Premium Designer Templates</span>
+                                <span class="stack-label">1. Premium designer templates</span>
                                 <p class="stack-desc">Choose from a curated collection of beautiful themes crafted for weddings, birthdays, and special milestones.</p>
                             </div>
                         </div>
@@ -2093,7 +2140,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">2. Seamless RSVP Tracking</span>
+                                <span class="stack-label">2. Seamless RSVP tracking</span>
                                 <p class="stack-desc">Say goodbye to scattered messages. Collect and manage guest responses, dietary preferences, and headcounts in one place.</p>
                             </div>
                         </div>
@@ -2105,7 +2152,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">3. Unlimited Photo Galleries</span>
+                                <span class="stack-label">3. Unlimited photo galleries</span>
                                 <p class="stack-desc">Share your pre-wedding shoots, event memories, and special moments with a beautiful, high-quality image gallery.</p>
                             </div>
                         </div>
@@ -2117,7 +2164,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">4. Interactive Venue Maps</span>
+                                <span class="stack-label">4. Interactive venue maps</span>
                                 <p class="stack-desc">Ensure no guest gets lost. Integrate Google Maps directly into your invite for accurate, one-click navigation.</p>
                             </div>
                         </div>
@@ -2129,7 +2176,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.25V14"/><circle cx="16" cy="16" r="6"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">5. Live Countdowns & Itineraries</span>
+                                <span class="stack-label">5. Live countdowns & itineraries</span>
                                 <p class="stack-desc">Build excitement with a live countdown timer and keep guests informed with a detailed, step-by-step event schedule.</p>
                             </div>
                         </div>
@@ -2141,7 +2188,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                             </div>
                             <div class="text-box">
-                                <span class="stack-label">6. Instant WhatsApp Sharing</span>
+                                <span class="stack-label">6. Instant WhatsApp sharing</span>
                                 <p class="stack-desc">Distribute your digital invitation globally in just one click via WhatsApp, email, or your preferred social platform.</p>
                             </div>
                         </div>
@@ -2152,24 +2199,24 @@
         </div>
 
         <section class="hiw-section">
-            <div class="sec-label"><span class="sec-label-line"></span> Quick Setup <span class="sec-label-line"></span></div>
-            <h2 class="hiw-title">Launch Your Wedding Website in 10 Minutes</h2>
+            <div class="sec-label"><span class="sec-label-line"></span> Quick setup <span class="sec-label-line"></span></div>
+            <h2 class="hiw-title">Launch your wedding website in 10 minutes</h2>
             <p class="hiw-subtitle">Just enter your names and event details—no design work needed.</p>
-            
+
             <div class="hiw-grid">
-                
+
                 <div class="hiw-card">
                     <div class="hiw-visual">
                         <div class="art-phone" style="position: absolute; left: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop');"></div>
-                        
+
                         <div class="art-phone" style="z-index: 2; background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop');">
                             <div class="art-island"></div>
                         </div>
-                        
+
                         <div class="art-phone" style="position: absolute; right: -80px; transform: scale(0.85); opacity: 0.7; box-shadow: none; background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop');"></div>
                     </div>
                     <div class="hiw-content">
-                        <h3>1 - Choose a template</h3>
+                        <h3>1 — Choose a template</h3>
                         <p>Select a design that perfectly fits your wedding aesthetics.</p>
                     </div>
                 </div>
@@ -2178,33 +2225,33 @@
                     <div class="hiw-visual">
                         <div class="art-tablet" style="background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=600&auto=format&fit=crop');">
                             <div class="art-tablet-edit-btn">Edit</div>
-                            
+
                             <div class="art-panel">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-dark-teal);">
-                                    <strong style="font-size: 11px;">Names</strong> 
-                                    <span style="color: #94a3b8; font-size: 9px;">Component</span>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--teal-deep);">
+                                    <strong style="font-size: 11px;">Names</strong>
+                                    <span style="color: var(--ink-faint); font-size: 9px;">Component</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <span style="font-size: 10px; color: #64748b;">Variant</span> 
-                                    <span style="border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--color-dark-teal); font-weight: 500;">Desktop ⌄</span>
+                                    <span style="font-size: 10px; color: var(--ink-soft);">Variant</span>
+                                    <span style="border: 1px solid var(--border-subtle); padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--teal-deep); font-weight: 500;">Desktop ⌄</span>
                                 </div>
                                 <div style="margin-bottom: 12px;">
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 1</div>
-                                    <div style="border: 1px solid var(--border-focus); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(65, 182, 110, 0.1);">
+                                    <div style="font-size: 10px; color: var(--ink-soft); margin-bottom: 6px;">Name 1</div>
+                                    <div style="border: 1px solid var(--marigold); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--ink); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(224, 138, 52, 0.12);">
                                         A<span class="blinking-cursor"></span>
                                     </div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    <div style="font-size: 8px; color: var(--ink-faint); margin-top: 4px;">Enter the groom or bride's name</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 2</div>
-                                    <div style="border: 1px solid #e2e8f0; background: #f8fafc; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main);">KANIKA</div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    <div style="font-size: 10px; color: var(--ink-soft); margin-bottom: 6px;">Name 2</div>
+                                    <div style="border: 1px solid var(--border-subtle); background: var(--paper); padding: 6px; border-radius: 8px; font-size: 11px; color: var(--ink);">KANIKA</div>
+                                    <div style="font-size: 8px; color: var(--ink-faint); margin-top: 4px;">Enter the groom or bride's name</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hiw-content">
-                        <h3>2 - Customise & Publish</h3>
+                        <h3>2 — Customise & publish</h3>
                         <p>Add your story, update event details, and hit publish.</p>
                     </div>
                 </div>
@@ -2229,7 +2276,7 @@
                         </div>
                     </div>
                     <div class="hiw-content">
-                        <h3>3 - Share anywhere</h3>
+                        <h3>3 — Share anywhere</h3>
                         <p>Share your digital invite with friends and family seamlessly.</p>
                     </div>
                 </div>
@@ -2249,8 +2296,8 @@
 
         <section class="comparison-section">
             <div class="section-header">
-                <div class="sec-label"><span class="sec-label-line"></span> The Smart Choice <span class="sec-label-line"></span></div>
-                <h2 class="section-title">What Cards and Video Invites Can't Do<br>(But These Templates Can)</h2>
+                <div class="sec-label"><span class="sec-label-line"></span> The smart choice <span class="sec-label-line"></span></div>
+                <h2 class="section-title">What cards and video invites can't do<br>(but these templates can)</h2>
                 <p class="section-subtitle">See how your invite can go from a one-time message to a lasting experience — without the extra cost or hassle.</p>
             </div>
 
@@ -2285,7 +2332,7 @@
                             <td>Moderate</td>
                             <td>Low</td>
                         </tr>
-                        
+
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2299,7 +2346,7 @@
                             <td>Hard</td>
                             <td>Easy</td>
                         </tr>
-                        
+
                         <tr>
                             <td class="feature-cell">
                                 <div class="feature-icon">
@@ -2342,10 +2389,10 @@
 
         <section class="faq-section">
             <div class="section-header">
-                <div class="sec-label"><span class="sec-label-line"></span> Got Questions? <span class="sec-label-line"></span></div>
-                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="sec-label"><span class="sec-label-line"></span> Got questions? <span class="sec-label-line"></span></div>
+                <h2 class="section-title">Frequently asked questions</h2>
             </div>
-            
+
             <div class="faq-container">
                 <div class="faq-item">
                     <button class="faq-question">
@@ -2400,9 +2447,9 @@
         <footer class="footer">
             <div class="footer-container">
                 <div class="footer-top">
-                    
+
                     <div class="footer-brand">
-                        <h3>SCHEDY</h3>
+                        <h3>Schedy</h3>
                         <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
                         <div class="social-links">
                             <a href="instagram.html" class="social-link" aria-label="Instagram">
@@ -2442,14 +2489,14 @@
                         <h4>Company</h4>
                         <ul>
                             <li><a href="about.html">About Us</a></li>
-                            <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--color-accent-green); color: var(--color-dark-teal); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
+                            <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--marigold); color: #ffffff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
                             <li><a href="contact-support.html">Contact Support</a></li>
                             <li><a href="partner-program.html">Partner Program</a></li>
                         </ul>
                     </div>
 
                 </div>
-                
+
                 <div class="footer-bottom">
                     <p>&copy; 2026 Schedy Inc. All rights reserved.</p>
                     <div class="footer-bottom-links">
@@ -2470,7 +2517,7 @@
     <script>
         // Supabase Client Initialization
         const supabaseClient = supabase.createClient(
-            'https://jihtqbzrqymdkypicajz.supabase.co', 
+            'https://jihtqbzrqymdkypicajz.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHRxYnpycXltZGt5cGljYWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTQzNTUsImV4cCI6MjA4OTYzMDM1NX0.SK56YNRqHn-qBgSYvd9Q_sVIMC-76lv__zvao1esQHw'
         );
 
@@ -2497,7 +2544,7 @@
             const allData = { bride_name: invite.bride_name, groom_name: invite.groom_name, event_date: invite.event_date, ...(invite.details || {}) };
 
             html = html.replace(/{{#if\s+([a-zA-Z0-9-_]+)\s*}}(.*?){{\/if}}/gs, (match, key, content) => {
-                return (allData[key] && allData[key].toString().trim() !== '') ? content : ''; 
+                return (allData[key] && allData[key].toString().trim() !== '') ? content : '';
             });
 
             for (const [key, value] of Object.entries(allData)) {
@@ -2542,7 +2589,7 @@
             // FEATURE 2: LOCAL CACHING (INSTANT LOAD)
             const cacheKey = `cache_${inviteId}`;
             const cachedData = localStorage.getItem(cacheKey);
-            
+
             if (cachedData) {
                 // If we have it saved locally, render it INSTANTLY and hide the loader
                 injectHTML(JSON.parse(cachedData));
@@ -2564,7 +2611,7 @@
 
                 // Save the fresh data to the phone's local storage for next time
                 localStorage.setItem(cacheKey, JSON.stringify(invite));
-                
+
                 // If we didn't have cached data earlier, we inject the fresh HTML now
                 if (!cachedData) {
                     document.getElementById('loader').style.display = 'none';
@@ -2612,13 +2659,13 @@
                     setMenuIcon(false);
                 }
             });
-            
+
             setMenuIcon(false);
 
             // --- Product Showcase Filtering Logic ---
             const cards = document.querySelectorAll('.card');
             const desktopCatBtns = document.querySelectorAll('.cat-btn');
-            
+
             function filterCards(category) {
                 cards.forEach(card => {
                     // Show all cards if 'all' is selected, otherwise match data-category
@@ -2636,10 +2683,10 @@
                     // Update active state
                     desktopCatBtns.forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
-                    
+
                     const filter = e.target.dataset.filter;
                     filterCards(filter);
-                    
+
                     // Sync mobile dropdown text if it exists
                     const selectedText = document.getElementById('selected-category');
                     if(selectedText) selectedText.textContent = e.target.textContent;
@@ -2675,7 +2722,7 @@
                         option.classList.add('selected');
                         selectedText.textContent = option.textContent;
                         dropdown.classList.remove('open');
-                        
+
                         // Apply filter
                         const filter = option.dataset.value;
                         filterCards(filter);
@@ -2699,13 +2746,13 @@
 
             // FAQ Accordion Logic
             const faqItems = document.querySelectorAll('.faq-item');
-            
+
             faqItems.forEach(item => {
                 const questionBtn = item.querySelector('.faq-question');
-                
+
                 questionBtn.addEventListener('click', () => {
                     const isActive = item.classList.contains('active');
-                    
+
                     // Optional: Close all other accordions when one is opened
                     faqItems.forEach(otherItem => {
                         otherItem.classList.remove('active');
@@ -2731,7 +2778,7 @@
                 // User came with an ID: Show Invitation Viewer, hide Landing Page
                 document.getElementById('landing-page').style.display = 'none';
                 document.getElementById('invitation-viewer').style.display = 'flex';
-                
+
                 // Adjust body styling so the injected template has a clean canvas
                 document.body.style.paddingTop = '0';
                 document.body.style.display = 'flex';
@@ -2745,7 +2792,7 @@
                 // User came without an ID: Show Landing Page
                 document.getElementById('landing-page').style.display = 'block';
                 document.getElementById('invitation-viewer').style.display = 'none';
-                
+
                 initLandingPage();
             }
         });
