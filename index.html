@@ -43,12 +43,12 @@
 
             /* Syncskill UI/UX Tokens */
             --color-green-hover: #2fb168;
-            --color-green-dim: rgba(51,195,117,0.12);
+            --color-green-dim: rgba(232, 163, 61,0.12);
             --page-bg: #f8f9f8; 
             --card-bg: #ffffff;
             --text-main: #002726;
-            --text-sub: #64748b;
-            --border-subtle: #e2e8f0;
+            --text-sub: #66756D;
+            --border-subtle: #E6E2D8;
             --border-focus: #41B66E;
             
             --radius-btn: 14px;
@@ -143,7 +143,7 @@
         .menu-button {
             display: flex; padding: 8px;
             border: 1px solid var(--border-subtle); border-radius: 8px;
-            background: #f1f5f9; cursor: pointer;
+            background: #F1EEE4; cursor: pointer;
             color: var(--color-dark-teal); transition: background 0.1s;
         }
         @media (min-width: 768px) { .menu-button { display: none; } }
@@ -167,7 +167,7 @@
         .mobile-nav-link:hover { color: var(--color-teal-hover); background: transparent; }
         .mobile-auth-stack {
             display: flex; flex-direction: column; gap: 12px;
-            padding-top: 12px; border-top: 1px solid #f1f5f9;
+            padding-top: 12px; border-top: 1px solid #F1EEE4;
         }
         .mobile-auth-button {
             width: 100%; padding: 12px; text-align: center;
@@ -249,7 +249,7 @@
             font-size: 0.95rem;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.1);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38,0.1);
             transition: transform 0.25s ease, background 0.25s ease;
             text-decoration: none;
             display: inline-flex;
@@ -470,7 +470,7 @@
         
         .mobile-dropdown-container.open .dropdown-trigger {
             border-color: var(--border-focus);
-            box-shadow: 0 0 0 4px rgba(65,182,110,0.12);
+            box-shadow: 0 0 0 4px rgba(211, 137, 42,0.12);
         }
 
         .dropdown-trigger svg {
@@ -489,7 +489,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-input);
-            box-shadow: 0 10px 25px rgba(0,39,38,0.1);
+            box-shadow: 0 10px 25px rgba(14, 43, 38,0.1);
             z-index: 100;
             opacity: 0;
             visibility: hidden;
@@ -519,7 +519,7 @@
         }
 
         .dropdown-option:hover {
-            background: rgba(65,182,110,0.08); 
+            background: rgba(211, 137, 42,0.08); 
             color: var(--color-dark-teal);
         }
 
@@ -545,9 +545,9 @@
         }
 
         .card:hover {
-            border-color: #c7e6d0;
+            border-color: #E3D9BE;
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px -15px rgba(0,39,38,0.08); 
+            box-shadow: 0 20px 40px -15px rgba(14, 43, 38,0.08); 
         }
 
         .card-top {
@@ -559,7 +559,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f1f5f9; 
+            background-color: #F1EEE4; 
         }
 
         .product-img {
@@ -575,7 +575,7 @@
 
         /* Banner (Promotion) */
         .card-banner {
-            background-color: #f8fafc;
+            background-color: #F8F6EF;
             height: 60px;
             margin-top: -24px;
             border-bottom-left-radius: var(--radius-card-inner);
@@ -624,7 +624,7 @@
         .btn-primary {
             background-color: var(--color-accent-green);
             color: var(--color-dark-teal);
-            box-shadow: inset 0 0 0 2px rgba(0,39,38,0.3);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38,0.3);
         }
 
         .btn-primary:hover {
@@ -754,7 +754,7 @@
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            box-shadow: inset 0 0 0 2px rgba(11, 58, 56, 0.2);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38, 0.2);
             transition: background 0.25s ease;
             margin-top: 12px;
         }
@@ -849,14 +849,14 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: #94a3b8;
+            color: #9C9A8E;
             margin-bottom: 0.9rem;
         }
         
         .sec-label-line {
             width: 18px;
             height: 1.5px;
-            background: #94a3b8;
+            background: #9C9A8E;
             display: inline-block;
         }
 
@@ -898,8 +898,8 @@
 
         .hiw-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px -15px rgba(0, 39, 38, 0.08);
-            border-color: #cbd5e1;
+            box-shadow: 0 20px 40px -15px rgba(14, 43, 38, 0.08);
+            border-color: #D9D4C5;
         }
 
         .hiw-visual {
@@ -910,7 +910,7 @@
             position: relative;
             background: #ffffff;
             overflow: hidden;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #F1EEE4;
         }
 
         .hiw-content {
@@ -947,7 +947,7 @@
             font-weight: 600;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38, 0.3);
             transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-flex;
             align-items: center;
@@ -958,12 +958,12 @@
         .hiw-cta:hover {
             background: var(--color-green-hover);
             transform: translateY(-2px);
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3), 0 8px 20px rgba(51, 195, 117, 0.25);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38, 0.3), 0 8px 20px rgba(232, 163, 61, 0.25);
         }
 
         /* --- PURE CSS MOCKUP GRAPHICS --- */
         .art-phone, .art-tablet, .art-chat-card-img {
-            background-color: #f1f5f9;
+            background-color: #F1EEE4;
             background-size: cover;
             background-position: center;
         }
@@ -1085,11 +1085,11 @@
         .art-chat-right {
             align-self: flex-end;
             background: var(--color-green-dim);
-            border: 1px solid rgba(51, 195, 117, 0.2);
+            border: 1px solid rgba(232, 163, 61, 0.2);
             padding: 10px 14px;
             border-radius: 16px 16px 4px 16px;
             font-size: 0.72rem;
-            color: #0d4a2a;
+            color: #0E2B26;
             max-width: 90%;
             line-height: 1.4;
             position: relative;
@@ -1098,7 +1098,7 @@
         .art-chat-card {
             align-self: flex-end;
             background: var(--color-green-dim);
-            border: 1px solid rgba(51, 195, 117, 0.2);
+            border: 1px solid rgba(232, 163, 61, 0.2);
             width: 220px;
             border-radius: 12px;
             display: flex;
@@ -1116,14 +1116,14 @@
         .art-chat-card-text {
             font-size: 0.75rem;
             font-weight: 700;
-            color: #0d4a2a;
+            color: #0E2B26;
             padding: 0 4px 4px 4px;
         }
 
         .art-chat-card-sub {
             font-size: 0.55rem;
             font-weight: 500;
-            color: #166534;
+            color: #4A5C54;
             opacity: 0.8;
             margin-top: 2px;
         }
@@ -1183,7 +1183,7 @@
             border-radius: 24px;
             background: #ffffff;
             padding: 16px;
-            box-shadow: 0 10px 40px -10px rgba(0, 39, 38, 0.05);
+            box-shadow: 0 10px 40px -10px rgba(14, 43, 38, 0.05);
         }
 
         .comparison-table {
@@ -1197,7 +1197,7 @@
         .comparison-table td {
             padding: 24px 20px;
             vertical-align: middle;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #F1EEE4;
         }
 
         .comparison-table tr:last-child td {
@@ -1226,7 +1226,7 @@
         .comparison-table th:nth-child(4) {
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            border-bottom: 1px solid rgba(51, 195, 117, 0.2);
+            border-bottom: 1px solid rgba(232, 163, 61, 0.2);
         }
 
         .comparison-table tr:last-child td:nth-child(4) {
@@ -1235,8 +1235,8 @@
         }
 
         .comparison-table td:nth-child(4) {
-            border-bottom: 1px solid rgba(51, 195, 117, 0.1);
-            color: #0d4a2a;
+            border-bottom: 1px solid rgba(232, 163, 61, 0.1);
+            color: #0E2B26;
             font-weight: 700;
         }
 
@@ -1272,7 +1272,7 @@
             width: 36px;
             height: 36px;
             border-radius: 10px;
-            background: #f1f5f9;
+            background: #F1EEE4;
             color: var(--color-dark-teal);
             display: flex;
             align-items: center;
@@ -1290,7 +1290,7 @@
             font-weight: 600;
             border: none;
             cursor: pointer;
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38, 0.3);
             transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-flex;
             align-items: center;
@@ -1301,7 +1301,7 @@
         .cta-button:hover {
             background: var(--color-green-hover);
             transform: translateY(-2px);
-            box-shadow: inset 0 0 0 2px rgba(0, 39, 38, 0.3), 0 8px 20px rgba(51, 195, 117, 0.25);
+            box-shadow: inset 0 0 0 2px rgba(14, 43, 38, 0.3), 0 8px 20px rgba(232, 163, 61, 0.25);
         }
 
         /* ══════════════════════════════
@@ -1328,13 +1328,13 @@
         }
 
         .faq-item:hover {
-            border-color: #cbd5e1;
+            border-color: #D9D4C5;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .faq-item.active {
             border-color: var(--color-dark-teal);
-            box-shadow: 0 4px 12px rgba(0,39,38,0.05);
+            box-shadow: 0 4px 12px rgba(14, 43, 38,0.05);
         }
 
         .faq-question {
@@ -1509,7 +1509,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f9f9f9;
+            background-color: #FAF8F3;
         }
 
         #loader {
@@ -2182,23 +2182,23 @@
                             <div class="art-panel">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-dark-teal);">
                                     <strong style="font-size: 11px;">Names</strong> 
-                                    <span style="color: #94a3b8; font-size: 9px;">Component</span>
+                                    <span style="color: #9C9A8E; font-size: 9px;">Component</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <span style="font-size: 10px; color: #64748b;">Variant</span> 
-                                    <span style="border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--color-dark-teal); font-weight: 500;">Desktop ⌄</span>
+                                    <span style="font-size: 10px; color: #66756D;">Variant</span> 
+                                    <span style="border: 1px solid #E6E2D8; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: var(--color-dark-teal); font-weight: 500;">Desktop ⌄</span>
                                 </div>
                                 <div style="margin-bottom: 12px;">
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 1</div>
-                                    <div style="border: 1px solid var(--border-focus); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(65, 182, 110, 0.1);">
+                                    <div style="font-size: 10px; color: #66756D; margin-bottom: 6px;">Name 1</div>
+                                    <div style="border: 1px solid var(--border-focus); background: #ffffff; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main); display: flex; align-items: center; box-shadow: 0 0 0 2px rgba(211, 137, 42, 0.1);">
                                         A<span class="blinking-cursor"></span>
                                     </div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    <div style="font-size: 8px; color: #9C9A8E; margin-top: 4px;">Enter the groom or bride's name</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 10px; color: #64748b; margin-bottom: 6px;">Name 2</div>
-                                    <div style="border: 1px solid #e2e8f0; background: #f8fafc; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main);">KANIKA</div>
-                                    <div style="font-size: 8px; color: #94a3b8; margin-top: 4px;">Enter the groom or bride's name</div>
+                                    <div style="font-size: 10px; color: #66756D; margin-bottom: 6px;">Name 2</div>
+                                    <div style="border: 1px solid #E6E2D8; background: #F8F6EF; padding: 6px; border-radius: 8px; font-size: 11px; color: var(--color-text-main);">KANIKA</div>
+                                    <div style="font-size: 8px; color: #9C9A8E; margin-top: 4px;">Enter the groom or bride's name</div>
                                 </div>
                             </div>
                         </div>
@@ -2738,7 +2738,7 @@
                 document.body.style.justifyContent = 'center';
                 document.body.style.alignItems = 'center';
                 document.body.style.minHeight = '100vh';
-                document.body.style.backgroundColor = '#f9f9f9';
+                document.body.style.backgroundColor = '#FAF8F3';
 
                 renderInvite(inviteId);
             } else {
