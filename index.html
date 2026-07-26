@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -35,6 +35,7 @@
             --font-main: 'Inter', sans-serif;
             --font-ui: 'Inter', sans-serif;
             --font-display: 'Fraunces', serif;
+            --font-footer-brand: 'IBM Plex Sans', sans-serif;
 
             /* Core palette */
             --ink: #142722;
@@ -1439,11 +1440,12 @@
         }
 
         /* ══════════════════════════════
-            FOOTER
+            FOOTER — restored to Design Guides page look
+            (IBM Plex Sans brand mark, dark teal background)
         ══════════════════════════════ */
         .footer {
-            background-color: var(--teal-deep);
-            color: #ffffff;
+            background-color: var(--color-dark-teal);
+            color: var(--color-white);
             padding: 80px 5% 40px 5%;
             font-family: var(--font-sans);
         }
@@ -1461,16 +1463,16 @@
         }
 
         .footer-brand h3 {
-            font-family: var(--font-display);
+            font-family: var(--font-footer-brand);
             font-size: 28px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 16px;
-            letter-spacing: 0.01em;
-            color: #ffffff;
+            letter-spacing: -0.5px;
+            color: var(--color-white);
         }
 
         .footer-brand p {
-            color: rgba(255, 255, 255, 0.68);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
             line-height: 1.6;
             max-width: 300px;
@@ -1490,21 +1492,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            color: var(--color-white);
             transition: all 0.25s ease;
         }
 
         .social-link:hover {
-            background: var(--marigold);
-            color: #ffffff;
+            background: var(--color-accent-green);
+            color: var(--color-dark-teal);
             transform: translateY(-2px);
         }
 
         .footer-col h4 {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #ffffff;
+            color: var(--color-white);
         }
 
         .footer-col ul {
@@ -1515,24 +1517,24 @@
         }
 
         .footer-col a {
-            color: rgba(255, 255, 255, 0.68);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 0.95rem;
             transition: color 0.2s ease;
         }
 
         .footer-col a:hover {
-            color: var(--marigold);
+            color: var(--color-accent-green);
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .footer-bottom-links {
@@ -1541,13 +1543,13 @@
         }
 
         .footer-bottom-links a {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .footer-bottom-links a:hover {
-            color: #ffffff;
+            color: var(--color-white);
         }
 
         /* ══════════════════════════════
@@ -2449,7 +2451,7 @@
                 <div class="footer-top">
 
                     <div class="footer-brand">
-                        <h3>Schedy</h3>
+                        <h3>SCHEDY</h3>
                         <p>Make every event memorable with stunning, easy-to-build websites that leave a lasting impression on your guests.</p>
                         <div class="social-links">
                             <a href="instagram.html" class="social-link" aria-label="Instagram">
@@ -2489,7 +2491,7 @@
                         <h4>Company</h4>
                         <ul>
                             <li><a href="about.html">About Us</a></li>
-                            <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--marigold); color: #ffffff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
+                            <li><a href="careers.html" style="display: inline-flex; align-items: center; gap: 8px;">Careers <span style="background: var(--color-accent-green); color: var(--color-dark-teal); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Hiring</span></a></li>
                             <li><a href="contact-support.html">Contact Support</a></li>
                             <li><a href="partner-program.html">Partner Program</a></li>
                         </ul>
