@@ -1,187 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncSkill - Import Templates</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg: #f8fafc; --surface: #ffffff; --text: #0f172a; --text-sub: #64748b;
-            --accent: #673DE6; --border: #e2e8f0; --radius: 12px;
-            --font-main: 'IBM Plex Sans', sans-serif;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 3rem; max-width: 1200px; margin: 0 auto; }
-        
-        .header { margin-bottom: 2rem; }
-        .header h1 { font-family: var(--font-main); font-size: 2rem; margin-bottom: 0.5rem; }
-        
-        .upload-card { background: var(--surface); padding: 3rem; border-radius: var(--radius); border: 2px dashed var(--border); text-align: center; margin-bottom: 2rem; transition: 0.3s; }
-        .upload-card.active { border-color: var(--accent); background: rgba(103, 61, 230, 0.02); }
-        
-        .input-group { max-width: 400px; margin: 1.5rem auto; text-align: left; display: none; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-sub); }
-        input[type="password"] { width: 100%; padding: 0.875rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 1rem;}
-        input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.1); }
-        
-        .btn { padding: 0.875rem 2rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem;}
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+<meta charset="UTF-8">
+<title>Footer - Missing Piece Invites</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
-        /* Grid Preview */
-        #preview-section { display: none; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .t-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .t-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--border); }
-        .t-card-body { padding: 1.25rem; }
-        .t-badge { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
-        .t-title { font-family: var(--font-main); font-size: 1.1rem; margin-top: 0.25rem; }
-    </style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: #ffffff;
+    padding: 40px 30px;
+  }
+
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  /* ---------- Left side stack ---------- */
+  .left-stack {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 30px;
+    flex: 0 0 auto;
+  }
+
+  .brand { flex: 0 0 180px; }
+  .help { flex: 0 0 220px; }
+  .info { flex: 0 0 140px; }
+
+  .brand h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: rgb(0, 0, 0);
+    line-height: 1.25;
+  }
+
+  .help h3 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: rgb(28, 28, 28);
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+
+  .help a.email {
+    display: inline-block;
+    font-size: 15px;
+    letter-spacing: -0.03em;
+    color: rgb(28, 28, 28);
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+  .help a.email:hover { color: rgb(0, 153, 255); text-decoration: underline; }
+
+  .socials {
+    display: flex;
+    gap: 10px;
+  }
+
+  .socials a {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: block;
+  }
+
+  .socials img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .info h3 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: rgb(28, 28, 28);
+    margin-bottom: 14px;
+  }
+
+  .info a {
+    display: block;
+    font-size: 15px;
+    letter-spacing: -0.03em;
+    color: rgb(28, 28, 28);
+    text-decoration: none;
+    margin-bottom: 14px;
+  }
+  .info a:hover { color: rgb(0, 153, 255); text-decoration: underline; }
+  .info a:visited, .help a:visited { color: rgb(28, 28, 28); }
+
+  /* ---------- Right side card ---------- */
+  .right-side {
+    flex: 1 1 400px;
+    min-width: 400px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 28px 28px;
+    max-width: 640px;
+  }
+
+  h1.card-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: rgb(0,0,0);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.6em;
+    color: rgb(94, 94, 94);
+    margin-bottom: 18px;
+  }
+
+  .cta {
+    display: inline-block;
+    width: fit-content;
+    white-space: nowrap;
+    background: rgb(0, 0, 0);
+    color: rgb(255,255,255);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    padding: 13px 26px;
+    border-radius: 60px;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .cta:hover { background: #d4145a; transform: translateY(-2px); }
+
+  .couple-ad {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    height: 100%;
+    width: 200px;
+    object-fit: cover;
+    object-position: top;
+    border-top-right-radius: 19px;
+    z-index: 1;
+  }
+
+  @media (max-width: 640px) {
+    .footer { flex-wrap: wrap; }
+    .left-stack { flex-wrap: wrap; flex: 1 1 100%; }
+    .brand, .help, .info { flex: 1 1 200px; }
+    .right-side { flex: 1 1 100%; }
+    .card { flex-direction: column; align-items: center; height: auto; }
+    .content { padding: 32px 24px; max-width: 100%; }
+    h1.card-title { font-size: 24px; }
+    .brand h1 { font-size: 26px; }
+    .couple-ad {
+      position: relative;
+      width: 80%;
+      max-width: 320px;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      margin: 12px auto 0;
+      display: block;
+      border-top-right-radius: 0;
+    }
+  }
+</style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Import Templates</h1>
-    <p style="color: var(--text-sub)">Upload your encrypted SyncSkill (.sk) bundle file.</p>
-</div>
+  <div class="footer">
 
-<div class="upload-card" id="upload-zone">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-    <h3 style="font-family: var(--font-main);">Select Encrypted File</h3>
-    <input type="file" id="file-input" style="display:none" accept=".sk,.txt,.json">
-    <button class="btn" style="margin-top: 1rem;" onclick="document.getElementById('file-input').click()">Browse Files</button>
+    <div class="left-stack">
+      <div class="brand">
+        <h1>Website Templates for Wedding Invites</h1>
+      </div>
 
-    <div class="input-group" id="password-group">
-        <label>File is locked. Enter password to decrypt:</label>
-        <input type="password" id="decrypt-pass" placeholder="••••••••">
-        <button class="btn" style="width: 100%" onclick="decryptFile()">Unlock & Preview</button>
-    </div>
-</div>
-
-<div id="preview-section">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
-        <h2 style="font-family: var(--font-main);">Ready to Sync (<span id="preview-count">0</span>)</h2>
-        <button class="btn" id="btn-sync" style="background: #0f172a;" onclick="syncToSupabase()">Sync to Database</button>
-    </div>
-    
-    <div class="grid" id="preview-grid">
+      <div class="help">
+        <h3>Need any help ? We've got your back.</h3>
+        <a class="email" href="mailto:hello@missingpieceinvites.com">hello@missingpieceinvites.com</a>
+        <div class="socials">
+          <a href="https://www.instagram.com/missingpieceinvites" target="_blank" rel="noopener" aria-label="Instagram">
+            <img src="https://framerusercontent.com/images/mTNpaCYEtvbU38EdLAwWSkz3I.png?width=50&height=50" alt="Instagram">
+          </a>
+          <a href="https://www.youtube.com/@MissingPieceInvites" target="_blank" rel="noopener" aria-label="YouTube">
+            <img src="https://framerusercontent.com/images/Zkho1ZBitcL8cRrDurkSmMrxx20.png?width=50&height=50" alt="YouTube">
+          </a>
         </div>
-</div>
+      </div>
 
-<script>
-    // --- SUPABASE SETUP ---
-    // Ensure you replace these with your actual keys from your previous setup
-    const supabaseUrl = 'https://jihtqbzrqymdkypicajz.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Truncated for security
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+      <div class="info">
+        <h3>Information</h3>
+        <a href="./about-page">About Us</a>
+        <a href="./contact-us">Contact us</a>
+        <a href="./privacy-policy">Privacy Policy</a>
+        <a href="./refund-policy">Refund Policy</a>
+        <a href="./terms">Terms</a>
+      </div>
+    </div>
 
-    let encryptedData = "";
-    let stagedTemplates = [];
+    <div class="right-side">
+      <div class="card">
+        <div class="content">
+          <h1 class="card-title">Invite Your Guests in 10 Minutes!</h1>
+          <p class="subtitle">Choose. Customise. Share.</p>
+          <a class="cta" href="./templates">Choose a template</a>
+        </div>
+        <picture>
+          <source media="(max-width: 640px)" srcset="https://framerusercontent.com/images/hQ7kq7nwm4rhjd0QsyrxKmHaUk.png?width=1024&height=1536">
+          <img class="couple-ad"
+               src="https://framerusercontent.com/images/uvtfU55yBafBFhT3feL3T68KJs.png?scale-down-to=1024&width=1024&height=1536"
+               alt="Wedding couple illustration">
+        </picture>
+      </div>
+    </div>
 
-    // Handle File Selection
-    document.getElementById('file-input').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if(!file) return;
+  </div>
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            encryptedData = event.target.result;
-            document.getElementById('password-group').style.display = 'block';
-            document.querySelector('.upload-card h3').textContent = file.name;
-            document.querySelector('.upload-card .btn').style.display = 'none'; // Hide browse btn
-        };
-        reader.readAsText(file);
-    });
-
-    // Decrypt Logic
-    function decryptFile() {
-        const password = document.getElementById('decrypt-pass').value;
-        if(!password) return alert("Please enter a password.");
-
-        try {
-            const bytes = CryptoJS.AES.decrypt(encryptedData, password);
-            const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
-            
-            if(!decryptedText) throw new Error("Bad Password");
-
-            stagedTemplates = JSON.parse(decryptedText);
-            renderPreview();
-        } catch (err) {
-            alert("❌ Decryption failed. Incorrect password or corrupted file.");
-        }
-    }
-
-    // Render Grid
-    function renderPreview() {
-        document.getElementById('upload-zone').style.display = 'none';
-        document.getElementById('preview-section').style.display = 'block';
-        document.getElementById('preview-count').textContent = stagedTemplates.length;
-
-        const grid = document.getElementById('preview-grid');
-        grid.innerHTML = '';
-
-        stagedTemplates.forEach(t => {
-            grid.innerHTML += `
-                <div class="t-card">
-                    <img src="${t.preview_image || 'https://via.placeholder.com/300x200'}" alt="Preview">
-                    <div class="t-card-body">
-                        <div class="t-badge">${t.category_name}</div>
-                        <h4 class="t-title">${t.name}</h4>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // Supabase Upload Logic
-    async function syncToSupabase() {
-        const btn = document.getElementById('btn-sync');
-        btn.disabled = true;
-        btn.textContent = "Syncing...";
-
-        try {
-            for (const item of stagedTemplates) {
-                // 1. Check if Category exists
-                const { data: catData, error: catError } = await supabaseClient
-                    .from('template_categories')
-                    .select('id')
-                    .eq('name', item.category_name)
-                    .single();
-
-                let categoryId = catData?.id;
-
-                // 2. Create Category if missing
-                if (!categoryId) {
-                    const { data: newCat } = await supabaseClient
-                        .from('template_categories')
-                        .insert({ name: item.category_name })
-                        .select()
-                        .single();
-                    categoryId = newCat.id;
-                }
-
-                // 3. Insert Template
-                await supabaseClient.from('templates').insert([{
-                    name: item.name,
-                    html_code: item.html_code,
-                    preview_image_url: item.preview_image,
-                    category_id: categoryId
-                }]);
-            }
-
-            alert("✅ All templates synced successfully!");
-            location.reload(); // Reset UI
-            
-        } catch (error) {
-            console.error(error);
-            alert("❌ An error occurred during sync. Check console.");
-            btn.disabled = false;
-            btn.textContent = "Sync to Database";
-        }
-    }
-</script>
 </body>
 </html>
